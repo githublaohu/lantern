@@ -1,0 +1,17 @@
+server:
+  port: 8081
+
+dubbo:
+  scan:
+    base-packages: com.lamp.lantern.service.core.consumer.controller
+  application:
+    name: lamp-lantern-core-consumer
+  protocol:
+    name: dubbo
+    port: 20881
+  registry:
+    address: nacos://127.0.0.1:8848
+  config-center:
+    address: nacos://127.0.0.1:8848
+  metadata-report:
+    address: nacos://127.0.0.1:8848

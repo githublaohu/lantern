@@ -1,0 +1,6 @@
+com/lamp/lantern/service/core/entity/App.class
+com/lamp/lantern/service/core/entity/UserLoginRecordEntity.class
+com/lamp/lantern/service/core/entity/enums/BooleanEnum.class
+com/lamp/lantern/service/core/entity/enums/StatusEnum.class
+com/lamp/lantern/service/core/entity/UserInfoEntity.class
+com/lamp/lantern/service/core/entity/enums/GenderEnum.class

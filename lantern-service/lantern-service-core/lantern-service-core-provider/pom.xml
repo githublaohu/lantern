@@ -1,0 +1,123 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>cn.lampup</groupId>
+        <artifactId>lantern-service-core</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+  <artifactId>lantern-service-core-provider</artifactId>
+  <name>lantern-service-core-provider</name>
+  <url>http://maven.apache.org</url>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>lantern-service-core-service</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>lantern-service-core-entity</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.githublaohu</groupId>
+            <artifactId>dubbo-provider</artifactId>
+            <version>0.1.4</version>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>io.github.githublaohu</groupId>
+            <artifactId>shardingsphere-dependent</artifactId>
+            <version>0.1.4</version>
+            <type>pom</type>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.shardingsphere</groupId>
+                    <artifactId>
+                        sharding-core-parse-sqlserver
+                    </artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.shardingsphere</groupId>
+                    <artifactId>sharding-jdbc-core</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!-- Nacos -->
+        <dependency>
+            <groupId>com.alibaba.boot</groupId>
+            <artifactId>nacos-config-spring-boot-starter</artifactId>
+            <version>0.2.10</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-context</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.alibaba.nacos</groupId>
+                    <artifactId>nacos-client</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.boot</groupId>
+            <artifactId>nacos-config-spring-boot-actuator</artifactId>
+            <version>0.2.10</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.alibaba.nacos</groupId>
+                    <artifactId>nacos-client</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-actuator-autoconfigure</artifactId>
+            <version>2.1.7.RELEASE</version>
+        </dependency>
+
+
+
+    </dependencies>
+
+
+
+
+
+
+    <build>
+        <finalName>${project.artifactId}-${project.version}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>2.1.7.RELEASE</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <fork>true</fork>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+
+</project>

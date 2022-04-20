@@ -1,0 +1,32 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    password: jay1363600
+    url: "jdbc:mysql://localhost:3306/lantern_database"
+    username: root
+
+server:
+  port: 8080
+
+
+
+dubbo:
+  scan:
+    base-packages: com.lamp.lantern.service.core.provider.service.impl
+  application:
+    name: lamp-lantern-service-provider
+    owner: dome
+    logger: slf4j
+  protocol:
+    name: dubbo
+    port: 20880
+    accesslog: true
+  provider:
+    timeout: 30000
+    retries: 0
+  registry:
+    address: nacos://127.0.0.1:8848
+    parmeters:
+      namespace: lamp-lantern-dev
+    register: true
+    subscribe: true
