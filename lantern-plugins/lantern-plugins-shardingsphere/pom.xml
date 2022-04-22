@@ -3,11 +3,19 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
+<<<<<<< HEAD
     <groupId>com.lamp</groupId>
     <artifactId>lantern-plugins</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
   <groupId>com.lamp</groupId>
+=======
+    <groupId>cn.lampup</groupId>
+    <artifactId>lantern-plugins</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+  <groupId>cn.lampup</groupId>
+>>>>>>> b36ff9029799f6535b00154ae433114892b053c5
   <artifactId>lantern-plugins-shardingsphere</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>lantern-plugins-shardingsphere</name>

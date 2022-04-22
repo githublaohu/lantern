@@ -6,9 +6,29 @@
     <groupId>cn.lampup</groupId>
     <artifactId>lantern-service-core</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+<<<<<<< HEAD
     <relativePath>../pom.xml</relativePath>
   </parent>
 
   <artifactId>lantern-service-core-common</artifactId>
 
+=======
+  </parent>
+  <groupId>cn.lampup</groupId>
+  <artifactId>lantern-service-core-common</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>lantern-service-core-common</name>
+  <url>http://maven.apache.org</url>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+>>>>>>> b36ff9029799f6535b00154ae433114892b053c5
 </project>
