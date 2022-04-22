@@ -5,11 +5,17 @@
     <groupId>cn.lampup</groupId>
     <artifactId>lantern-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+<<<<<<< HEAD
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>lantern-service-core</artifactId>
   <packaging>pom</packaging>
 
+=======
+  </parent>
+  <artifactId>lantern-service-core</artifactId>
+  <packaging>pom</packaging>
+>>>>>>> b36ff9029799f6535b00154ae433114892b053c5
   <modules>
     <module>lantern-service-core-entity</module>
     <module>lantern-service-core-common</module>
@@ -17,6 +23,7 @@
     <module>lantern-service-core-provider</module>
     <module>lantern-service-core-consumer</module>
   </modules>
+<<<<<<< HEAD
 
   <dependencyManagement>
     <dependencies>
@@ -65,3 +72,6 @@
   </dependencies>
 
 </project>
+=======
+</project>
+>>>>>>> b36ff9029799f6535b00154ae433114892b053c5

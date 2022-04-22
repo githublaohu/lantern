@@ -3,7 +3,11 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
+<<<<<<< HEAD
 		<groupId>com.lamp</groupId>
+=======
+		<groupId>cn.lampup</groupId>
+>>>>>>> b36ff9029799f6535b00154ae433114892b053c5
 		<artifactId>lantern</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
@@ -16,4 +20,8 @@
 		<module>lantern-plugins-shardingsphere</module>
 		<module>lantern-plugins-dubbo</module>
 	</modules>
+<<<<<<< HEAD
 </project>
+=======
+</project>
+>>>>>>> b36ff9029799f6535b00154ae433114892b053c5

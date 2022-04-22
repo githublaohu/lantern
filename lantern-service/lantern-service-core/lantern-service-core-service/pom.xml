@@ -6,10 +6,17 @@
     <groupId>cn.lampup</groupId>
     <artifactId>lantern-service-core</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+<<<<<<< HEAD
     <relativePath>../pom.xml</relativePath>
   </parent>
 
   <artifactId>lantern-service-core-service</artifactId>
+=======
+  </parent>
+  <groupId>cn.lampup</groupId>
+  <artifactId>lantern-service-core-service</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+>>>>>>> b36ff9029799f6535b00154ae433114892b053c5
   <name>lantern-service-core-service</name>
   <url>http://maven.apache.org</url>
   <properties>
@@ -22,6 +29,7 @@
       <version>3.8.1</version>
       <scope>test</scope>
     </dependency>
+<<<<<<< HEAD
 
       <dependency>
           <groupId>${project.groupId}</groupId>
@@ -29,5 +37,7 @@
       </dependency>
 
 
+=======
+>>>>>>> b36ff9029799f6535b00154ae433114892b053c5
   </dependencies>
 </project>
