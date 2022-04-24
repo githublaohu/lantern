@@ -6,6 +6,49 @@
 		<groupId>cn.lampup</groupId>
 		<artifactId>lantern</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
+<<<<<<< HEAD
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+	<artifactId>lantern-service</artifactId>
+	<packaging>pom</packaging>
+
+	<modules>
+		<module>lantern-service-core</module>
+		<module>lantern-service-action</module>
+	</modules>
+
+	<dependencyManagement>
+		<dependencies>
+
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>lantern-service-core</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>lantern-serivce-action</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+
+		</dependencies>
+
+
+
+	</dependencyManagement>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<spring-boot.version>2.1.7.RELEASE</spring-boot.version>
+	</properties>
+
+
+
+	<dependencies>
+
+=======
 	</parent>
 	<artifactId>lantern-service</artifactId>
 	<packaging>pom</packaging>
@@ -56,11 +99,19 @@
 		</dependencies>
 	</dependencyManagement>
 	<dependencies>
+>>>>>>> b36ff9029799f6535b00154ae433114892b053c5
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<version>1.18.8</version>
 			<scope>provided</scope>
 		</dependency>
+<<<<<<< HEAD
+
+	</dependencies>
+
+</project>
+=======
 	</dependencies>
 </project>
+>>>>>>> b36ff9029799f6535b00154ae433114892b053c5

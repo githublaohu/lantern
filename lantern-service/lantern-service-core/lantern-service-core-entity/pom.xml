@@ -6,15 +6,53 @@
     <groupId>cn.lampup</groupId>
     <artifactId>lantern-service-core</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+<<<<<<< HEAD
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <artifactId>lantern-service-core-entity</artifactId>
+=======
   </parent>
   <groupId>cn.lampup</groupId>
   <artifactId>lantern-service-core-entity</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+>>>>>>> b36ff9029799f6535b00154ae433114892b053c5
   <name>lantern-service-core-entity</name>
   <url>http://maven.apache.org</url>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
+<<<<<<< HEAD
+
+  <dependencies>
+
+
+    <dependency>
+      <groupId>io.swagger</groupId>
+      <artifactId>swagger-annotations</artifactId>
+      <version>1.5.22</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>2.13.1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+      <version>2.13.1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+      <version>2.13.1</version>
+    </dependency>
+
+=======
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -22,5 +60,6 @@
       <version>3.8.1</version>
       <scope>test</scope>
     </dependency>
+>>>>>>> b36ff9029799f6535b00154ae433114892b053c5
   </dependencies>
 </project>

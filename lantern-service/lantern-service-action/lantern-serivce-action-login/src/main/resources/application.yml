@@ -1,0 +1,17 @@
+server:
+  port: 8082
+
+dubbo:
+  scan:
+    base-packages: com.lamp.lantern.service.action.login.incident
+  application:
+    name: lamp-lantern-action-login
+  protocol:
+    name: dubbo
+    port: 20882
+  registry:
+    address: nacos://127.0.0.1:8848
+  config-center:
+    address: nacos://127.0.0.1:8848
+  metadata-report:
+    address: nacos://127.0.0.1:8848
