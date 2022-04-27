@@ -2,7 +2,7 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     password: jay1363600
-    url: "jdbc:mysql://localhost:3306/lantern_database"
+    url: "jdbc:mysql://localhost:3306/lantern_v2"
     username: root
 
 server:

@@ -4,11 +4,11 @@ public enum StatusEnum {
 
     ACTIVE("ACTIVE"),
 
-    INACTIVE("INACTIVE");
+    INACTIVE("ACTIVE");
 
     private String status;
 
-    StatusEnum(String status){
+    private StatusEnum(String status){
         this.status = status;
     }
 

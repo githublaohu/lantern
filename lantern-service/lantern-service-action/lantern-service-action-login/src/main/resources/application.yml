@@ -1,0 +1,41 @@
+spring:
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+  redis:
+    database: 1
+    port: 6379
+    jedis:
+      pool:
+        max-idle: 8
+        min-idle: 0
+        max-wait: -1ms
+        max-active: 8
+    timeout: 3000ms
+
+
+server:
+  port: 8083
+
+dubbo:
+  scan:
+    base-packages: com.lamp.lantern.service.action.login.controller
+  application:
+    name: lamp-lantern-core-consumer
+  protocol:
+    name: dubbo
+    port: 20881
+  registry:
+    address: nacos://127.0.0.1:8848
+  config-center:
+    address: nacos://127.0.0.1:8848
+  metadata-report:
+    address: nacos://127.0.0.1:8848
+
+wx:
+  open:
+    appid: wxd2ea0f5614ccad32
+    appsecret: e58702751ecab052af64f4aa3f55a0de
+    redirecturl: http://pnib3f.natappfree.cc/api/ucenter/wx/callback
+
+

@@ -1,17 +1,18 @@
 package com.lamp.lantern.service.core.entity;
 
-import lombok.Data;
-import java.util.Date;
-import java.io.Serializable;
-import lombok.EqualsAndHashCode;
-import lombok.AllArgsConstructor;
-import io.swagger.annotations.ApiModel;
-
 import com.lamp.lantern.service.core.entity.enums.GenderEnum;
 import com.lamp.lantern.service.core.entity.enums.BooleanEnum;
 import com.lamp.lantern.service.core.entity.enums.StatusEnum;
 
 
+import java.io.Serializable;
+import java.util.Date;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.AllArgsConstructor;
+import io.swagger.annotations.ApiModel;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Data
 @EqualsAndHashCode
@@ -22,10 +23,11 @@ public class UserInfoEntity implements Serializable {
     public UserInfoEntity(){
 
     }
+
     /**
      * 用户唯一Id
      */
-    private int uiId;
+    private long uiId;
 
     /**
      * 用户名
@@ -75,6 +77,8 @@ public class UserInfoEntity implements Serializable {
     /**
      * 用户生日
      */
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date uiBirth;
 
     /**
@@ -110,11 +114,13 @@ public class UserInfoEntity implements Serializable {
     /**
      * 用户最近登录时间
      */
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     private Date uiLoginTime;
 
     /**
      * 用户最近退出时间
      */
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     private Date uiExitTime;
 
     /**
