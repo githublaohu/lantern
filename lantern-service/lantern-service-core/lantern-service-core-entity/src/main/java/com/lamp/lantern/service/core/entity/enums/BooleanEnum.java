@@ -2,13 +2,15 @@ package com.lamp.lantern.service.core.entity.enums;
 
 public enum BooleanEnum {
 
-    TRUE("True"),
+    True("True"),
 
-    FALSE("False");
+    False("False");
 
-    private String _boolean;
+    private String flag;
 
-    BooleanEnum(String _boolean){
-        this._boolean = _boolean;
+    BooleanEnum(String flag){
+        this.flag = flag;
     }
+
+    BooleanEnum(){}
 }

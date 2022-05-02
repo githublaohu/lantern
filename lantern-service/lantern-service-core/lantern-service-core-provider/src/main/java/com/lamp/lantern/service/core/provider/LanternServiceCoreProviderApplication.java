@@ -1,5 +1,6 @@
 package com.lamp.lantern.service.core.provider;
 
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.boot.SpringApplication;
@@ -13,10 +14,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Slf4j
 @SpringBootApplication
 @EnableTransactionManagement
-public class LanternServiceCoreProviderApplication
-{
-    public static void main(String[] args )
-    {
+public class LanternServiceCoreProviderApplication {
+
+    public static void main(String[] args) {
         try {
             SpringApplication.run(LanternServiceCoreProviderApplication.class, args);
             log.info("{} 启动成功",LanternServiceCoreProviderApplication.class.getSimpleName());

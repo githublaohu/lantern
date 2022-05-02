@@ -7,14 +7,16 @@ public enum DeviceEnum {
     VIVO("VIVO"),
     OPPO("OPPO"),
     HUAWEI("HUAWEI"),
+    SAMSUNG("SAMSUNG"),
+    LENOVO("LENOVO"),
+    DELL("DELL"),
     ALLENWARE("ALLENWARE"),
     OTHER("OTHER");
 
+    private String device;
 
-    public String brandName;
-
-    private DeviceEnum(String brandName){
-        this.brandName = brandName;
+    private DeviceEnum(String device){
+        this.device = device;
     }
 
 }

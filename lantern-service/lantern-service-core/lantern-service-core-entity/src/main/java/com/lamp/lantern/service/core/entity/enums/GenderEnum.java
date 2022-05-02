@@ -2,16 +2,17 @@ package com.lamp.lantern.service.core.entity.enums;
 
 public enum GenderEnum {
 
-    MALE("MALE"),
+    MALE("MAlE"),
 
-    FEMALE("FEMALE"),
+    FAMALE("FAMALE"),
 
-    OTHER("UNKNOW");
+    UNKNOWN("UNKOWN");
 
     private String gender;
 
-    GenderEnum(String gender){
+    private GenderEnum(String gender){
         this.gender = gender;
     }
 
-};
+
+}

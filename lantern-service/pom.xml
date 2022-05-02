@@ -1,117 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>cn.lampup</groupId>
-		<artifactId>lantern</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
-<<<<<<< HEAD
-		<relativePath>../pom.xml</relativePath>
-	</parent>
-	<artifactId>lantern-service</artifactId>
-	<packaging>pom</packaging>
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>lantern</artifactId>
+        <groupId>cn.lampup</groupId>
+        <version>1.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <packaging>pom</packaging>
 
-	<modules>
-		<module>lantern-service-core</module>
-		<module>lantern-service-action</module>
-	</modules>
+    <artifactId>lantern-service</artifactId>
 
-	<dependencyManagement>
-		<dependencies>
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <spring-boot.version>2.1.7.RELEASE</spring-boot.version>
+    </properties>
 
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>lantern-service-core</artifactId>
-				<version>${project.version}</version>
-			</dependency>
+    <modules>
+        <module>lantern-service-core</module>
+        <module>lantern-service-action</module>
+    </modules>
 
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>lantern-serivce-action</artifactId>
-				<version>${project.version}</version>
-			</dependency>
+    <dependencies>
 
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.8</version>
+            <scope>provided</scope>
+        </dependency>
 
-		</dependencies>
-
-
-
-	</dependencyManagement>
-
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<spring-boot.version>2.1.7.RELEASE</spring-boot.version>
-	</properties>
-
-
-
-	<dependencies>
-
-=======
-	</parent>
-	<artifactId>lantern-service</artifactId>
-	<packaging>pom</packaging>
-	<modules>
-		<module>lantern-service-core</module>
-		<module>lantern-serivce-action</module>
-	</modules>
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<spring-boot.version>2.1.7.RELEASE</spring-boot.version>
-	</properties>
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>cn.lampup</groupId>
-				<artifactId>decoration-core</artifactId>
-				<version>0.0.5</version>
-			</dependency>
-			<dependency>
-				<groupId>io.github.githublaohu</groupId>
-				<artifactId>dubbo-springmvc</artifactId>
-				<version>0.1.4</version>
-				<type>pom</type>
-			</dependency>
-			<dependency>
-				<groupId>io.github.githublaohu</groupId>
-				<artifactId>dubbo-provider</artifactId>
-				<version>0.1.4</version>
-				<type>pom</type>
-			</dependency>
-			<dependency>
-				<groupId>io.github.githublaohu</groupId>
-				<artifactId>shardingsphere-dependent</artifactId>
-				<version>0.1.4</version>
-				<type>pom</type>
-			</dependency>
-			<dependency>
-				<groupId>io.github.githublaohu</groupId>
-				<artifactId>logback-dependent</artifactId>
-				<version>0.1.4</version>
-				<type>pom</type>
-			</dependency>
-			<dependency>
-				<groupId>io.github.githublaohu</groupId>
-				<artifactId>test-mock-dependent</artifactId>
-				<version>0.1.4</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
-	<dependencies>
->>>>>>> b36ff9029799f6535b00154ae433114892b053c5
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<version>1.18.8</version>
-			<scope>provided</scope>
-		</dependency>
-<<<<<<< HEAD
-
-	</dependencies>
+    </dependencies>
 
 </project>
-=======
-	</dependencies>
-</project>
->>>>>>> b36ff9029799f6535b00154ae433114892b053c5

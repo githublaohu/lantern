@@ -1,48 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <groupId>cn.lampup</groupId>
         <artifactId>lantern-service</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <groupId>cn.lampup</groupId>
+        <version>1.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>lantern-serivce-action</artifactId>
-    <packaging>pom</packaging>
+    <modelVersion>4.0.0</modelVersion>
 
+    <artifactId>lantern-service-action</artifactId>
+    <packaging>pom</packaging>
     <modules>
-        <module>lantern-serivce-action-login</module>
-        <module>lantern-serivce-action-user</module>
-        <module>lantern-serivce-action-cache-operation</module>
+        <module>lantern-service-action-login</module>
     </modules>
 
-    <dependencyManagement>
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+    </properties>
 
-        <dependencies>
+    <dependencies>
 
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>lantern-serivce-action-login</artifactId>
-                <version>${project.version}</version>
-            </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>lantern-service-core-service</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>lantern-serivce-action-user</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>lantern-serivce-action-cache-operation</artifactId>
-                <version>${project.version}</version>
-            </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>lantern-service-core-entity</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
 
-
-
-        </dependencies>
-
-    </dependencyManagement>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.12.0</version>
+        </dependency>
+    </dependencies>
 
 </project>

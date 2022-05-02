@@ -1,16 +1,14 @@
 package com.lamp.lantern.service.core.entity.enums;
 
-public enum LoginwayEnum {
+public enum LoginWayEnum {
+    AccountLogin("AccountLogin"),
+    VerifyCodeLogin("VerifyCodeLogin"),
+    ScanCodeLogin("ScanCodeLogin"),
+    AppLogin("AppLogin");
 
-    ACCOUNT_PASSWORD("ACCOUNT_PASSWORD"),
-    PHONE_VERIFYCODE("PHONE_VERIFYCODE"),
-    TRI_SCANCODE("TRI_SCANCODE"),
-    TRI_APP("TRI_APP");
+    private String loginWay;
 
-
-    public String loginwayName;
-
-    private LoginwayEnum(String loginwayName){
-        this.loginwayName = loginwayName;
+    private LoginWayEnum(String loginWay){
+        this.loginWay = loginWay;
     }
 }

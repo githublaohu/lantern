@@ -1,48 +1,60 @@
 package com.lamp.lantern.service.core.entity;
 
 
-import com.lamp.lantern.service.core.entity.enums.*;
-import io.swagger.annotations.ApiModel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-
+import java.io.Serializable;
 import java.util.Date;
 
+import com.lamp.lantern.service.core.entity.enums.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.AllArgsConstructor;
+import io.swagger.annotations.ApiModel;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.stereotype.Component;
+
+
 @Data
+@Component
 @EqualsAndHashCode
 @AllArgsConstructor
-@ApiModel(value = "UserLoginRecordEntity", description = "用户登录记录实体")
-public class LoginRecordEntity {
+@ApiModel(value = "UserInfoEntity", description = "用户信息实体")
+public class LoginRecordEntity implements Serializable {
 
     public LoginRecordEntity(){
 
     }
 
     /**
-     * 用户id
+     * 登录记录唯一Id
      */
-    private int uiId;
+    private long ulId;
+
+    /**
+     * 用户唯一Id
+     */
+    private long uiId;
 
     /**
      * 用户登录时间
      */
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     private Date ulLoginTime;
 
     /**
-     * 用户退出时间
+     * 用户退出方式
      */
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     private Date ulExitTime;
-
-    /**
-     * 用户登录Ip
-     */
-    private String ulLoginIp;
 
     /**
      * 用户登录地址
      */
     private String ulLoginAddress;
+
+    /**
+     * 用户登录Id
+     */
+    private String ulLoginIp;
 
     /**
      * 用户登录设备
@@ -57,13 +69,12 @@ public class LoginRecordEntity {
     /**
      * 用户登录系统
      */
-    private OperateSystemEnum ulLoginSystem;
+    private SystemEnum ulLoginSystem;
 
     /**
-    * 用户登录方式
-    */
-    private LoginwayEnum ulLoginWay;
-
+     * 用户登录方式
+     */
+    private LoginPatternEnum ulLoginWay;
 
     /**
      * 用户登录终端
@@ -73,18 +84,17 @@ public class LoginRecordEntity {
     /**
      * 用户退出方式
      */
-    private ExitModeEnum ulExitWay;
+    private ExitWayEnum ulQuitWay;
 
     /**
-     * 第三方平台Id
+     * 用户第三方Id
      */
-    private int triId;
+    private Integer triId;
 
     /**
-     * 用户登录成功状态
+     * 用户登录状态
      */
-    private StatusEnum ulLoginStatus;
-
+    private LoginStatusEnum ulLoginStatus;
 
 
 }
