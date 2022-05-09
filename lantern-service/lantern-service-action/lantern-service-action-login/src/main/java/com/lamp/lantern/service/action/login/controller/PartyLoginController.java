@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Objects;
 
 
 @Slf4j
@@ -52,6 +53,7 @@ public class PartyLoginController {
 
         LoginIncident incident = builder.build();
         incident.partyLoginByUserName();
+
 
         return incident.getResultObjectEnums();
     }

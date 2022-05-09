@@ -34,7 +34,14 @@ public enum ResultObjectEnums {
 
     EMAIL_MUST_NOT_BLANK(513, "email must not be blank"),
 
+    WECHAT_REDIRECT_FAIL(514, "wechar redirect url failed"),
+
+    WECHAT_SIGNATURE_ERROR(515, "wechat signature error"),
+
+    WECHAT_SCAN_LOGIN_ERROR(516, "wechat scan login error"),
+
     PASSWORD_ERROR(600, "password is wrong"),
+
 
 
     CHECK_PARAMETERS_FAIL(120001, "check parameters fail");
@@ -43,6 +50,10 @@ public enum ResultObjectEnums {
 
     ResultObjectEnums(Integer code, String message){
         this.resultObject = ResultObject.getResultObjectMessgae(code,message);
+    }
+
+    public void setResultObjectMessage(String errorMessage){
+        this.resultObject.setMessage(errorMessage);
     }
 
     public ResultObject<String> getResultObject(){

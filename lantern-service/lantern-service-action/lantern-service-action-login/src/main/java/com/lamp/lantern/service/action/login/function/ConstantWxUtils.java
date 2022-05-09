@@ -15,4 +15,11 @@ public class ConstantWxUtils {
     private String appSecret;
 
     private String redirectUrl;
+
+    private String baseUrl;
+
+    private String authUrl;
+
+    private String infoUrl;
+
 }

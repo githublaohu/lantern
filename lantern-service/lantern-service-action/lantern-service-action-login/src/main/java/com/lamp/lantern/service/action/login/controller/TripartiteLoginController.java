@@ -4,6 +4,8 @@ package com.lamp.lantern.service.action.login.controller;
 import com.google.gson.Gson;
 import com.lamp.lantern.service.action.login.function.ConstantWxUtils;
 import com.lamp.lantern.service.action.login.incident.IncidentService;
+import com.lamp.lantern.service.action.login.incident.LoginIncident;
+import com.lamp.lantern.service.action.login.incident.TriPartiteIncident;
 import com.lamp.lantern.service.action.login.security.Decript;
 import com.lamp.lantern.service.action.login.utils.HttpClientUtils;
 import com.lamp.lantern.service.action.login.utils.JsonData;
@@ -25,6 +27,9 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Objects;
+
+import com.lamp.lantern.service.action.login.utils.ResultObjectEnums;
 
 @Slf4j
 @RequestMapping("/api/ucenter/wx")
@@ -38,70 +43,60 @@ public class TripartiteLoginController {
     @Autowired
     private IncidentService incidentService;
 
-    @RequestMapping("/login")
-    public String getWxCode(){
-
-        String baseUrl = "https://open.weixin.qq.com/connect/qrconnect"+
-                "?appid=%s"+
-                "&redirect_uri=%s"+
-                "&response_type=%s"+
-                "&scope=snsapi_login"+
-                "&state=%s"+
-                "#wechat_redirect";
-
-        //对redict_url进行编码
-        String redictUrl = constantWxUtils.getRedirectUrl();
-        try {
-            URLEncoder.encode(redictUrl,"utf-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
-        String url = String.format(baseUrl,
-                constantWxUtils.getAppId(),
-                redictUrl,
-                "code",
-                "coderkun");
-
-        //请求微信地址
-        return "redirect:"+url;
-    }
-
-
+    // 测试接口 测试微信小程序是否联通
     @RequestMapping("/callback")
-    public String callback(String signature, String timestamp, String nonce, String echostr){
+    @ApiOperation(value = "微信小程序ping")
+    public void callback(HttpServletRequest request,
+                         HttpServletResponse response) throws IOException {
+        TriPartiteIncident.TriPartiteIncidentBuilder builder = incidentService.createTriPartiteIncidentBuilder();
+        builder.request(request);
+        builder.response(response);
+        builder.constantWxUtils(constantWxUtils);
 
-        ArrayList<String> array = new ArrayList<String>();
-        array.add(signature);
-        array.add(timestamp);
-        array.add(nonce);
+        TriPartiteIncident incident = builder.build();
+        incident.callback();
 
-        //排序
-        String sortString = sort("jaycase", timestamp, nonce);
-        //加密
-        String mytoken = Decript.SHA1(sortString);
-        //校验签名
-        if (mytoken != null && mytoken != "" && mytoken.equals(signature)) {
-            System.out.println("签名校验通过。");
-            return echostr; //如果检验成功输出echostr，微信服务器接收到此输出，才会确认检验完成。
-        } else {
-            System.out.println("签名校验失败。");
-            return null;
-        }
 
     }
 
-    public static String sort(String token, String timestamp, String nonce) {
-        String[] strArray = { token, timestamp, nonce };
-        Arrays.sort(strArray);
-
-        StringBuilder sbuilder = new StringBuilder();
-        for (String str : strArray) {
-            sbuilder.append(str);
-        }
-
-        return sbuilder.toString();
+    @RequestMapping("/testRedirect")
+    public ResultObjectEnums testRedirect(HttpServletRequest request, HttpServletResponse response){
+        return ResultObjectEnums.SUCCESS;
     }
+
+    @RequestMapping("/redirect")
+    @ApiOperation(value = "跳转扫码页面")
+    public ResultObjectEnums redirect(HttpServletRequest request, HttpServletResponse response){
+        TriPartiteIncident.TriPartiteIncidentBuilder builder = incidentService.createTriPartiteIncidentBuilder();
+        builder.request(request);
+        builder.response(response);
+        builder.constantWxUtils(constantWxUtils);
+
+        TriPartiteIncident incident = builder.build();
+        incident.redirect();
+        return incident.getResultObjectEnums();
+
+
+    }
+
+    @RequestMapping("/login")
+    @ApiOperation(value = "微信扫码登录")
+    public ResultObjectEnums login(HttpServletRequest request, HttpServletResponse response) throws IOException{
+        System.out.println(request);
+        System.out.println(response);
+        TriPartiteIncident.TriPartiteIncidentBuilder builder = incidentService.createTriPartiteIncidentBuilder();
+        builder.request(request);
+        builder.response(response);
+        builder.constantWxUtils(constantWxUtils);
+
+        TriPartiteIncident incident = builder.build();
+        incident.login();
+        return incident.getResultObjectEnums();
+    }
+
+
+
+
 
 }
 
@@ -183,6 +178,61 @@ public class TripartiteLoginController {
         }catch(Exception e) {
             throw new Exception("Fail");
         }
+        *
+       @GetMapping("/login")
+    public void login() throws Exception {
+
+        //微信开放平台授权baseUrl
+        String baseUrl = "https://open.weixin.qq.com/connect/qrconnect" +
+                "?appid=%s" +
+                "&redirect_uri=%s" +
+                "&response_type=code" +
+                "&scope=snsapi_login" +
+                "&state=%s" +
+                "#wechat_redirect";
+
+
+        //对redirect_url进行URLEncoder编码
+        String redirectUrl = constantWxUtils.getRedirectUrl();
+        try {
+            redirectUrl = URLEncoder.encode(redirectUrl, "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new Exception(e.getMessage());
+        }
+        //设置%s的值
+        String url = String.format(
+                baseUrl,
+                constantWxUtils.getAppId(),
+                redirectUrl,
+                "jaycase"
+        );
+
+
+        //重定向到请求微信地址
+        System.out.println("url " + url);
+        return "redirect:" + url;
+    }
+
+    @GetMapping("/login_url")
+    @ResponseBody
+    public JsonData getWxCode() throws UnsupportedEncodingException {
+
+        System.out.println("logiun");
+
+        String baseUrl = "https://open.weixin.qq.com/connect/qrconnect?appid=%s&redirect_uri=%s&response_type=code&scope=snsapi_login&state=STATE#wechat_redirect";
+
+        //对redict_url进行编码
+
+        String redictUrl = constantWxUtils.getRedirectUrl();
+        String url = String.format(baseUrl,
+                constantWxUtils.getAppId(),
+                redictUrl
+        );
+        System.out.println("uri, " + url);
+        return JsonData.buildSuccess(url);
+    }
+
+
 *
 *
 *

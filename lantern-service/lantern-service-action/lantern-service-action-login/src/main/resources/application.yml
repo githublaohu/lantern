@@ -15,7 +15,7 @@ spring:
 
 
 server:
-  port: 8083
+  port: 80
 
 dubbo:
   scan:
@@ -36,6 +36,9 @@ wx:
   open:
     appid: wxd2ea0f5614ccad32
     appsecret: e58702751ecab052af64f4aa3f55a0de
-    redirecturl: http://pnib3f.natappfree.cc/api/ucenter/wx/callback
+    redirecturl: http://jaycase123.natapp1.cc/api/ucenter/wx/testRedirect
+    baseurl: https://open.weixin.qq.com/connect/qrconnect?appid=%s&redirect_uri=%s&response_type=code&scope=snsapi_login,snsapi_userinfo&state=STATE#wechat_redirect
+    authurl: https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code
+    infourl: https://api.weixin.qq.com/sns/userinfo?access_token=%s&openid=%s&lang=zh_CN
 
 
