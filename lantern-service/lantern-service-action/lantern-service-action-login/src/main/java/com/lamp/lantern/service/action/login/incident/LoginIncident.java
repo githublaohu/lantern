@@ -1,5 +1,6 @@
 package com.lamp.lantern.service.action.login.incident;
 
+import com.lamp.lantern.service.action.login.security.HttpSessionService;
 import com.lamp.lantern.service.core.entity.enums.LoginPatternEnum;
 import com.lamp.lantern.service.action.login.security.JwtTokenService;
 import com.lamp.lantern.service.action.login.security.LoginErrorCountService;
@@ -19,6 +20,8 @@ import org.apache.commons.codec.digest.DigestUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.util.Map;
 import java.util.Objects;
 
 /*
@@ -53,8 +56,20 @@ public class LoginIncident {
 
     private LoginPatternEnum loginPatternEnum;
 
+    private HttpSessionService httpSessionService;
+
+    private HttpSession httpSession;
+
     public ResultObjectEnums getResultObjectEnums(){
         return resultObjectEnums;
+    }
+
+    public void loginSucessAndSetSession(){
+        if(!Objects.equals(resultObjectEnums, ResultObjectEnums.SUCCESS)){
+            return;
+        }
+
+        httpSessionService.loginSuccessAndAddSession(loginPatternEnum, userInfoEntity.getUiId(), httpSession);
     }
 
     public void partyLoginByUserName(){

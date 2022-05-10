@@ -1,6 +1,7 @@
 package com.lamp.lantern.service.action.login.incident;
 
 
+import com.lamp.lantern.service.action.login.security.HttpSessionService;
 import com.lamp.lantern.service.action.login.security.JwtTokenService;
 import com.lamp.lantern.service.action.login.security.LoginErrorCountService;
 import com.lamp.lantern.service.action.login.security.RedisService;
@@ -36,12 +37,16 @@ public class IncidentService {
     @Reference
     private LoginErrorCountService loginErrorCountService;
 
+    @Reference
+    private HttpSessionService httpSessionService;
+
 
     public LoginIncident createLoginIncident(){
         LoginIncidentBuilder builder = LoginIncident.builder();
         builder.redisService(redisService);
         builder.jwtTokenService(jwtTokenService);
         builder.userInfoEntityService(userInfoEntityService);
+        builder.httpSessionService(httpSessionService);
         builder.loginErrorCountService(loginErrorCountService);
         builder.loginRecordEntityService(loginRecordEntityService);
         return builder.build();
@@ -51,6 +56,7 @@ public class IncidentService {
         LoginIncidentBuilder builder = LoginIncident.builder();
         builder.redisService(redisService);
         builder.jwtTokenService(jwtTokenService);
+        builder.httpSessionService(httpSessionService);
         builder.userInfoEntityService(userInfoEntityService);
         builder.loginErrorCountService(loginErrorCountService);
         builder.loginRecordEntityService(loginRecordEntityService);
@@ -61,6 +67,7 @@ public class IncidentService {
         TriPartiteIncidentBuilder builder = TriPartiteIncident.builder();
         builder.redisService(redisService);
         builder.userInfoEntityService(userInfoEntityService);
+        builder.httpSessionService(httpSessionService);
         builder.resultObjectEnums(ResultObjectEnums.SUCCESS);
         builder.loginRecordEntityService(loginRecordEntityService);
         builder.loginPatternEnum(LoginPatternEnum.TRIPARTITE_WEIXIN_SCAN);
@@ -73,6 +80,7 @@ public class IncidentService {
         TriPartiteIncidentBuilder builder = TriPartiteIncident.builder();
         builder.redisService(redisService);
         builder.userInfoEntityService(userInfoEntityService);
+        builder.httpSessionService(httpSessionService);
         builder.resultObjectEnums(ResultObjectEnums.SUCCESS);
         builder.loginRecordEntityService(loginRecordEntityService);
         builder.loginPatternEnum(LoginPatternEnum.TRIPARTITE_WEIXIN_SCAN);

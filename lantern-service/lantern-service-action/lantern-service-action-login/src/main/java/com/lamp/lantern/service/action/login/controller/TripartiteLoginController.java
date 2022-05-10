@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
@@ -56,7 +57,6 @@ public class TripartiteLoginController {
         TriPartiteIncident incident = builder.build();
         incident.callback();
 
-
     }
 
     @RequestMapping("/testRedirect")
@@ -81,12 +81,13 @@ public class TripartiteLoginController {
 
     @RequestMapping("/login")
     @ApiOperation(value = "微信扫码登录")
-    public ResultObjectEnums login(HttpServletRequest request, HttpServletResponse response) throws IOException{
+    public ResultObjectEnums login(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws IOException{
         System.out.println(request);
         System.out.println(response);
         TriPartiteIncident.TriPartiteIncidentBuilder builder = incidentService.createTriPartiteIncidentBuilder();
         builder.request(request);
         builder.response(response);
+        builder.httpSession(session);
         builder.constantWxUtils(constantWxUtils);
 
         TriPartiteIncident incident = builder.build();

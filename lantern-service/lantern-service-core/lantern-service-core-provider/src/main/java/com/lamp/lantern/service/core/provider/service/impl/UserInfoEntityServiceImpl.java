@@ -69,4 +69,9 @@ public class UserInfoEntityServiceImpl implements UserInfoEntityService {
     public UserInfoEntity checkUserExistByIdcard(UserInfoEntity userInfoEntity){
         return userInfoEntityMapper.checkUserExistByIdcard(userInfoEntity);
     }
+
+    @Override
+    public Integer updateUserAllField(UserInfoEntity userInfoEntity){
+        return userInfoEntityMapper.updateUserAllField(userInfoEntity);
+    }
 }

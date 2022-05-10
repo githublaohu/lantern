@@ -4,6 +4,7 @@ package com.lamp.lantern.service.action.login.incident;
 import com.alibaba.fastjson.JSONObject;
 import com.lamp.lantern.service.action.login.function.ConstantWxUtils;
 import com.lamp.lantern.service.action.login.security.Decript;
+import com.lamp.lantern.service.action.login.security.HttpSessionService;
 import com.lamp.lantern.service.action.login.security.RedisService;
 import com.lamp.lantern.service.action.login.utils.HttpClientUtils;
 import com.lamp.lantern.service.action.login.utils.HttpUtils;
@@ -21,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
@@ -54,8 +56,20 @@ public class TriPartiteIncident {
 
     private LoginRecordEntityService loginRecordEntityService;
 
+    private HttpSessionService httpSessionService;
+
+    private HttpSession httpSession;
+
     public ResultObjectEnums getResultObjectEnums(){
         return resultObjectEnums;
+    }
+
+    public void loginSucessAndSetSession(){
+        if(!Objects.equals(resultObjectEnums, ResultObjectEnums.SUCCESS)){
+            return;
+        }
+
+        httpSessionService.loginSuccessAndAddSession(loginPatternEnum, userInfoEntity.getUiId(), httpSession);
     }
 
     public void callback() throws IOException {
@@ -184,6 +198,8 @@ public class TriPartiteIncident {
         }
 
         loginByJsonObject();
+        loginSucessAndSetSession();
+
 
     }
 
