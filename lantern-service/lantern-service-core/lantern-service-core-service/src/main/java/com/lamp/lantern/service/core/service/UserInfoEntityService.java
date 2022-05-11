@@ -22,6 +22,8 @@ public interface UserInfoEntityService {
 
     public Integer updateUserAllowLoginField(UserInfoEntity userInfoEntity);
 
+    public Integer updateUserAllField(UserInfoEntity userInfoEntity);
+
     public UserInfoEntity testQuery();
 
     public Integer quertUserById();

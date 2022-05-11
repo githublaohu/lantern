@@ -15,7 +15,10 @@ public enum LoginPatternEnum {
 
     PLATFORM_WECHAT("platfrom","wechat"),
 
+    TRIPARTITE_WEIXIN_SCAN("tripartite","weixin_scan"),
+
     TRIPARTITE_APPLET("tripartite","applet");
+
 
     private String party;
 

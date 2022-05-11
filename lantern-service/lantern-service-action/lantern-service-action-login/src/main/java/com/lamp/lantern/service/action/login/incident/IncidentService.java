@@ -1,9 +1,13 @@
 package com.lamp.lantern.service.action.login.incident;
 
 
+import com.lamp.lantern.service.action.login.security.HttpSessionService;
 import com.lamp.lantern.service.action.login.security.JwtTokenService;
 import com.lamp.lantern.service.action.login.security.LoginErrorCountService;
 import com.lamp.lantern.service.action.login.security.RedisService;
+import com.lamp.lantern.service.action.login.utils.ResultObjectEnums;
+import com.lamp.lantern.service.core.entity.LoginRecordEntity;
+import com.lamp.lantern.service.core.entity.enums.LoginPatternEnum;
 import com.lamp.lantern.service.core.service.LoginRecordEntityService;
 import org.springframework.stereotype.Component;
 import org.apache.dubbo.config.annotation.Reference;
@@ -33,11 +37,16 @@ public class IncidentService {
     @Reference
     private LoginErrorCountService loginErrorCountService;
 
+    @Reference
+    private HttpSessionService httpSessionService;
+
+
     public LoginIncident createLoginIncident(){
         LoginIncidentBuilder builder = LoginIncident.builder();
         builder.redisService(redisService);
         builder.jwtTokenService(jwtTokenService);
         builder.userInfoEntityService(userInfoEntityService);
+        builder.httpSessionService(httpSessionService);
         builder.loginErrorCountService(loginErrorCountService);
         builder.loginRecordEntityService(loginRecordEntityService);
         return builder.build();
@@ -47,6 +56,7 @@ public class IncidentService {
         LoginIncidentBuilder builder = LoginIncident.builder();
         builder.redisService(redisService);
         builder.jwtTokenService(jwtTokenService);
+        builder.httpSessionService(httpSessionService);
         builder.userInfoEntityService(userInfoEntityService);
         builder.loginErrorCountService(loginErrorCountService);
         builder.loginRecordEntityService(loginRecordEntityService);
@@ -55,17 +65,29 @@ public class IncidentService {
 
     public TriPartiteIncident createTriPartiteIncident(){
         TriPartiteIncidentBuilder builder = TriPartiteIncident.builder();
+        builder.redisService(redisService);
+        builder.userInfoEntityService(userInfoEntityService);
+        builder.httpSessionService(httpSessionService);
+        builder.resultObjectEnums(ResultObjectEnums.SUCCESS);
+        builder.loginRecordEntityService(loginRecordEntityService);
+        builder.loginPatternEnum(LoginPatternEnum.TRIPARTITE_WEIXIN_SCAN);
+        builder.loginRecordEntity(new LoginRecordEntity());
 
         return builder.build();
     }
 
     public TriPartiteIncidentBuilder createTriPartiteIncidentBuilder(){
         TriPartiteIncidentBuilder builder = TriPartiteIncident.builder();
+        builder.redisService(redisService);
+        builder.userInfoEntityService(userInfoEntityService);
+        builder.httpSessionService(httpSessionService);
+        builder.resultObjectEnums(ResultObjectEnums.SUCCESS);
+        builder.loginRecordEntityService(loginRecordEntityService);
+        builder.loginPatternEnum(LoginPatternEnum.TRIPARTITE_WEIXIN_SCAN);
+        builder.loginRecordEntity(new LoginRecordEntity());
 
-        // 根据功能设置属性
         return builder;
     }
-
 
 
 }

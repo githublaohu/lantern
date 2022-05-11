@@ -10,7 +10,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>lantern-service-action-login</artifactId>
+    <artifactId>lantern-service-action-user</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -141,6 +141,18 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.14</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>cn.lampup</groupId>
+            <artifactId>lantern-service-action-login</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>cn.lampup</groupId>
+            <artifactId>lantern-service-action-login</artifactId>
+            <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
 

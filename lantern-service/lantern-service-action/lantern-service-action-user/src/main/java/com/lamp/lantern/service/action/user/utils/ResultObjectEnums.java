@@ -1,4 +1,4 @@
-package com.lamp.lantern.service.action.login.utils;
+package com.lamp.lantern.service.action.user.utils;
 
 import com.lamp.decoration.core.result.ResultObject;
 
@@ -41,6 +41,14 @@ public enum ResultObjectEnums {
     WECHAT_SCAN_LOGIN_ERROR(516, "wechat scan login error"),
 
     PASSWORD_ERROR(600, "password is wrong"),
+
+    CHANGE_PASSWORD_SAME_AS_OLD(601, "change password is same as old password"),
+
+    CHANGE_NICKNAME_SAME_AS_OLD(602, "change nickname is same as old password"),
+
+    UNKONWN_ERROR(700, "have encounter unknown error"),
+
+
 
 
 

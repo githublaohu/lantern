@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.util.Objects;
 
 
 @Slf4j
@@ -36,14 +38,12 @@ public class PartyLoginController {
         LoginIncident incident = builder.build();
         incident.verifyCodeLogin();
 
-
-
         return "jaycase";
     }
 
     @PostMapping("accountLoginByUserName")
     @ApiOperation(value = "账户密码登录")
-    public ResultObjectEnums accountLoginByUserName(UserInfoEntity userInfoEntity, HttpServletResponse response, HttpServletRequest request){
+    public ResultObjectEnums accountLoginByUserName(UserInfoEntity userInfoEntity, HttpServletResponse response, HttpServletRequest request, HttpSession session){
 
         LoginIncident.LoginIncidentBuilder builder = incidentService.createLoginIncidentBuilder();
         builder.userInfoEntity(userInfoEntity);
@@ -53,12 +53,13 @@ public class PartyLoginController {
         LoginIncident incident = builder.build();
         incident.partyLoginByUserName();
 
+
         return incident.getResultObjectEnums();
     }
 
     @PostMapping("accountLoginByPhone")
     @ApiOperation(value = "手机号密码登录")
-    public ResultObjectEnums accountLoginPhone(UserInfoEntity userInfoEntity, HttpServletResponse response, HttpServletRequest request){
+    public ResultObjectEnums accountLoginPhone(UserInfoEntity userInfoEntity, HttpServletResponse response, HttpServletRequest request, HttpSession session){
 
         LoginIncident.LoginIncidentBuilder builder = incidentService.createLoginIncidentBuilder();
         builder.userInfoEntity(userInfoEntity);
@@ -73,7 +74,7 @@ public class PartyLoginController {
 
     @PostMapping("accountLoginByEmail")
     @ApiOperation(value = "邮箱账户密码登录")
-    public ResultObjectEnums accountLoginByEmail(UserInfoEntity userInfoEntity, HttpServletResponse response, HttpServletRequest request){
+    public ResultObjectEnums accountLoginByEmail(UserInfoEntity userInfoEntity, HttpServletResponse response, HttpServletRequest request, HttpSession session){
 
         LoginIncident.LoginIncidentBuilder builder = incidentService.createLoginIncidentBuilder();
         builder.userInfoEntity(userInfoEntity);
@@ -88,7 +89,7 @@ public class PartyLoginController {
 
     @PostMapping("verifycodeLogin")
     @ApiOperation(value = "手机验证码登录")
-    public ResultObjectEnums verifycodeLogin(UserInfoEntity userInfoEntity, String verifyCode , HttpServletResponse response, HttpServletRequest request){
+    public ResultObjectEnums verifycodeLogin(UserInfoEntity userInfoEntity, String verifyCode , HttpServletResponse response, HttpServletRequest request, HttpSession session){
 
         LoginIncident.LoginIncidentBuilder builder = incidentService.createLoginIncidentBuilder();
         builder.userInfoEntity(userInfoEntity);
@@ -105,7 +106,7 @@ public class PartyLoginController {
 
     @PostMapping("sendVerifyCode")
     @ApiOperation(value = "发送手机验证码")
-    public ResultObjectEnums sendVerifyCode(UserInfoEntity userInfoEntity, HttpServletResponse response, HttpServletRequest request){
+    public ResultObjectEnums sendVerifyCode(UserInfoEntity userInfoEntity, HttpServletResponse response, HttpServletRequest request, HttpSession session){
         LoginIncident.LoginIncidentBuilder builder = incidentService.createLoginIncidentBuilder();
         builder.userInfoEntity(userInfoEntity);
         builder.request(request);
@@ -121,7 +122,7 @@ public class PartyLoginController {
 
     @PostMapping("tokenUserLogin")
     @ApiOperation(value = "用户令牌登录")
-    public ResultObjectEnums tokenUserLogin(UserInfoEntity userInfoEntity, HttpServletResponse response, HttpServletRequest request){
+    public ResultObjectEnums tokenUserLogin(UserInfoEntity userInfoEntity, HttpServletResponse response, HttpServletRequest request, HttpSession session){
         LoginIncident.LoginIncidentBuilder builder = incidentService.createLoginIncidentBuilder();
         builder.userInfoEntity(userInfoEntity);
         builder.request(request);
@@ -155,7 +156,7 @@ public class PartyLoginController {
 
     @PostMapping("userLoginErrorIncrease")
     @ApiOperation(value = "用户登录次数错误增加")
-    public ResultObjectEnums userLoginErrorIncrease(UserInfoEntity userInfoEntity, HttpServletResponse response, HttpServletRequest request){
+    public ResultObjectEnums userLoginErrorIncrease(UserInfoEntity userInfoEntity, HttpServletResponse response, HttpServletRequest request, HttpSession session){
         LoginIncident.LoginIncidentBuilder builder = incidentService.createLoginIncidentBuilder();
         builder.userInfoEntity(userInfoEntity);
         builder.request(request);
@@ -171,7 +172,7 @@ public class PartyLoginController {
 
     @PostMapping("testInsertLoginRecord")
     @ApiOperation(value = "测试插入登录日志")
-    public ResultObjectEnums testInsertLoginRecord(LoginRecordEntity loginRecordEntity, HttpServletResponse response, HttpServletRequest request){
+    public ResultObjectEnums testInsertLoginRecord(LoginRecordEntity loginRecordEntity, HttpServletResponse response, HttpServletRequest request, HttpSession session){
         LoginIncident.LoginIncidentBuilder builder = incidentService.createLoginIncidentBuilder();
         builder.loginRecordEntity(loginRecordEntity);
         builder.request(request);

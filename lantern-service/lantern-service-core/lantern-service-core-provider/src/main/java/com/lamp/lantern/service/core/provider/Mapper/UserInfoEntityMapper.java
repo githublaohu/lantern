@@ -85,4 +85,13 @@ public interface UserInfoEntityMapper {
         "ui_idcard = #{uiIdcard}"
     })
     public UserInfoEntity checkUserExistByIdcard(UserInfoEntity userInfoEntity);
+
+    @ResultMap("userMap")
+    @Update({UPDATE_SQL,
+            "ui_name = #{uiName}, ui_idcard = #{uiIdcard}, ui_phone = #{uiPhone}, " +
+                    "ui_email = #{uiEmail}, ui_head_portrait = #{uiHeadPortrait}, ui_lack_flag = #{uiLackFlag}, ui_sex = #{uISex}, " +
+                    "ui_age = #{uiAge}, ui_birth = #{uiBirth}, ui_login_address = #{uiLoginAddress}, ui_login_time = #{uiLoginTime}, " +
+                    "ui_exit_time = #{uiExitTime}, ui_first_login = #{uiFirstLogin}, tri_id = #{triId}, ui_status = #{uiStatus}, allow_login = #{allowLogin} where ui_id = #{ui_id}"
+    })
+    public Integer updateUserAllField(UserInfoEntity userInfoEntity);
 }
