@@ -1,5 +1,7 @@
 package com.lamp.lantern.service.core.entity.enums;
 
+import lombok.Getter;
+
 public enum SystemEnum {
     MACOS("MACOS"),
     WINDOWS("WINDOWS"),
@@ -9,6 +11,7 @@ public enum SystemEnum {
     HARMONY("HARMONY"),
     OTHER("OTHER");
 
+	@Getter
     private String system;
 
     private SystemEnum(String system){

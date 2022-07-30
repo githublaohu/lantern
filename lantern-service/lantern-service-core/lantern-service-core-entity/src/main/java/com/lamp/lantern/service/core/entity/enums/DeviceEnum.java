@@ -1,5 +1,7 @@
 package com.lamp.lantern.service.core.entity.enums;
 
+import lombok.Getter;
+
 public enum DeviceEnum {
 
     APPLE("APPLE"),
@@ -13,6 +15,7 @@ public enum DeviceEnum {
     ALLENWARE("ALLENWARE"),
     OTHER("OTHER");
 
+	@Getter
     private String device;
 
     private DeviceEnum(String device){

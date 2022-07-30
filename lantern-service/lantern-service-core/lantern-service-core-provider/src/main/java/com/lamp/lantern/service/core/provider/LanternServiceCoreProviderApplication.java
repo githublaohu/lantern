@@ -1,11 +1,11 @@
 package com.lamp.lantern.service.core.provider;
 
 
-import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.annotations.Mapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 各表查询所有数据接口

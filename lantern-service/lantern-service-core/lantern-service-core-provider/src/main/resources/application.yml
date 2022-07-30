@@ -1,14 +1,25 @@
 spring:
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    password: jay1363600
-    url: "jdbc:mysql://localhost:3306/lantern_v2"
+    name: vaast
+    url: jdbc:mysql://localhost:3306/lantern_v2?useSSL=false&useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&zeroDateTimeBehavior=convertToNull&allowPublicKeyRetrieval=true
     username: root
-
-server:
-  port: 8080
-
-
+    password: jay1363600
+    # using druid data source
+    type: com.alibaba.druid.pool.DruidDataSource
+    maxActive: 20
+    initialSize: 1
+    maxWait: 60000
+    minIdle: 1
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: select 'x'
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    maxOpenPreparedStatements: 20
+    # encrypt password
+    filters: config,stat,slf4j
 
 dubbo:
   scan:
@@ -30,3 +41,15 @@ dubbo:
       namespace: lamp-lantern-dev
     register: true
     subscribe: true
+
+mybatis:
+  checkConfig-location : false
+  configuration:
+    useGeneratedKeys: true
+    mapUnderscoreToCamelCase: true
+
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql

@@ -1,30 +1,21 @@
 package com.lamp.lantern.service.action.login.controller;
 
 
-import com.google.gson.Gson;
-import com.lamp.lantern.service.action.login.function.ConstantWxUtils;
-import com.lamp.lantern.service.action.login.incident.IncidentService;
-import com.lamp.lantern.service.action.login.security.Decript;
-import com.lamp.lantern.service.action.login.utils.HttpClientUtils;
-import com.lamp.lantern.service.action.login.utils.JsonData;
-import com.lamp.lantern.service.action.login.utils.ResultObjectEnums;
-import com.lamp.lantern.service.core.entity.UserInfoEntity;
-import com.lamp.lantern.service.core.service.UserInfoEntityService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.lamp.lantern.service.action.login.function.ConstantWxUtils;
+import com.lamp.lantern.service.action.login.incident.IncidentService;
+import com.lamp.lantern.service.action.login.security.Decript;
+
+import io.swagger.annotations.Api;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequestMapping("/api/ucenter/wx")

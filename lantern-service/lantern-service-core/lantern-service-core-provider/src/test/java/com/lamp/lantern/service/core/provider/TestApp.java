@@ -1,8 +1,8 @@
 package com.lamp.lantern.service.core.provider;
 
-import com.lamp.lantern.service.core.entity.UserInfoEntity;
-import com.lamp.lantern.service.core.provider.Mapper.UserInfoEntityMapper;
 import org.apache.ibatis.annotations.Select;
+
+import com.lamp.lantern.service.core.entity.UserInfoEntity;
 
 public class TestApp {
 
@@ -13,7 +13,7 @@ public class TestApp {
     static String SELECT_SQL = "select * from " + TABLE_SQL + " where ";
 
 
-    private interface TestQuery{
+    public interface TestQuery{
 
         @Select("select * from user_info where ui_name = #{uiName}")
         UserInfoEntity queryUserByUserName(UserInfoEntity userInfoEntity);

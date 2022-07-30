@@ -1,28 +1,23 @@
 package com.lamp.lantern.service.core.entity;
 
-import com.lamp.lantern.service.core.entity.enums.GenderEnum;
-import com.lamp.lantern.service.core.entity.enums.BooleanEnum;
-import com.lamp.lantern.service.core.entity.enums.StatusEnum;
-
-
 import java.io.Serializable;
 import java.util.Date;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.AllArgsConstructor;
+import com.lamp.lantern.service.core.entity.enums.BooleanEnum;
+import com.lamp.lantern.service.core.entity.enums.GenderEnum;
+import com.lamp.lantern.service.core.entity.enums.StatusEnum;
+
 import io.swagger.annotations.ApiModel;
-import org.springframework.format.annotation.DateTimeFormat;
+import lombok.Data;
 
 @Data
-@EqualsAndHashCode
-@AllArgsConstructor
 @ApiModel(value = "UserInfoEntity", description = "用户信息实体")
 public class UserInfoEntity implements Serializable {
 
-    public UserInfoEntity(){
-
-    }
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -1081806036041678567L;
 
     /**
      * 用户唯一Id
@@ -78,7 +73,6 @@ public class UserInfoEntity implements Serializable {
      * 用户生日
      */
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date uiBirth;
 
     /**
@@ -114,13 +108,11 @@ public class UserInfoEntity implements Serializable {
     /**
      * 用户最近登录时间
      */
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     private Date uiLoginTime;
 
     /**
      * 用户最近退出时间
      */
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     private Date uiExitTime;
 
     /**

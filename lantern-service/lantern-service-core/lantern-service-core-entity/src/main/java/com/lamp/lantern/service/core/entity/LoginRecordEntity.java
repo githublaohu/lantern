@@ -4,27 +4,32 @@ package com.lamp.lantern.service.core.entity;
 import java.io.Serializable;
 import java.util.Date;
 
-import com.lamp.lantern.service.core.entity.enums.*;
+
+import com.lamp.lantern.service.core.entity.enums.DeviceEnum;
+import com.lamp.lantern.service.core.entity.enums.ExitWayEnum;
+import com.lamp.lantern.service.core.entity.enums.LoginPatternEnum;
+import com.lamp.lantern.service.core.entity.enums.LoginStatusEnum;
+import com.lamp.lantern.service.core.entity.enums.SystemEnum;
+import com.lamp.lantern.service.core.entity.enums.TerminalEnum;
+
+import io.swagger.annotations.ApiModel;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.AllArgsConstructor;
-import io.swagger.annotations.ApiModel;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.stereotype.Component;
 
 
 @Data
-@Component
 @EqualsAndHashCode
 @AllArgsConstructor
 @ApiModel(value = "UserInfoEntity", description = "用户信息实体")
 public class LoginRecordEntity implements Serializable {
 
-    public LoginRecordEntity(){
-
-    }
-
     /**
+	 * 
+	 */
+	private static final long serialVersionUID = -4829945099660497187L;
+
+	/**
      * 登录记录唯一Id
      */
     private long ulId;
@@ -37,13 +42,11 @@ public class LoginRecordEntity implements Serializable {
     /**
      * 用户登录时间
      */
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     private Date ulLoginTime;
 
     /**
      * 用户退出方式
      */
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     private Date ulExitTime;
 
     /**

@@ -1,25 +1,28 @@
 package com.lamp.lantern.service.action.login.incident;
 
-import com.lamp.lantern.service.core.entity.enums.LoginPatternEnum;
-import com.lamp.lantern.service.action.login.security.JwtTokenService;
-import com.lamp.lantern.service.action.login.security.LoginErrorCountService;
-import com.lamp.lantern.service.action.login.utils.ParseHttpRequest;
-import com.lamp.lantern.service.core.entity.LoginRecordEntity;
-import com.lamp.lantern.service.core.entity.enums.StatusEnum;
-import com.lamp.lantern.service.core.service.LoginRecordEntityService;
-import org.apache.commons.lang3.StringUtils;
-import com.lamp.lantern.service.action.login.security.RedisService;
-import com.lamp.lantern.service.action.login.utils.GenerateRandomVerifyCode;
-import com.lamp.lantern.service.action.login.utils.ResultObjectEnums;
-import com.lamp.lantern.service.core.entity.UserInfoEntity;
-import com.lamp.lantern.service.core.service.UserInfoEntityService;
-import lombok.Builder;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.codec.digest.DigestUtils;
+import java.util.Objects;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Objects;
+
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.StringUtils;
+
+import com.lamp.lantern.service.action.login.security.JwtTokenService;
+import com.lamp.lantern.service.action.login.security.LoginErrorCountService;
+import com.lamp.lantern.service.action.login.security.RedisService;
+import com.lamp.lantern.service.action.login.utils.GenerateRandomVerifyCode;
+import com.lamp.lantern.service.action.login.utils.ParseHttpRequest;
+import com.lamp.lantern.service.action.login.utils.ResultObjectEnums;
+import com.lamp.lantern.service.core.entity.LoginRecordEntity;
+import com.lamp.lantern.service.core.entity.UserInfoEntity;
+import com.lamp.lantern.service.core.entity.enums.LoginPatternEnum;
+import com.lamp.lantern.service.core.entity.enums.StatusEnum;
+import com.lamp.lantern.service.core.service.LoginRecordService;
+import com.lamp.lantern.service.core.service.UserInfoService;
+
+import lombok.Builder;
+import lombok.extern.slf4j.Slf4j;
 
 /*
 * 基本一方登录已经完成 接口基本自测完毕 2022/04/24
@@ -31,9 +34,9 @@ import java.util.Objects;
 @Builder
 public class LoginIncident {
 
-    private UserInfoEntityService userInfoEntityService;
+    private UserInfoService userInfoService;
 
-    private LoginRecordEntityService loginRecordEntityService;
+    private LoginRecordService loginRecordService;
 
     private RedisService redisService;
 
@@ -58,89 +61,38 @@ public class LoginIncident {
     }
 
     public void partyLoginByUserName(){
-        UserInfoEntity queryUserInfoEntity = userInfoEntityService.checkUserExistByUserName(userInfoEntity);
-        if(queryUserInfoEntity == null){
-            resultObjectEnums = ResultObjectEnums.USERNAME_ERROR;
-            return;
-        }
-        String uiSalt = queryUserInfoEntity.getUiSalt();
-        String uiSaltPassword = DigestUtils.md5Hex(uiSalt + userInfoEntity.getUiPassword());
-        if(Objects.equals(queryUserInfoEntity.getUiSaltPassword(), uiSaltPassword)){
-            resultObjectEnums = ResultObjectEnums.SUCCESS;
-            userInfoEntity = queryUserInfoEntity;
-        }else{
-            resultObjectEnums = ResultObjectEnums.PASSWORD_ERROR;
-            increaseUserLoginError();
-        }
+        UserInfoEntity queryUserInfoEntity = userInfoService.checkUserExistByUserName(userInfoEntity);
+        this.partyLonin(queryUserInfoEntity);
     }
-
+    
     public void partyLoginByPhone(){
-
-        UserInfoEntity queryUserInfoEntity = userInfoEntityService.checkUserExistByPhone(userInfoEntity);
-        if(queryUserInfoEntity == null){
-            resultObjectEnums = ResultObjectEnums.PHONE_ERROR;
-            return;
-        }
-        String uiSalt = queryUserInfoEntity.getUiSalt();
-        String uiSaltPassword = DigestUtils.md5Hex(uiSalt + userInfoEntity.getUiPassword());
-        if(Objects.equals(queryUserInfoEntity.getUiSaltPassword(), uiSaltPassword)){
-            resultObjectEnums = ResultObjectEnums.SUCCESS;
-            userInfoEntity = queryUserInfoEntity;
-        }else{
-            resultObjectEnums = ResultObjectEnums.PASSWORD_ERROR;
-            increaseUserLoginError();
-        }
-
-    }
+        UserInfoEntity queryUserInfoEntity = userInfoService.checkUserExistByPhone(userInfoEntity);
+        this.partyLonin(queryUserInfoEntity);
+   }
 
     public void partyLoginByEmail(){
-        UserInfoEntity queryUserInfoEntity = userInfoEntityService.checkUserExistByEmail(userInfoEntity);
-        if(queryUserInfoEntity == null){
-            resultObjectEnums = ResultObjectEnums.EMAIL_ERROR;
-            return;
-        }
-        String uiSalt = queryUserInfoEntity.getUiSalt();
-        String uiSaltPassword = DigestUtils.md5Hex(uiSalt + userInfoEntity.getUiPassword());
-        if(Objects.equals(queryUserInfoEntity.getUiSaltPassword(), uiSaltPassword)){
-            resultObjectEnums = ResultObjectEnums.SUCCESS;
-            userInfoEntity = queryUserInfoEntity;
-        }else{
-            resultObjectEnums = ResultObjectEnums.PASSWORD_ERROR;
-            increaseUserLoginError();
-        }
+        UserInfoEntity queryUserInfoEntity = userInfoService.checkUserExistByEmail(userInfoEntity);
+        this.partyLonin(queryUserInfoEntity);
     }
-
-    public void checkUserNameExist(){
-        UserInfoEntity userInfoEntity = userInfoEntityService.checkUserExistByUserName(this.userInfoEntity);
-
-        if(userInfoEntity == null){
-            resultObjectEnums = ResultObjectEnums.USERNAME_ERROR;
-        }
-    }
-
-    public void checkEmailExist(){
-        UserInfoEntity userInfoEntity = userInfoEntityService.checkUserExistByEmail(this.userInfoEntity);
-
-        if(userInfoEntity == null){
-            resultObjectEnums = ResultObjectEnums.EMAIL_ERROR;
-        }
-    }
-
-    public void checkPhoneExist(){
-        UserInfoEntity userInfoEntity = userInfoEntityService.checkUserExistByPhone(this.userInfoEntity);
-
-        if(userInfoEntity == null){
-            resultObjectEnums = ResultObjectEnums.PHONE_ERROR;
-        }
+    
+    private void partyLonin(UserInfoEntity queryUserInfoEntity) {
+    	 if(queryUserInfoEntity == null){
+             resultObjectEnums = ResultObjectEnums.USERNAME_ERROR;
+             return;
+         }
+         String uiSalt = queryUserInfoEntity.getUiSalt();
+         String uiSaltPassword = DigestUtils.md5Hex(uiSalt + userInfoEntity.getUiPassword());
+         if(Objects.equals(queryUserInfoEntity.getUiSaltPassword(), uiSaltPassword)){
+             resultObjectEnums = ResultObjectEnums.SUCCESS;
+             userInfoEntity = queryUserInfoEntity;
+         }else{
+             resultObjectEnums = ResultObjectEnums.PASSWORD_ERROR;
+             increaseUserLoginError();
+         }
     }
 
     public void verifyCodeLogin(){
-
         verifyCodeCheck();
-
-
-
-
     }
 
     public void verifyCodeCheck(){
@@ -157,17 +109,15 @@ public class LoginIncident {
             resultObjectEnums = ResultObjectEnums.VERIFY_CODE_WRONG;
         }else{
             resultObjectEnums = ResultObjectEnums.SUCCESS;
-            userInfoEntity = userInfoEntityService.checkUserExistByPhone(userInfoEntity);
+            userInfoEntity = userInfoService.checkUserExistByPhone(userInfoEntity);
         }
 
     }
 
     public void generateVerifyCode(){
-
         if(!Objects.equals(resultObjectEnums, ResultObjectEnums.SUCCESS)){
             return;
         }
-
         String cachedVerifyCode = GenerateRandomVerifyCode.generateVerifyCode(6);
         redisService.set(userInfoEntity.getUiPhone(), cachedVerifyCode);
         redisService.expire(userInfoEntity.getUiPhone(), 300);
@@ -178,7 +128,7 @@ public class LoginIncident {
     public void partyLoginByToken(){
         long user_id = jwtTokenService.verifyToken(userInfoEntity.getUiToken());
         userInfoEntity.setUiId(user_id);
-        UserInfoEntity queryUserInfoEntity = userInfoEntityService.checkUserByUserId(this.userInfoEntity);
+        UserInfoEntity queryUserInfoEntity = userInfoService.checkUserByUserId(this.userInfoEntity);
 
         if(queryUserInfoEntity == null){
             resultObjectEnums = ResultObjectEnums.TOKEN_ERROR;
@@ -214,9 +164,9 @@ public class LoginIncident {
     }
 
     public void blockUserToBlackList(){
-        UserInfoEntity queryUserInfoEntity = userInfoEntityService.checkUserByUserIdOrPhoneOrEmail(this.userInfoEntity);
+        UserInfoEntity queryUserInfoEntity = userInfoService.checkUserByUserIdOrPhoneOrEmail(this.userInfoEntity);
         queryUserInfoEntity.setAllowLogin(StatusEnum.INACTIVE);
-        userInfoEntityService.updateUserAllowLoginField(queryUserInfoEntity);
+        userInfoService.updateUserAllowLoginField(queryUserInfoEntity);
     }
 
     public void loginTimesCheck(){
@@ -234,12 +184,12 @@ public class LoginIncident {
 
     public void increaseUserLoginError(){
         System.out.println(userInfoEntity);
-        UserInfoEntity queryUserInfoEntity = userInfoEntityService.checkUserByUserIdOrPhoneOrEmail(this.userInfoEntity);
+        UserInfoEntity queryUserInfoEntity = userInfoService.checkUserByUserIdOrPhoneOrEmail(this.userInfoEntity);
         loginErrorCountService.insertUserLoginError(queryUserInfoEntity);
     }
 
     public void countLoginErrorTimes(){
-        UserInfoEntity queryUserInfoEntity = userInfoEntityService.checkUserByUserIdOrPhoneOrEmail(this.userInfoEntity);
+        UserInfoEntity queryUserInfoEntity = userInfoService.checkUserByUserIdOrPhoneOrEmail(this.userInfoEntity);
         int i = loginErrorCountService.countUserLoginError(queryUserInfoEntity);
         System.out.println(i);
 
@@ -255,8 +205,7 @@ public class LoginIncident {
         loginRecordEntity.setUlLoginDeviceModel(ParseHttpRequest.getDeviceModel(request));
         loginRecordEntity.setUlLoginSystem(ParseHttpRequest.getLoginSystem(request));
         loginRecordEntity.setUlLoginWay(loginPatternEnum);
-
-        loginRecordEntityService.insertLoginRecord(loginRecordEntity);
+        loginRecordService.insertLoginRecord(loginRecordEntity);
     }
 
     public void sureUserNameNotRegister(){
@@ -265,7 +214,7 @@ public class LoginIncident {
             return;
         }
 
-        UserInfoEntity queryUserInfoEntity = userInfoEntityService.checkUserExistByUserName(this.userInfoEntity);
+        UserInfoEntity queryUserInfoEntity = userInfoService.checkUserExistByUserName(this.userInfoEntity);
         if(!Objects.equals(queryUserInfoEntity, null)){
             resultObjectEnums = ResultObjectEnums.USERNAME_HAVE_BEEN_REGISTER;
         }
@@ -278,7 +227,7 @@ public class LoginIncident {
             return;
         }
 
-        UserInfoEntity queryUserInfoEntity = userInfoEntityService.checkUserExistByPhone(this.userInfoEntity);
+        UserInfoEntity queryUserInfoEntity = userInfoService.checkUserExistByPhone(this.userInfoEntity);
         if(!Objects.equals(queryUserInfoEntity, null)){
             resultObjectEnums = ResultObjectEnums.PHONE_HAVE_BEEN_REGISTER;
         }
@@ -290,7 +239,7 @@ public class LoginIncident {
             return;
         }
 
-        UserInfoEntity queryUserInfoEntity = userInfoEntityService.checkUserExistByEmail(this.userInfoEntity);
+        UserInfoEntity queryUserInfoEntity = userInfoService.checkUserExistByEmail(this.userInfoEntity);
         if(!Objects.equals(queryUserInfoEntity, null)){
             resultObjectEnums = ResultObjectEnums.EMAIL_HAVE_BEEN_REGISTER;
         }
@@ -308,7 +257,7 @@ public class LoginIncident {
             UserInfoEntity tempUserInfoEntity = new UserInfoEntity();
             tempUserInfoEntity.setUiName(random_username);
 
-            while(!Objects.equals(userInfoEntityService.queryUserByUserName(tempUserInfoEntity), null)){
+            while(!Objects.equals(userInfoService.queryUserByUserName(tempUserInfoEntity), null)){
                 random_username = GenerateRandomVerifyCode.generateRandomPlaceholder(14);
                 tempUserInfoEntity.setUiName(random_username);
             }
@@ -328,7 +277,7 @@ public class LoginIncident {
             UserInfoEntity tempUserInfoEntity = new UserInfoEntity();
             tempUserInfoEntity.setUiPhone(random_phone);
 
-            while(!Objects.equals(userInfoEntityService.checkUserExistByPhone(tempUserInfoEntity), null)){
+            while(!Objects.equals(userInfoService.checkUserExistByPhone(tempUserInfoEntity), null)){
                 random_phone = GenerateRandomVerifyCode.generateRandomPlaceholder(15);
                 tempUserInfoEntity.setUiPhone(random_phone);
             }
@@ -348,7 +297,7 @@ public class LoginIncident {
             UserInfoEntity tempUserInfoEntity = new UserInfoEntity();
             tempUserInfoEntity.setUiEmail(random_email);
 
-            while(!Objects.equals(userInfoEntityService.checkUserExistByEmail(tempUserInfoEntity), null)){
+            while(!Objects.equals(userInfoService.checkUserExistByEmail(tempUserInfoEntity), null)){
                 random_email = GenerateRandomVerifyCode.generateRandomPlaceholder(16);
                 tempUserInfoEntity.setUiEmail(random_email);
             }
@@ -368,7 +317,7 @@ public class LoginIncident {
             UserInfoEntity tempUserInfoEntity = new UserInfoEntity();
             tempUserInfoEntity.setUiIdcard(random_id_card);
 
-            while(!Objects.equals(userInfoEntityService.checkUserExistByIdcard(tempUserInfoEntity), null)){
+            while(!Objects.equals(userInfoService.checkUserExistByIdcard(tempUserInfoEntity), null)){
                 random_id_card = GenerateRandomVerifyCode.generateRandomPlaceholder(19);
                 tempUserInfoEntity.setUiIdcard(random_id_card);
             }
@@ -383,7 +332,7 @@ public class LoginIncident {
             return;
         }
 
-        userInfoEntityService.registerUserInfoEntity(userInfoEntity);
+        userInfoService.registerUserInfoEntity(userInfoEntity);
 
 
     }
@@ -487,7 +436,7 @@ public class LoginIncident {
 
     public void testInsertLoginRecord(){
         // 插入日志数据库没报错 但是还是存在一个问题：无法返回主key
-        Integer integer = loginRecordEntityService.insertLoginRecord(loginRecordEntity);
+        Integer integer = loginRecordService.insertLoginRecord(loginRecordEntity);
         System.out.println("pri key " + loginRecordEntity.getUlId());
         System.out.println(integer);
 
