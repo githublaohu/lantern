@@ -3,7 +3,7 @@ spring:
     name: vaast
     url: jdbc:mysql://localhost:3306/lantern_v2?useSSL=false&useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&zeroDateTimeBehavior=convertToNull&allowPublicKeyRetrieval=true
     username: root
-    password: jay1363600
+    password: root
     # using druid data source
     type: com.alibaba.druid.pool.DruidDataSource
     maxActive: 20
