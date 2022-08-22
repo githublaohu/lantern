@@ -10,7 +10,7 @@ public class LocalCacheOperation implements CacheOperation{
 	private Map<String/** 资源类型 **/ , Map<String/*资源id*/, Map<String,Object>>>  rouseceMap = new ConcurrentHashMap<>();
 	
 	
-	public void addUserInfo(String key , T userInfo) {
+	public void addUserInfo(String key , Object userInfo) {
 		userMap.put(key, userInfo);
 	}
 	

@@ -39,7 +39,6 @@
 				<artifactId>lantern-service-core-common</artifactId>
 				<version>${project.version}</version>
 			</dependency>
-
 			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>lantern-service-core-entity</artifactId>

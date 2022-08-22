@@ -67,13 +67,12 @@ public class SecondAuthOperate extends AbstractFirstAuthOperate {
       ServletResponse Response = null;
       request.getRequestDispatcher("path").forward(request, Response);
       String s = "";
-
-
     }
     //
     if(request.isRequestedSessionIdValid()){
       return null;
     }
+
 
     return token;
   }

@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.lamp.lantern.plugins.core.token.TokenConstructData;
 import com.lamp.lantern.plugins.core.token.TokenService;
 
 import io.jsonwebtoken.*;
@@ -14,7 +15,7 @@ public class JwtTokenServiceImpl implements TokenService{
 
     static final String SECRET = "HBHGQCXZCSGDSB";
 	
-    @Override
+
     public String createToken(String user_name, long id) {
         Map<String, Object> header = new HashMap<>();
 
@@ -28,6 +29,11 @@ public class JwtTokenServiceImpl implements TokenService{
                 .setIssuedAt(new Date())
                 .signWith(SignatureAlgorithm.HS256, SECRET);
         return jwtBuilder.compact();
+    }
+
+    @Override
+    public String createToken(TokenConstructData tockenConstructData) {
+        return "";
     }
 
     @Override
