@@ -1,4 +1,4 @@
-package com.lamp.lantern.service.action.login.after;
+package com.lamp.lantern.service.action.login.handler;
 
 import com.lamp.lantern.service.action.login.auth.AuthOperate;
 import com.lamp.lantern.service.core.entity.UserInfoEntity;
@@ -7,7 +7,7 @@ import org.springframework.core.annotation.Order;
 import java.util.Objects;
 
 @Order
-public class GetherUserInfoAuthAfter implements  AuthAfter{
+public class GetherUserInfoAuthAfter implements AuthHandler {
 
 
 
