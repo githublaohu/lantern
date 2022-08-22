@@ -5,6 +5,13 @@ import java.util.Set;
 import lombok.Data;
 
 
+/**
+ * 1. 得到用户数据
+ * 2. 得到权限数据
+ * 3. 
+ * @author laohu
+ *
+ */
 @Data
 public class AuthenticationConfig {
 

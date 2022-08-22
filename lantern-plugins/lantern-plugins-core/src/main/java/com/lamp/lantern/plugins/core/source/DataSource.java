@@ -8,5 +8,5 @@ public interface DataSource {
 	
 	public <T> T getData(RelationStruct relationStruct);
 	
-	public <T> T getUserRealationData(String key, );
+	public <T> T getUserRealationData(String key );
 }
