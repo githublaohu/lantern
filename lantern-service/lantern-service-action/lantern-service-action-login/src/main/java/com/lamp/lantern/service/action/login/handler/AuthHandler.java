@@ -6,6 +6,16 @@ import com.lamp.lantern.service.core.entity.UserInfoEntity;
 public interface AuthHandler {
 
   public default boolean authBefore(UserInfoEntity userInfoEntity , AuthOperate authOperate){
+    //如果token为null，直接FALSE
+    if (userInfoEntity.getUiToken() != null) {
+
+
+
+
+    } else {
+      return false;
+    }
+
     return true;
   }
 
@@ -13,7 +23,7 @@ public interface AuthHandler {
     return true;
   }
 
-  public default boolean errer(UserInfoEntity userInfoEntity , AuthOperate authOperate){
+  public default boolean error(UserInfoEntity userInfoEntity , AuthOperate authOperate){
     return true;
   }
 

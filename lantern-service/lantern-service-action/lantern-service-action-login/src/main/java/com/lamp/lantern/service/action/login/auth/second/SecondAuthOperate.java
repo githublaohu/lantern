@@ -45,6 +45,7 @@ public class SecondAuthOperate extends AbstractFirstAuthOperate {
     // 第一步获得域名
 
     String domain = request.getHeader("");
+    domain.replace("")
 
     // 找第二方呀
     SecondLoginConfig secondLoginConfig = this.secondLoginConfigMap.get(domain);
@@ -64,12 +65,14 @@ public class SecondAuthOperate extends AbstractFirstAuthOperate {
 
     if(Objects.isNull(token)){
       //重定向
+
       ServletResponse Response = null;
       request.getRequestDispatcher("path").forward(request, Response);
       String s = "";
     }
     //
     if(request.isRequestedSessionIdValid()){
+
       return null;
     }
 
