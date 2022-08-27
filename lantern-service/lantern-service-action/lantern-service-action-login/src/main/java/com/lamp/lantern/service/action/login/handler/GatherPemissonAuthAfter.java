@@ -14,7 +14,7 @@ public class GatherPemissonAuthAfter implements AuthHandler {
   @Override
   public boolean authAfter(UserInfoEntity userInfoEntity, AuthOperate authOperate) {
 
-
+    String uiToken = userInfoEntity.getUiToken();
     return false;
   }
 }
