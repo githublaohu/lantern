@@ -1,20 +1,19 @@
 package com.lamp.lantern.service.action.login.auth.second;
 
+import com.lamp.decoration.core.result.ResultObject;
 import com.lamp.lantern.service.action.login.auth.first.AbstractFirstAuthOperate;
-import com.lamp.lantern.service.action.login.utils.ResultObjectEnums;
 import com.lamp.lantern.service.core.entity.UserInfoEntity;
-import org.apache.catalina.connector.Response;
-import org.apache.commons.codec.digest.DigestUtils;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.ServletException;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.util.*;
 
@@ -25,31 +24,18 @@ public class SecondAuthOperate extends AbstractFirstAuthOperate {
 
   private Map<String,SecondLoginConfig> secondLoginConfigMap = new HashMap<>();
 
-  @Override
-  public String manyWay() {
-    return null;
-  }
-
-  @Override
-  public String manufacturer() {
-    return "lantern";
-  }
-
   /**
    * 认证用户的token
    * @return
    */
   @Override
-  public String auth() throws ServletException, IOException {
+  public ResultObject<Object> auth(UserInfoEntity userInfoEntity) throws ServletException, IOException {
     HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
     // 第一步获得域名
-
-    String domain = request.getHeader("");
-
+    String domain = request.getHeader("Host");
     // 找第二方呀
     SecondLoginConfig secondLoginConfig = this.secondLoginConfigMap.get(domain);
     if(Objects.isNull(secondLoginConfig)){
-
       return null;
     }
     String token = null;
@@ -58,23 +44,25 @@ public class SecondAuthOperate extends AbstractFirstAuthOperate {
 
     }else if (Objects.equals("cooke", secondLoginConfig.getTokenLocal())){
       Cookie[] cookies = request.getCookies();
+      for(Cookie cookie : cookies) {
+    	  if(Objects.equals(cookie.getName(), secondLoginConfig.getTokenName())) {
+    		  token = cookie.getName();
+    	  }
+      }
     }else if (Objects.equals("path",secondLoginConfig.getTokenLocal())){
       request.getRequestURI();
     }
-
     if(Objects.isNull(token)){
       //重定向
-      ServletResponse Response = null;
-      request.getRequestDispatcher("path").forward(request, Response);
-      String s = "";
-    }
-    //
-    if(request.isRequestedSessionIdValid()){
+      HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getResponse();
+      response.sendRedirect(secondLoginConfig.getSecondAddress());
       return null;
     }
-
-
-    return token;
+    // 使用ligth 调用二方接口，要求二方解决返回用户数据
+    
+    
+    
+    return null;
   }
 
 

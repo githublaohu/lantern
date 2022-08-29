@@ -35,7 +35,7 @@ public class CteateTockenAuthAfter implements AuthHandler {
 
     response.addHeader(tokenConfig.getTokenName(),token);
 
-    stringStringValueOperations.set();
+    
 
 
     return false;

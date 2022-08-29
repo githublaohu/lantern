@@ -4,15 +4,6 @@ import com.lamp.lantern.service.action.login.auth.AuthOperate;
 import com.lamp.lantern.service.core.entity.UserInfoEntity;
 
 public class AlipayThridAuthOperate implements AuthOperate {
-  @Override
-  public String manyWay() {
-    return null;
-  }
-
-  @Override
-  public String manufacturer() {
-    return null;
-  }
 
   @Override
   public String auth() {

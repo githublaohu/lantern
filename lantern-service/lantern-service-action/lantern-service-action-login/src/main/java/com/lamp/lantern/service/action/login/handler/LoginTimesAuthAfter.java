@@ -1,6 +1,7 @@
 package com.lamp.lantern.service.action.login.handler;
 
 import com.lamp.lantern.service.action.login.auth.AuthOperate;
+import com.lamp.lantern.service.action.login.handler.config.LoginTimesConfig;
 import com.lamp.lantern.service.core.entity.UserInfoEntity;
 import lombok.Data;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -19,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 
 public class LoginTimesAuthAfter extends AbstrackAuthHandler<LoginTimesConfig> implements AuthHandler {
 
-  private static final ThreadLocal<LoginTimesInfo> TIMES_LOCAL = new ThreadLocal(){
+  private static final ThreadLocal<LoginTimesInfo> TIMES_LOCAL = new ThreadLocal<LoginTimesInfo>(){
     protected LoginTimesInfo initialValue() {
       return new LoginTimesInfo();
     }
