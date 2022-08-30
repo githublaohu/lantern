@@ -8,16 +8,18 @@ import java.io.IOException;
 
 public interface AuthOperate {
 
-  /**
-   * 定义出参，入参
-   * @return
-   */
-  public ResultObject<Object> auth(UserInfoEntity userInfoEntity) throws ServletException, IOException;
+	/**
+	 * 定义出参，入参
+	 * 
+	 * @return
+	 */
+	public ResultObject<Object> auth(UserInfoEntity userInfoEntity) throws ServletException, IOException;
 
-  /**
-   * 是否需要调用手机号码，身份证
-   * @return
-   */
-  public UserInfoEntity getUserInfoEntity();
+	/**
+	 * 是否需要调用手机号码，身份证
+	 * 
+	 * @return
+	 */
+	public UserInfoEntity getUserInfoEntity();
 
 }

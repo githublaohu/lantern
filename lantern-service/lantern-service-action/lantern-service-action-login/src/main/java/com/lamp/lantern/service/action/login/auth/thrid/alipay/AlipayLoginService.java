@@ -1,9 +1,8 @@
 package com.lamp.lantern.service.action.login.auth.thrid.alipay;
-import com.lamp.lantern.service.core.entity.enums.BooleanEnum;
-import com.lamp.lantern.service.core.entity.enums.StatusEnum;
-import java.util.Date;
-import com.lamp.lantern.service.core.entity.enums.GenderEnum;
-
+import org.apache.dubbo.common.logger.Logger;
+import org.apache.dubbo.common.logger.LoggerFactory;
+import org.apache.dubbo.config.annotation.Service;
+import org.springframework.beans.factory.InitializingBean;
 
 import com.alipay.api.AlipayClient;
 import com.alipay.api.DefaultAlipayClient;
@@ -12,10 +11,6 @@ import com.alipay.api.request.AlipayUserInfoShareRequest;
 import com.alipay.api.response.AlipaySystemOauthTokenResponse;
 import com.alipay.api.response.AlipayUserInfoShareResponse;
 import com.lamp.lantern.service.core.entity.UserInfoEntity;
-import org.apache.dubbo.common.logger.Logger;
-import org.apache.dubbo.common.logger.LoggerFactory;
-import org.apache.dubbo.config.annotation.Service;
-import org.springframework.beans.factory.InitializingBean;
 
 @Service
 public class AlipayLoginService implements InitializingBean {

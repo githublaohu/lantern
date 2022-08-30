@@ -56,6 +56,10 @@ public class SecondAuthOperate extends AbstractFirstAuthOperate {
       //重定向
       HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getResponse();
       response.sendRedirect(secondLoginConfig.getSecondAddress());
+      String s = "";
+    }
+    //
+    if(request.isRequestedSessionIdValid()){
       return null;
     }
     // 使用ligth 调用二方接口，要求二方解决返回用户数据

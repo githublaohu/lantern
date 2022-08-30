@@ -5,11 +5,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.lamp.lantern.plugins.core.token.TokenConstructData;
-import com.lamp.lantern.plugins.core.token.TokenService;
+import com.lamp.lantern.plugins.core.token.TokenCreateService;
 
 import io.jsonwebtoken.*;
 
-public class JwtTokenServiceImpl implements TokenService{
+public class JwtTokenServiceImpl implements TokenCreateService{
 
     static final long EXPIRE_TIME = 1000 * 60 * 60 * 24 * 10;
 

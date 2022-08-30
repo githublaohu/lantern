@@ -8,7 +8,7 @@ public class TokenConfig {
 	/**
 	 * 
 	 */
-	private TokenMode tokenMode;
+	private TokenCreateMode tockenCreateMode;
 
 	/**
 	 * 有效时间
