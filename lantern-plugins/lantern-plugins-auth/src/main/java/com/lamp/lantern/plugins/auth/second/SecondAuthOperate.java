@@ -1,21 +1,21 @@
-package com.lamp.lantern.service.action.login.auth.second;
+package com.lamp.lantern.plugins.auth.second;
 
-import com.lamp.decoration.core.result.ResultObject;
-import com.lamp.lantern.service.action.login.auth.first.AbstractFirstAuthOperate;
-import com.lamp.lantern.service.core.entity.UserInfoEntity;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import java.io.IOException;
-import java.util.*;
+import com.lamp.decoration.core.result.ResultObject;
+import com.lamp.lantern.plugins.api.mode.UserInfo;
+import com.lamp.lantern.service.action.login.auth.first.AbstractFirstAuthOperate;
 
 
 @ConfigurationProperties("SecondConfig")
@@ -29,7 +29,7 @@ public class SecondAuthOperate extends AbstractFirstAuthOperate {
    * @return
    */
   @Override
-  public ResultObject<Object> auth(UserInfoEntity userInfoEntity) throws ServletException, IOException {
+  public ResultObject<Object> auth(UserInfo userInfo)  {
     HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
     // 第一步获得域名
     String domain = request.getHeader("Host");

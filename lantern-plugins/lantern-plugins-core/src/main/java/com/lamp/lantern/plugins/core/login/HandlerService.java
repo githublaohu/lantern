@@ -57,8 +57,12 @@ public class HandlerService  {
 	public void createConnection(Map<String,String> configMap) {
 		for(Entry<String, String> entry : configMap.entrySet()) {
 			log.info("create connection , name is {} url is {}", entry.getKey() , entry.getValue());
-			connectionClientCche.put(entry.getKey(), RedisClient.create(entry.getValue()).connect());
+			connectionClientCche.put(entry.getKey(), this.createCOnnection(entry.getValue()));
 		}
+	}
+	
+	private StatefulRedisConnection<String, String> createCOnnection(String config){
+		return  RedisClient.create(config).connect();
 	}
 
 	public HandlerExecute getHandlerExecute(String loginConfig) {
@@ -69,7 +73,7 @@ public class HandlerService  {
 		log.info("login config is {}", loginConfig);
 		HandlerExecute handlerExecute = new HandlerExecute();
 		handlerExecute.setLoginConfig(loginConfig);
-		handlerExecute.setHandlerList(createHandler(loginConfig.getHandlerConfigList()));
+		handlerExecute.setHandlerList(this.createHandler(loginConfig,evnironmentContext));
 		handlerExecute.setAuthService(this.createAuthService(loginConfig.getAuthChannelCofing()));
 		handlerExecuteMap.put(loginConfig.getSystemName(), handlerExecute);
 		return handlerExecute;
@@ -103,12 +107,12 @@ public class HandlerService  {
 	}
 
 	@SuppressWarnings("unchecked")
-	private List<AuthHandler> createHandler(List<HandlerConfig> handlerConfigList,EvnironmentContext evnironmentContext)
+	private List<AuthHandler> createHandler(LoginConfig loginConfig,EvnironmentContext evnironmentContext)
 			throws Exception {
 		List<AuthHandler> authHandlers = new ArrayList<>();
 
-		for (HandlerConfig handlerConfig : handlerConfigList) {
-			AuthHandler authHandler = null;
+		for (HandlerConfig handlerConfig : loginConfig.getHandlerConfigList()) {
+			AbstrackAuthHandler<Object> authHandler = null;
 			if (Objects.nonNull(handlerConfig.getHandlerName())) {
 				authHandler = this.createAuthHandler(CLASS_CACHE.get(handlerConfig.getHandlerName()), handlerConfig,evnironmentContext);
 			} else if (Objects.nonNull(handlerConfig.getClassName())) {
@@ -119,6 +123,9 @@ public class HandlerService  {
 			} else if (Objects.nonNull(handlerConfig.getBeanClass())) {
 				authHandler = (AbstrackAuthHandler<Object>) evnironmentContext.getBean(handlerConfig.getBeanClass());
 			}
+			authHandler.setSystemName(loginConfig.getSystemName());
+			authHandler.init();
+			
 			if (Objects.isNull(authHandler)) {
 				// TODO errer
 				throw new CreateHandlerException("");
@@ -129,7 +136,7 @@ public class HandlerService  {
 	}
 
 	@SuppressWarnings("unchecked")
-	private AuthHandler createAuthHandler(Class<?> clazz, HandlerConfig handlerConfig,EvnironmentContext evnironmentContext)
+	private AbstrackAuthHandler<Object>  createAuthHandler(Class<?> clazz, HandlerConfig handlerConfig,EvnironmentContext evnironmentContext)
 			throws Exception {
 
 		Class<?> configClazz = (Class<?>) ((ParameterizedType) (clazz.getGenericInterfaces()[0]))
@@ -157,7 +164,6 @@ public class HandlerService  {
 			throw new CreateHandlerException("");
 		}
 		abstrackAuthHandler.setConnection(connection);
-		abstrackAuthHandler.init();
 		return abstrackAuthHandler;
 	}
 }

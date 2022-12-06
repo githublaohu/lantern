@@ -8,17 +8,17 @@ import lombok.Setter;
 
 public abstract class AbstrackAuthHandler<T> implements AuthHandler {
 
+	@Setter
 	protected T config;
 	
 	@Setter
 	private boolean errerResult; 
+	
+	@Setter
+	protected String systemName;
 
 	@Setter
 	protected StatefulRedisConnection<String, String> connection;
-
-	public void setConfig(T config) {
-		this.config = config;
-	}
 
 	public void init() {
 

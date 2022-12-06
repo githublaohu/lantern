@@ -9,16 +9,16 @@ import com.lamp.lantern.plugins.core.login.config.LoginConfig;
 import lombok.Getter;
 import lombok.Setter;
 
-public class LoginContext {
+public class LanternContext {
 
-	private static final ThreadLocal<LoginContext> LOGIN_CONTEXT_LOCAL = new ThreadLocal<LoginContext>() {
-		protected LoginContext initialValue() {
-			return new LoginContext();
+	private static final ThreadLocal<LanternContext> LOGIN_CONTEXT_LOCAL = new ThreadLocal<LanternContext>() {
+		protected LanternContext initialValue() {
+			return new LanternContext();
 		}
 	};
 
 	
-	public static final LoginContext getContext() {
+	public static final LanternContext getContext() {
 		return LOGIN_CONTEXT_LOCAL.get();
 	}
 	

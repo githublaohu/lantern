@@ -6,7 +6,7 @@ import com.lamp.lantern.plugins.api.mode.UserInfo;
 
 public interface AuthService {
 	
-	public void initialization(AuthChannelCofing config);
+	public void initialization(AuthChannelCofing config) throws Exception;
 
 	/**
 	 * 定义出参，入参

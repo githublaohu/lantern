@@ -6,7 +6,7 @@ public abstract class AbstractAuthService implements AuthService {
 
 	protected AuthChannelCofing config;
 	
-	public void initialization(AuthChannelCofing config) {
+	public void initialization(AuthChannelCofing config) throws Exception {
 		this.config = config;
 		this.doInitialization();
 	}

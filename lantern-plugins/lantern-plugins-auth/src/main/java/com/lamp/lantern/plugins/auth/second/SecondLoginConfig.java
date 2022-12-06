@@ -1,4 +1,4 @@
-package com.lamp.lantern.service.action.login.auth.second;
+package com.lamp.lantern.plugins.auth.second;
 
 import lombok.Data;
 

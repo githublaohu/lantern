@@ -31,7 +31,6 @@ public class WechatPlatformAuthService extends AbstractAuthService {
 	@Override
 	public AuthResultObject auth(UserInfo userInfo) {
 		// https://www.it610.com/article/1294173597299974144.htm
-
 		wechatAuthAPI.empower(this.config.getAppId(), this.config.getSecretAccessKey(), userInfo.getToken());
 		return null;
 	}

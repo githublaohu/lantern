@@ -34,15 +34,16 @@ public class HandlerExecute {
 		
 		private UserInfo userInfo;
 
-		ResultObject<String> resultObject;
+		ResultObject<?> resultObject;
 
+		@SuppressWarnings("unchecked")
 		public ResultObject<String> execute() {
 			try {
-				LoginContext.getContext().setAuthService(authService);
-				LoginContext.getContext().setLoginConfig(loginConfig);
+				LanternContext.getContext().setAuthService(authService);
+				LanternContext.getContext().setLoginConfig(loginConfig);
 				this.authBefore();
 				if (Objects.nonNull(resultObject)) {
-					return resultObject;
+					return ( ResultObject<String>)resultObject;
 				}
 				AuthResultObject object = authService.auth(userInfo);
 				if (Objects.isNull(object.getErrorMessage())) {
@@ -53,13 +54,14 @@ public class HandlerExecute {
 					this.errer();
 				}
 				this.authAfter();
+				resultObject = ResultObject.getResultObject(200, this.userInfo);
 			} catch (Exception e) {
 				log.error(e.getMessage(), e);
 				resultObject =  ResultObject.getResultObjectMessgae(3000, e.getMessage());
 			} finally {
-				LoginContext.getContext().clear();
+				LanternContext.getContext().clear();
 			}
-			return resultObject;
+			return (ResultObject<String>)resultObject;
 		}
 
 		public void authBefore() {
