@@ -12,7 +12,7 @@ import com.lamp.lantern.plugins.api.service.AbstractAuthService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class AliPayThridAuthService extends AbstractAuthService {
+public class AliPayThirdAuthService extends AbstractAuthService {
 
 	private DefaultAlipayClient alipayClient;
 

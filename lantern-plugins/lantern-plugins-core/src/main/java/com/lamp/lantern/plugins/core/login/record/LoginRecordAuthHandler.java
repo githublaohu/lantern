@@ -17,7 +17,8 @@ public class LoginRecordAuthHandler extends AbstrackAuthHandler<Object> {
 		this.loginRecord("success", userInfo);
 	}
 	
-	public void doErrer(UserInfo userInfo){
+	@Override
+	public void doError(UserInfo userInfo){
 		this.loginRecord("fail", userInfo);
 	}
 	

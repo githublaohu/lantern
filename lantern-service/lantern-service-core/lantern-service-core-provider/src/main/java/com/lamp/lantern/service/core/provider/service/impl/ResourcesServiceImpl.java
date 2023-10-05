@@ -1,7 +1,7 @@
 package com.lamp.lantern.service.core.provider.service.impl;
 
 import com.lamp.lantern.service.core.entity.ResourcesEntity;
-import com.lamp.lantern.service.core.provider.Mapper.ResourcesMapper;
+import com.lamp.lantern.service.core.provider.mapper.ResourcesMapper;
 import com.lamp.lantern.service.core.service.ResourcesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

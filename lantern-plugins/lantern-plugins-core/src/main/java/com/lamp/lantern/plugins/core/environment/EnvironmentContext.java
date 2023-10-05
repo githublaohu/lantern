@@ -1,8 +1,12 @@
 package com.lamp.lantern.plugins.core.environment;
 
-public interface EvnironmentContext {
+import com.lamp.lantern.plugins.core.servlet.LanternServlet;
+
+public interface EnvironmentContext {
 
 	Object getBean(String name) throws Exception;
 	
 	Object getBean(Class<?> clazz) throws Exception;
+
+	public LanternServlet getLanternServlet();
 }

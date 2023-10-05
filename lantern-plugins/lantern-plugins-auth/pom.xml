@@ -35,6 +35,17 @@
 			<groupId>com.taobao</groupId>
 			<artifactId>tdhs-java-client</artifactId>
 			<version>0.4.1</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>log4j</groupId>
+					<artifactId>log4j</artifactId>
+				</exclusion>
+
+			</exclusions>
 		</dependency>
 
 		<dependency>
@@ -42,6 +53,7 @@
 			<artifactId>slf4j-api</artifactId>
 			<version>1.7.26</version>
 		</dependency>
+
 		<dependency>
 			<groupId>io.github.githublaohu</groupId>
 			<artifactId>dubbo-springmvc</artifactId>
@@ -62,6 +74,11 @@
 				</exclusion>
 			</exclusions>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>cn.lampup</groupId>
+			<artifactId>decoration-core</artifactId>
+			<version>0.0.6</version>
 		</dependency>
 		<dependency>
 			<groupId>io.github.githublaohu</groupId>

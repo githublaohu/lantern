@@ -1,7 +1,7 @@
 package com.lamp.lantern.service.core.provider.service.impl;
 
 import com.lamp.lantern.service.core.entity.AuthorityEntity;
-import com.lamp.lantern.service.core.provider.Mapper.AuthorityMapper;
+import com.lamp.lantern.service.core.provider.mapper.AuthorityMapper;
 import com.lamp.lantern.service.core.service.AuthorityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

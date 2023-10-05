@@ -1,5 +1,6 @@
 package com.lamp.lantern.plugins.core.login;
 
+import java.lang.invoke.LambdaConversionException;
 import java.util.List;
 import java.util.Objects;
 
@@ -7,11 +8,19 @@ import com.lamp.decoration.core.result.ResultObject;
 import com.lamp.lantern.plugins.api.mode.AuthResultObject;
 import com.lamp.lantern.plugins.api.mode.UserInfo;
 import com.lamp.lantern.plugins.api.service.AuthService;
+import com.lamp.lantern.plugins.core.environment.EnvironmentContext;
 import com.lamp.lantern.plugins.core.login.config.LoginConfig;
 
+import com.lamp.lantern.plugins.core.servlet.LanternServlet;
+import com.lamp.lantern.plugins.core.servlet.SpringMVCServlet;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ * 用于执行登录
+ */
 @Slf4j
 public class HandlerExecute {
 
@@ -25,8 +34,17 @@ public class HandlerExecute {
 	@Setter
 	private LoginConfig loginConfig;
 
+	@Setter
+	private LanternServlet servlet;
+
+	/**
+	 * authBefore(Handler) -> auth(AuthService) -> authAfter
+	 * @param userInfo
+	 * @return
+	 */
 	public ResultObject<String> execute(UserInfo userInfo) {
 		HandlerExecute2 handlerExecute2 = new HandlerExecute2();
+		handlerExecute2.userInfo = userInfo;
 		return handlerExecute2.execute();
 	}
 
@@ -39,8 +57,12 @@ public class HandlerExecute {
 		@SuppressWarnings("unchecked")
 		public ResultObject<String> execute() {
 			try {
-				LanternContext.getContext().setAuthService(authService);
-				LanternContext.getContext().setLoginConfig(loginConfig);
+				LanternContext context = LanternContext.getContext();
+				context.setResponse(servlet.getResponse());
+				context.setRequest(servlet.getRequest());
+
+				context.setAuthService(authService);
+				context.setLoginConfig(loginConfig);
 				this.authBefore();
 				if (Objects.nonNull(resultObject)) {
 					return ( ResultObject<String>)resultObject;
@@ -49,9 +71,9 @@ public class HandlerExecute {
 				if (Objects.isNull(object.getErrorMessage())) {
 					this.userInfo = object.getUserInfo();
 				} else {
-					log.warn(" auth fail mesage {}", object);
+					log.warn(" auth fail message {}", object);
 					resultObject = ResultObject.getResultObjectMessgae(3000, object.getErrorMessage());
-					this.errer();
+					this.error();
 				}
 				this.authAfter();
 				resultObject = ResultObject.getResultObject(200, this.userInfo);
@@ -84,7 +106,7 @@ public class HandlerExecute {
 			}
 		}
 
-		public void errer() {
+		public void error() {
 			for (AuthHandler authHandler : handlerList) {
 				resultObject = authHandler.errer(userInfo);
 				if (Objects.nonNull(resultObject)) {

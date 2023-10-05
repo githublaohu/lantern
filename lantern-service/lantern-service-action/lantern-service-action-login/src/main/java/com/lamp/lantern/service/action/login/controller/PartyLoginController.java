@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
+import com.lamp.lantern.plugins.core.environment.SpringEnvironmentContext;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -17,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.lamp.decoration.core.result.ResultObject;
 import com.lamp.lantern.plugins.api.config.AuthChannelCofing;
-import com.lamp.lantern.plugins.core.environment.SpringEvnironmentContext;
 import com.lamp.lantern.plugins.core.login.HandlerExecute;
 import com.lamp.lantern.plugins.core.login.HandlerService;
 import com.lamp.lantern.plugins.core.login.config.HandlerConfig;
@@ -50,7 +50,7 @@ public class PartyLoginController implements ApplicationContextAware {
 		loginConfig.setSystemName("lantern");
 		loginConfig.setAuthChannelCofing(authChannelCofing);
 		loginConfig.setHandlerConfigList(handlerConfigList);
-		SpringEvnironmentContext springEvnironmentContext = new SpringEvnironmentContext(applicationContext);
+		SpringEnvironmentContext springEvnironmentContext = new SpringEnvironmentContext(applicationContext);
 
 		handlerService = new HandlerService();
 		

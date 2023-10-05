@@ -1,7 +1,6 @@
-package com.lamp.lantern.service.core.provider.Mapper;
+package com.lamp.lantern.service.core.provider.mapper;
 
 import com.lamp.lantern.service.core.entity.AuthRoleRelationEntity;
-import com.sun.org.apache.xml.internal.resolver.helpers.PublicId;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;

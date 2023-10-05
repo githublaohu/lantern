@@ -9,13 +9,12 @@ import com.lamp.lantern.plugins.core.login.config.LoginConfig;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 public class LanternContext {
 
-	private static final ThreadLocal<LanternContext> LOGIN_CONTEXT_LOCAL = new ThreadLocal<LanternContext>() {
-		protected LanternContext initialValue() {
-			return new LanternContext();
-		}
-	};
+	private static final ThreadLocal<LanternContext> LOGIN_CONTEXT_LOCAL = ThreadLocal.withInitial(LanternContext::new);
 
 	
 	public static final LanternContext getContext() {
@@ -32,6 +31,14 @@ public class LanternContext {
 	@Setter(lombok.AccessLevel.PROTECTED)
 	private LoginConfig loginConfig;
 
+	@Getter
+	@Setter
+	private HttpServletResponse response;
+
+	@Getter
+	@Setter
+	private HttpServletRequest request;
+
 	public void setValue(String key, Object value) {
 		this.values.put(key, value);
 	}
@@ -40,7 +47,8 @@ public class LanternContext {
 	public <T> T getValue(String key) {
 		return (T) values.get(key);
 	}
-	
+
+
 	protected void clear() {
 		this.authService = null;
 		this.values.clear();

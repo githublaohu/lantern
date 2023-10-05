@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.type.AnnotationMetadata;
 
-import com.lamp.lantern.plugins.core.environment.SpringEvnironmentContext;
+import com.lamp.lantern.plugins.core.environment.SpringEnvironmentContext;
 import com.lamp.lantern.plugins.core.login.HandlerService;
 
 @Configuration
@@ -32,7 +32,7 @@ public class AutoconfiguredLantern  implements ApplicationContextAware{
 	@Bean
 	public HandlerService createHandlerService() {
 		HandlerService handlerService = new HandlerService();
-		handlerService.setEvnironmentContext(new SpringEvnironmentContext(applicationContext));
+		handlerService.setEnvironmentContext(new SpringEnvironmentContext(applicationContext));
 		handlerService.createConnection(lanternProperties.getConfigMap());
 		return handlerService;
 	}

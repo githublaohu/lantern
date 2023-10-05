@@ -1,4 +1,4 @@
-package com.lamp.lantern.service.core.provider.Mapper;
+package com.lamp.lantern.service.core.provider.mapper;
 
 import com.lamp.lantern.service.core.entity.RoleEntity;
 import org.apache.ibatis.annotations.Insert;

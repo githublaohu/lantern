@@ -12,7 +12,7 @@ public abstract class AbstrackAuthHandler<T> implements AuthHandler {
 	protected T config;
 	
 	@Setter
-	private boolean errerResult; 
+	private boolean errorResult;
 	
 	@Setter
 	protected String systemName;
@@ -24,18 +24,21 @@ public abstract class AbstrackAuthHandler<T> implements AuthHandler {
 
 	}
 
+	@Override
 	public  ResultObject<String> authBefore(UserInfo userInfo) {
 		this.doAuthBefore(userInfo);
 		return null;
 	}
 
+	@Override
 	public  ResultObject<String> authAfter(UserInfo userInfo) {
 		this.doAuthAfter(userInfo);
 		return null;
 	}
 
+	@Override
 	public  ResultObject<String> errer(UserInfo userInfo) {
-		this.doErrer(userInfo);
+		this.doError(userInfo);
 		return null;
 	}
 	
@@ -46,7 +49,7 @@ public abstract class AbstrackAuthHandler<T> implements AuthHandler {
 	public  void doAuthAfter(UserInfo userInfo) {
 	}
 
-	public  void doErrer(UserInfo userInfo) {
+	public  void doError(UserInfo userInfo) {
 	}
 
 }

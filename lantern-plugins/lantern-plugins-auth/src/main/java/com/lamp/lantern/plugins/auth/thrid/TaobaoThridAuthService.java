@@ -22,7 +22,7 @@ public class TaobaoThridAuthService extends AbstractAuthService {
 	      props.put("redirect_uri","http://www.test.com");
 	      props.put("view","web");
 	      String s="";
-	      s=WebUtils.doPost(url, props, 30000, 30000);
+//	      s=WebUtils.doPost(url, props, 30000, 30000);
 		return authResultObject;
 	}
 

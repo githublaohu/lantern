@@ -28,10 +28,11 @@ public class LoginTimesAuthHandler extends AbstrackAuthHandler<LoginTimesConfig>
 
 	private String userIdentificationKey;
 
-	private ResultObject<String> errer;
+	private ResultObject<String> error;
 
+	@Override
 	public void init() {
-		errer = ResultObject.getResultObjectMessgae(3000, "登录失败次数到限制，请明天登录");
+		error = ResultObject.getResultObjectMessgae(3000, "登录失败次数到限制，请明天登录");
 		this.addressTimeKey = this.systemName + "-" + "address-time";
 		this.userIdentificationKey = this.systemName + "-" + "user-time";
 	}
@@ -40,6 +41,7 @@ public class LoginTimesAuthHandler extends AbstrackAuthHandler<LoginTimesConfig>
 		return ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
 	}
 
+	@Override
 	public ResultObject<String> authBefore(UserInfo userInfo) {
 		LoginTimesInfo loginTimesInfo = new LoginTimesInfo();
 		LanternContext.getContext().setValue(VALUE_KEY, loginTimesInfo);
@@ -61,7 +63,7 @@ public class LoginTimesAuthHandler extends AbstrackAuthHandler<LoginTimesConfig>
 		if (loginTimesInfo.getTimes() >= config.getTimes()
 				|| loginTimesInfo.getAddressLimes() >= config.getAddressLimes()) {
 			log.warn("");
-			return errer;
+			return error;
 		}
 		return null;
 
@@ -81,7 +83,8 @@ public class LoginTimesAuthHandler extends AbstrackAuthHandler<LoginTimesConfig>
 		}
 	}
 
-	public void doErrer(UserInfo userInfo) {
+	@Override
+	public void doError(UserInfo userInfo) {
 		LoginTimesInfo loginTimesInfo = LanternContext.getContext().getValue(VALUE_KEY);
 		// 当times大于0，表示启动用户限制
 		if (config.getTimes() > 0) {

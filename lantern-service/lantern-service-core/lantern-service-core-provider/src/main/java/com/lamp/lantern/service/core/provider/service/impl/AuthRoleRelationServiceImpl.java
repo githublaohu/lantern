@@ -1,7 +1,7 @@
 package com.lamp.lantern.service.core.provider.service.impl;
 
 import com.lamp.lantern.service.core.entity.AuthRoleRelationEntity;
-import com.lamp.lantern.service.core.provider.Mapper.AuthRoleRelationMapper;
+import com.lamp.lantern.service.core.provider.mapper.AuthRoleRelationMapper;
 import com.lamp.lantern.service.core.service.AuthRoleRelationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
