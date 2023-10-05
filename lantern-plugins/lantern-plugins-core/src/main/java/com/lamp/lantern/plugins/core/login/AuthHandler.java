@@ -13,7 +13,7 @@ public interface AuthHandler {
     return null;
   }
 
-  public default ResultObject<String> errer(UserInfo userInfo ){
+  public default ResultObject<String> error(UserInfo userInfo ){
     return null;
   }
 

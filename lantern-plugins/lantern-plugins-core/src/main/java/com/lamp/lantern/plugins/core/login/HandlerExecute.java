@@ -1,6 +1,5 @@
 package com.lamp.lantern.plugins.core.login;
 
-import java.lang.invoke.LambdaConversionException;
 import java.util.List;
 import java.util.Objects;
 
@@ -8,15 +7,11 @@ import com.lamp.decoration.core.result.ResultObject;
 import com.lamp.lantern.plugins.api.mode.AuthResultObject;
 import com.lamp.lantern.plugins.api.mode.UserInfo;
 import com.lamp.lantern.plugins.api.service.AuthService;
-import com.lamp.lantern.plugins.core.environment.EnvironmentContext;
 import com.lamp.lantern.plugins.core.login.config.LoginConfig;
 
 import com.lamp.lantern.plugins.core.servlet.LanternServlet;
-import com.lamp.lantern.plugins.core.servlet.SpringMVCServlet;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * 用于执行登录
@@ -108,7 +103,7 @@ public class HandlerExecute {
 
 		public void error() {
 			for (AuthHandler authHandler : handlerList) {
-				resultObject = authHandler.errer(userInfo);
+				resultObject = authHandler.error(userInfo);
 				if (Objects.nonNull(resultObject)) {
 					log.warn("authBefore fail resultObject is {} , userInfo is {}", resultObject , userInfo);
 					return;

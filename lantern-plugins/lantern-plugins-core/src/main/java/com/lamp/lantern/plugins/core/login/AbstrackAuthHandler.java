@@ -37,7 +37,7 @@ public abstract class AbstrackAuthHandler<T> implements AuthHandler {
 	}
 
 	@Override
-	public  ResultObject<String> errer(UserInfo userInfo) {
+	public  ResultObject<String> error(UserInfo userInfo) {
 		this.doError(userInfo);
 		return null;
 	}
