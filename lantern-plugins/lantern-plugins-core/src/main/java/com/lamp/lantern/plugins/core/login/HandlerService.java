@@ -8,6 +8,7 @@ import com.lamp.lantern.plugins.core.exception.CreateHandlerException;
 import com.lamp.lantern.plugins.core.login.broadcast.BroadcastAuthHandler;
 import com.lamp.lantern.plugins.core.login.config.HandlerConfig;
 import com.lamp.lantern.plugins.core.login.config.LoginConfig;
+import com.lamp.lantern.plugins.core.login.exclusive.ExclusiveAuthHandler;
 import com.lamp.lantern.plugins.core.login.namelist.WhiteListAuthHandler;
 import com.lamp.lantern.plugins.core.login.record.LoginRecordAuthHandler;
 import com.lamp.lantern.plugins.core.login.times.LoginTimesAuthHandler;
@@ -38,6 +39,7 @@ public class HandlerService {
         setClassCache(LoginRecordAuthHandler.class);
         setClassCache(LoginTimesAuthHandler.class);
         setClassCache(CreateTokenAuthHandler.class);
+        setClassCache(ExclusiveAuthHandler.class);
     }
 
     private Map<String, StatefulRedisConnection<String, String>> connectionClientCache = new HashMap<>();
@@ -112,16 +114,16 @@ public class HandlerService {
         List<AuthHandler> authHandlers = new ArrayList<>();
 
         for (HandlerConfig handlerConfig : loginConfig.getHandlerConfigList()) {
-            AbstrackAuthHandler<Object> authHandler = null;
+            AbstractAuthHandler<Object> authHandler = null;
             if (Objects.nonNull(handlerConfig.getHandlerName())) {
                 authHandler = this.createAuthHandler(CLASS_CACHE.get(handlerConfig.getHandlerName()), handlerConfig, environmentContext);
             } else if (Objects.nonNull(handlerConfig.getClassName())) {
                 Class<?> clazz = Class.forName(handlerConfig.getClassName());
                 authHandler = this.createAuthHandler(clazz, handlerConfig, environmentContext);
             } else if (Objects.nonNull(handlerConfig.getBeanName())) {
-                authHandler = (AbstrackAuthHandler<Object>) environmentContext.getBean(handlerConfig.getBeanName());
+                authHandler = (AbstractAuthHandler<Object>) environmentContext.getBean(handlerConfig.getBeanName());
             } else if (Objects.nonNull(handlerConfig.getBeanClass())) {
-                authHandler = (AbstrackAuthHandler<Object>) environmentContext.getBean(handlerConfig.getBeanClass());
+                authHandler = (AbstractAuthHandler<Object>) environmentContext.getBean(handlerConfig.getBeanClass());
             }
             authHandler.setSystemName(loginConfig.getSystemName());
             authHandler.init();
@@ -136,7 +138,7 @@ public class HandlerService {
     }
 
     @SuppressWarnings("unchecked")
-    private AbstrackAuthHandler<Object> createAuthHandler(Class<?> clazz, HandlerConfig handlerConfig, EnvironmentContext environmentContext)
+    private AbstractAuthHandler<Object> createAuthHandler(Class<?> clazz, HandlerConfig handlerConfig, EnvironmentContext environmentContext)
             throws Exception {
         Type type;
         if (clazz.getGenericInterfaces().length == 0) {
@@ -149,11 +151,11 @@ public class HandlerService {
         }
         Class<?> configClazz = (Class<?>) ((ParameterizedType) (type))
                 .getActualTypeArguments()[0];
-        AbstrackAuthHandler<Object> abstrackAuthHandler = null;
+        AbstractAuthHandler<Object> abstractAuthHandler = null;
         if (this.objectByEnvironment) {
-            abstrackAuthHandler = (AbstrackAuthHandler<Object>) this.environmentContext.getBean(clazz);
+            abstractAuthHandler = (AbstractAuthHandler<Object>) this.environmentContext.getBean(clazz);
         } else {
-            abstrackAuthHandler = (AbstrackAuthHandler<Object>) clazz.newInstance();
+            abstractAuthHandler = (AbstractAuthHandler<Object>) clazz.newInstance();
         }
         if (Objects.equals(configClazz, Object.class)) {
             if (Objects.isNull(handlerConfig.getConfigMap())) {
@@ -163,7 +165,7 @@ public class HandlerService {
         } else {
             JSONObject object = new JSONObject();
             object.putAll(handlerConfig.getConfigMap());
-            abstrackAuthHandler.setConfig(object.toJavaObject(configClazz));
+            abstractAuthHandler.setConfig(object.toJavaObject(configClazz));
 
         }
         StatefulRedisConnection<String, String> connection = connectionClientCache.get(handlerConfig.getRedisName());
@@ -171,7 +173,7 @@ public class HandlerService {
             // TODO errer
             throw new CreateHandlerException("");
         }
-        abstrackAuthHandler.setConnection(connection);
-        return abstrackAuthHandler;
+        abstractAuthHandler.setConnection(connection);
+        return abstractAuthHandler;
     }
 }

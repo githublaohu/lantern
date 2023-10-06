@@ -24,7 +24,7 @@ public class JwtTokenServiceImpl implements TokenCreateService{
     }
 
 
-    public String createToken(String user_name, long id) {
+    public String createToken(String userName, long id) {
         Map<String, Object> header = new HashMap<>();
 
         header.put("typ","JWT");
@@ -33,7 +33,7 @@ public class JwtTokenServiceImpl implements TokenCreateService{
         JwtBuilder jwtBuilder = Jwts.builder().setHeader(header)
                 .setId(String.valueOf(id))
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRE_TIME))
-                .setSubject(user_name)
+                .setSubject(userName)
                 .setIssuedAt(new Date())
                 .signWith(SignatureAlgorithm.HS256, SECRET);
         return jwtBuilder.compact();

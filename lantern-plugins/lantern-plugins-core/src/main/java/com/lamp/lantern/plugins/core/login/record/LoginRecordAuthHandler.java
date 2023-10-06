@@ -5,9 +5,9 @@ import javax.annotation.Resource;
 import com.lamp.lantern.plugins.api.mode.LoginRecordInfo;
 import com.lamp.lantern.plugins.api.mode.UserInfo;
 import com.lamp.lantern.plugins.api.service.LoginRecordService;
-import com.lamp.lantern.plugins.core.login.AbstrackAuthHandler;
+import com.lamp.lantern.plugins.core.login.AbstractAuthHandler;
 
-public class LoginRecordAuthHandler extends AbstrackAuthHandler<Object> {
+public class LoginRecordAuthHandler extends AbstractAuthHandler<Object> {
 	
 	@Resource
 	private LoginRecordService loginRecordService;

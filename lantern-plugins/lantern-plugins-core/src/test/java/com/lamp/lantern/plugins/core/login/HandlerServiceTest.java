@@ -73,7 +73,7 @@ public class HandlerServiceTest {
         loginConfig.setAuthChannelCofing(authChannelCofing);
 
 //        EnvironmentContext environmentContext = Mockito.mock(EnvironmentContext.class);
-//        AbstrackAuthHandler abstrackAuthHandler = Mockito.mock(AbstrackAuthHandler.class);
+//        AbstractAuthHandler abstrackAuthHandler = Mockito.mock(AbstractAuthHandler.class);
 //        Mockito.when(environmentContext.getBean(Mockito.anyString())).thenReturn(abstrackAuthHandler);
 //        Mockito.when(environmentContext.getBean(Class.class)).thenReturn(abstrackAuthHandler);
 //        Mockito.when(abstrackAuthHandler.)

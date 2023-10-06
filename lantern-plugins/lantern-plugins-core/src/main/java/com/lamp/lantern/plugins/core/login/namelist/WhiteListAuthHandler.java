@@ -5,10 +5,10 @@ import java.util.Objects;
 import com.lamp.decoration.core.result.ResultObject;
 import com.lamp.lantern.plugins.api.enums.StatusEnum;
 import com.lamp.lantern.plugins.api.mode.UserInfo;
-import com.lamp.lantern.plugins.core.login.AbstrackAuthHandler;
+import com.lamp.lantern.plugins.core.login.AbstractAuthHandler;
 import com.lamp.lantern.plugins.core.login.AuthHandler;
 
-public class WhiteListAuthHandler extends AbstrackAuthHandler<WhiteListConfig> implements AuthHandler {
+public class WhiteListAuthHandler extends AbstractAuthHandler<WhiteListConfig> implements AuthHandler {
 
 	private ResultObject<String> whiteResultObject = ResultObject.getResultObjectMessgae(3001, "用户不在白名单里面，登录失败");
 

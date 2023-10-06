@@ -2,7 +2,7 @@ package com.lamp.lantern.plugins.core.login.times;
 
 import com.lamp.decoration.core.result.ResultObject;
 import com.lamp.lantern.plugins.api.mode.UserInfo;
-import com.lamp.lantern.plugins.core.login.AbstrackAuthHandler;
+import com.lamp.lantern.plugins.core.login.AbstractAuthHandler;
 import com.lamp.lantern.plugins.core.login.LanternContext;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +15,7 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
-public class LoginTimesAuthHandler extends AbstrackAuthHandler<LoginTimesConfig> {
+public class LoginTimesAuthHandler extends AbstractAuthHandler<LoginTimesConfig> {
 
     private static final String VALUE_KEY = "loginTimesAuthHandler";
 

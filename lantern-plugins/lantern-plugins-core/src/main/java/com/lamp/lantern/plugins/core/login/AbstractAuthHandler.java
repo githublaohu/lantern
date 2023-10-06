@@ -6,7 +6,7 @@ import com.lamp.lantern.plugins.api.mode.UserInfo;
 import io.lettuce.core.api.StatefulRedisConnection;
 import lombok.Setter;
 
-public abstract class AbstrackAuthHandler<T> implements AuthHandler {
+public abstract class AbstractAuthHandler<T> implements AuthHandler {
 
 	@Setter
 	protected T config;

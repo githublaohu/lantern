@@ -5,15 +5,11 @@ import java.util.Objects;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
-import com.lamp.lantern.plugins.core.environment.EnvironmentContext;
+import com.lamp.lantern.plugins.core.login.AbstractAuthHandler;
 import com.lamp.lantern.plugins.core.login.LanternContext;
-import com.lamp.lantern.plugins.core.servlet.SpringMVCServlet;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.alibaba.fastjson.JSON;
 import com.lamp.lantern.plugins.api.mode.UserInfo;
-import com.lamp.lantern.plugins.core.login.AbstrackAuthHandler;
 import com.lamp.lantern.plugins.core.token.TokenService;
 import com.lamp.lantern.plugins.core.token.TokenConfig;
 import com.lamp.lantern.plugins.core.token.TokenConstructData;
@@ -21,7 +17,7 @@ import com.lamp.lantern.plugins.core.token.TokenCreateService;
 
 import io.lettuce.core.SetArgs;
 
-public class CreateTokenAuthHandler extends AbstrackAuthHandler<TokenAndSessionConfig> {
+public class CreateTokenAuthHandler extends AbstractAuthHandler<TokenAndSessionConfig> {
 
 //	private static final TokenService TOKEN_SERVICE = new TokenService();
 
