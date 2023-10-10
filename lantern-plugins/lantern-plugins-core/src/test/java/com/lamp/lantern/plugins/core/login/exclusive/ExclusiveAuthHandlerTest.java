@@ -17,7 +17,6 @@ public class ExclusiveAuthHandlerTest {
 
     @Before
     public void init() {
-        exclusiveConfig.setMethod(ExclusiveConfig.Method.KICK);
         exclusiveAuthHandler.setConfig(exclusiveConfig);
         exclusiveAuthHandler.init();
         exclusiveAuthHandler.setSystemName("test");
@@ -31,13 +30,57 @@ public class ExclusiveAuthHandlerTest {
     }
 
     @Test
-    public void testKick() {
+    public void testKickSame() {
         UserInfo userInfo = new UserInfo();
         userInfo.setUiId(1L);
         exclusiveAuthHandler.authBefore(userInfo);
         exclusiveAuthHandler.authAfter(userInfo);
         exclusiveAuthHandler.authAfter(userInfo);
-        Assert.assertEquals("[{\"deviceType\":\"MOBILE\",\"IP\":\"127.0.0.1\",\"UA\":\"Mobile\",\"deviceStatus\":\"ONLINE\"}]", connection.sync().get("test-1"));
+    }
+
+    @Test
+    public void testKickAll() {
+        UserInfo userInfo = new UserInfo();
+        userInfo.setUiId(1L);
+        exclusiveAuthHandler.authBefore(userInfo);
+        exclusiveAuthHandler.authAfter(userInfo);
+
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.setRemoteAddr("127.0.0.1");
+        request.addHeader("User-Agent", "Windows");
+        LanternContext.getContext().setRequest(request);
+        exclusiveAuthHandler.authBefore(userInfo);
+        exclusiveAuthHandler.authAfter(userInfo);
+
+
+        exclusiveConfig.setMethod(ExclusiveConfig.Method.KICK_ALL);
+
+        request.setRemoteAddr("192.168.3.1");
+        request.addHeader("User-Agent", "Windows");
+        LanternContext.getContext().setRequest(request);
+        exclusiveAuthHandler.authBefore(userInfo);
+        exclusiveAuthHandler.authAfter(userInfo);
+        exclusiveAuthHandler.authBefore(userInfo);
+        exclusiveAuthHandler.authAfter(userInfo);
+        Assert.assertEquals(1, connection.sync().hkeys("test-1").size());
+
+    }
+    @Test
+    public void testKickType() {
+        exclusiveConfig.setMethod(ExclusiveConfig.Method.KICK_TYPE);
+        UserInfo userInfo = new UserInfo();
+        userInfo.setUiId(1L);
+        exclusiveAuthHandler.authBefore(userInfo);
+        exclusiveAuthHandler.authAfter(userInfo);
+
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.setRemoteAddr("192.168.0.0");
+        request.addHeader("User-Agent", "Mobile");
+        LanternContext.getContext().setRequest(request);
+
+        exclusiveAuthHandler.authBefore(userInfo);
+        exclusiveAuthHandler.authAfter(userInfo);
+
     }
 
     @Test
@@ -49,6 +92,24 @@ public class ExclusiveAuthHandlerTest {
         exclusiveAuthHandler.authAfter(userInfo);
         ResultObject<String> res = exclusiveAuthHandler.authBefore(userInfo);
         Assert.assertEquals(10001, res.getCode().intValue());
+    }
+
+    @Test
+    public void testAllowN() {
+        exclusiveConfig.setMethod(ExclusiveConfig.Method.ALLOW_N(2));
+        UserInfo userInfo = new UserInfo();
+        userInfo.setUiId(1L);
+        exclusiveAuthHandler.authBefore(userInfo);
+        exclusiveAuthHandler.authAfter(userInfo);
+
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.setRemoteAddr("127.0.0.1");
+        request.addHeader("User-Agent", "Windows");
+        LanternContext.getContext().setRequest(request);
+        exclusiveAuthHandler.authBefore(userInfo);
+        exclusiveAuthHandler.authAfter(userInfo);
+        ResultObject<String> res = exclusiveAuthHandler.authBefore(userInfo);
+        Assert.assertEquals(10101, res.getCode().intValue());
     }
 
     @Test

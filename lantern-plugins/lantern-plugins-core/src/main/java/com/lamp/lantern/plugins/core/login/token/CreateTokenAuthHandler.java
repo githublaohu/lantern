@@ -19,7 +19,6 @@ import io.lettuce.core.SetArgs;
 
 public class CreateTokenAuthHandler extends AbstractAuthHandler<TokenAndSessionConfig> {
 
-//	private static final TokenService TOKEN_SERVICE = new TokenService();
 
 	private TokenCreateService tokenCreateService;
 
@@ -32,13 +31,11 @@ public class CreateTokenAuthHandler extends AbstractAuthHandler<TokenAndSessionC
 
 	@Override
 	public void doAuthAfter(UserInfo userInfo) {
-		String userTnfoString = JSON.toJSONString(userInfo);
-		SetArgs setArgs = new SetArgs();
-		this.connection.sync().set("", userTnfoString,setArgs);
-
 		TokenConstructData tokenConstructData = new TokenConstructData();
 		String token = tokenCreateService.createToken(tokenConstructData);
-		userInfo.setUiToken(token);
+		String UA = LanternContext.getContext().getRequest().getHeader("User-Agent");
+		connection.sync().hset(userInfo.getUiId().toString(),UA, token);
+
 		HttpServletResponse response = LanternContext.getContext().getResponse();
 		if (Objects.equals("cookie", super.config.getDataPosition())) {
 			Cookie cookie = new Cookie(tokenConfig.getTokenName(), token);
