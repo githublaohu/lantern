@@ -20,6 +20,7 @@ public abstract class AbstractAuthHandler<T> implements AuthHandler {
 	@Setter
 	protected StatefulRedisConnection<String, String> connection;
 
+
 	public void init() {
 
 	}

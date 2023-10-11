@@ -20,7 +20,7 @@
 	</appender>
 
 	<!-- project default level -->
-	<logger name="org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod" level="trace" />
+	<logger name="org.springframework.web.servlet.mvc.exclusiveMethod.annotation.ServletInvocableHandlerMethod" level="trace" />
 	<root level="info">
 		<appender-ref ref="console" />
 		<appender-ref ref="rollingFile" />

@@ -20,7 +20,7 @@
 	</appender>
 
 	<!-- project default level -->
-	<logger name="org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod" level="trace" />
+	<logger name="org.springframework.web.servlet.mvc.exclusiveMethod.annotation.ServletInvocableHandlerMethod" level="trace" />
 	<logger name="com.lamp.lantern.service.core.provider.mapper" level="debug" />
 	<root level="info">
 		<appender-ref ref="console" />

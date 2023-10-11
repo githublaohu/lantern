@@ -25,5 +25,7 @@ public class TokenAndSessionConfig {
 
     private boolean cookieHttpOnly = true;
 
+    private int tokenExpire = 60 * 60 * 24 * 7;
+
 
 }

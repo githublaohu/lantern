@@ -1,42 +1,53 @@
 package com.lamp.lantern.plugins.core.login.exclusive;
 
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.lamp.decoration.core.result.ResultObject;
 import com.lamp.lantern.plugins.api.mode.UserInfo;
 import com.lamp.lantern.plugins.core.login.AbstractAuthHandler;
 import com.lamp.lantern.plugins.core.login.LanternContext;
-import io.lettuce.core.ScriptOutputType;
+import io.lettuce.core.api.StatefulRedisConnection;
+import lombok.Setter;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
 
 /**
  * 此Handler应该处于登录Handle最后
- * 1.登录成功后拒绝其他登录            REFUSE
- * 2.登录成功后下线其他登录            KICK_ALL
- * 3.登录成功后下线同一设备其他登录      KICK_SAME
- * 4.登录成功下线同样类型登录           KICK_TYPE
- * 5.允许n台登录                     ALLOW_N
+ * 使用方法见枚举//
  */
 public class ExclusiveAuthHandler extends AbstractAuthHandler<ExclusiveConfig> {
+
+    private ResultObject<String> loggedResult;
+    private ResultObject<String> limitResult;
+
+    @Override
+    public void init() {
+        systemName = Objects.isNull(systemName)?  "Exclusive" : systemName;
+        loggedResult = ResultObject.getResultObjectMessgae(10001, "该设备已经登录");
+        limitResult = ResultObject.getResultObjectMessgae(10101, "登录设备已达上限");
+    }
+
 
     @Override
     public ResultObject<String> authBefore(UserInfo userInfo) {
 
-        if (config.getMethod() != ExclusiveConfig.Method.REFUSE &&
-                config.getMethod() != ExclusiveConfig.Method.ALLOW_N) {
+        if (!config.getExclusiveMethod().isRefuseFamily()) {
             return null;
         }
+        String key = this.systemName + "-" + userInfo.getUiId().toString();
+
         //REFUSE模式下,如果该设备已经登录,则拒绝登录
-        Long count = connection.sync().hlen(this.systemName + "-" + userInfo.getUiId().toString());
-        if (config.getMethod() == ExclusiveConfig.Method.REFUSE && count > 0) {
-            return new ResultObject<String>(10001, "该设备已经登录");
-        }
-        if (config.getMethod() == ExclusiveConfig.Method.ALLOW_N) {
-            //ALLOW_N模式下,如果该设备已经登录,则判断是否超过允许登录数
-            if (count >= config.getMethod().N()) {
-                return new ResultObject<String>(10101, "登录设备已达上限");
+        if (config.getExclusiveMethod() == ExclusiveConfig.ExclusiveMethod.REFUSE) {
+            if (connection.sync().exists(key) != 0) {
+                return loggedResult;
             }
+        }
+        //ALLOW_NUMBER模式下,检查已经登录设备的数量
+        long count = connection.sync().hlen(key);
+        if (count >= config.getExclusiveMethod().Number()) {
+            return limitResult;
         }
         return null;
     }
@@ -44,49 +55,48 @@ public class ExclusiveAuthHandler extends AbstractAuthHandler<ExclusiveConfig> {
     @Override
     public ResultObject<String> authAfter(UserInfo userInfo) {
 
-        String hashKey = getHashKey();
         String key = this.systemName + "-" + userInfo.getUiId().toString();
 
-
-        if (config.getMethod() != ExclusiveConfig.Method.KICK_SAME &&
-                config.getMethod() != ExclusiveConfig.Method.KICK_ALL &&
-                config.getMethod() != ExclusiveConfig.Method.KICK_TYPE) {
-            //如果不是KICK类方法, 则不需要处理
-            connection.async().hset(key, hashKey, getDeviceType());
-            return null;
-        }
-
-        //TODO 怎么踢
-        if (config.getMethod() == ExclusiveConfig.Method.KICK_ALL) {
+        //KICK_FAMILY方法
+        //把JSON字段修改为KickOut
+        if (config.getExclusiveMethod() == ExclusiveConfig.ExclusiveMethod.KICK_ALL) {
             //踢出所有在线设备
-            connection.sync().del(key);
-        } else if (config.getMethod() == ExclusiveConfig.Method.KICK_SAME) {
+            kickAll(userInfo);
+            connection.async().del(key);
+
+        } else if (config.getExclusiveMethod() == ExclusiveConfig.ExclusiveMethod.KICK_SAME) {
             //踢出同一设备
-            connection.sync().hdel(key, hashKey);
-        } else if (config.getMethod() == ExclusiveConfig.Method.KICK_TYPE) {
+            String sameDevice = connection.sync().hget(key, getIP() + "-" + getUserAgent());
+            if (Objects.nonNull(sameDevice)) {
+                String token = JSON.parseObject(sameDevice).getString("Token");
+                kickToken(userInfo, token);
+            }
+            connection.async().hdel(key, getIP() + "-" + getUserAgent());
+
+        } else if (config.getExclusiveMethod() == ExclusiveConfig.ExclusiveMethod.KICK_TYPE) {
             //踢出同类型设备
-
-            String luaScript =
-                    "local deviceType = ARGV[1] " +
-                            "local Key = KEYS[1] " +
-                            "local fields = redis.call('HGETALL', Key) " +
-                            "for i, v in ipairs(fields) do " +
-                            "if i % 2 == 0 then " +
-                            "local fieldValue = fields[i] " +
-                            "if fieldValue == deviceType then " +
-                            "redis.call('HDEL', Key, fields[i-1]) " +
-                            "end " +
-                            "end " +
-                            "end";
-
-            String[] keys = new String[]{key};
-            connection.sync().eval(luaScript, ScriptOutputType.STATUS, keys, getDeviceType());
-
+            String sameType = connection.sync().hget(key, getDeviceType());
+            if (Objects.nonNull(sameType)) {
+                String token = JSON.parseObject(sameType).getString("Token");
+                kickToken(userInfo, token);
+            }
+            connection.async().hdel(key, getDeviceType());
         }
 
-        connection.async().hset(key, hashKey, getDeviceType());
+        //无论如何登录, 都要将当前设备的信息写入Redis
+        //不同的类型, 使用的HashKey不同
+        JSONObject data = new JSONObject();
+        data.put("User-Agent", getUserAgent());
+        data.put("IP", getIP());
+        data.put("Token", LanternContext.getContext().getToken());
+        if (config.getExclusiveMethod() == ExclusiveConfig.ExclusiveMethod.KICK_SAME) {
+            connection.async().hset(key, getIP() + "-" + getUserAgent(), data.toJSONString());
+        }
+        if (config.getExclusiveMethod() == ExclusiveConfig.ExclusiveMethod.KICK_TYPE) {
+            connection.async().hset(key, getDeviceType(), data.toJSONString());
+        }
+        connection.async().hset(key, getIP(), data.toJSONString());
         return null;
-
     }
 
     /**
@@ -95,29 +105,26 @@ public class ExclusiveAuthHandler extends AbstractAuthHandler<ExclusiveConfig> {
      * @return
      */
     private String getDeviceType() {
-        String UA = LanternContext.getContext().getRequest().getHeader("User-Agent");
+        String userAgent = LanternContext.getContext().getRequest().getHeader("User-Agent");
 
-        if (UA.contains("Mobi")) {
+        if (userAgent.contains("Mobi")) {
             return DeviceType.MOBILE.getName();
-        } else if (UA.contains("Windows NT") || UA.contains("Linux")) {
+        } else if (userAgent.contains("Windows NT") || userAgent.contains("Linux")) {
             return DeviceType.BROWSER.getName();
         } else {
             return DeviceType.BROWSER.getName();//TODO:add other device type
         }
     }
 
-    /**
-     * 获取当前LanternContext中Request的HashKey(IP+UA)
-     *
-     * @return
-     */
 
-    private String getHashKey() {
+    private String getUserAgent() {
+        return LanternContext.getContext().getRequest().getHeader("User-Agent");
+    }
+
+    private String getIP() {
         HttpServletRequest request = LanternContext.getContext().getRequest();
         String ip = request.getHeader("x-forwarded-for");
-        final String IP = Objects.isNull(ip) ? request.getRemoteAddr() : ip;
-        final String UA = request.getHeader("User-Agent");
-        return IP + "-" + UA;
+        return Objects.isNull(ip) ? request.getRemoteAddr() : ip;
     }
 
     /**
@@ -145,6 +152,27 @@ public class ExclusiveAuthHandler extends AbstractAuthHandler<ExclusiveConfig> {
         }
     }
 
+    /**
+     * 这个方法使用了TokenHandler的Redis连接
+     */
+
+    private void kickAll(UserInfo userInfo) {
+        StatefulRedisConnection connection = LanternContext.getContext().getSessionWorkInfo().getConnection();
+        connection.sync().keys(LanternContext.getContext().getSessionWorkInfo().getSystemName() + "-" + userInfo.getUiId().toString() + ":*").forEach(key -> {
+            JSONObject current = JSON.parseObject(connection.sync().get(key).toString());
+            current.put("Status", "KickOut");
+            connection.async().set(key, current.toJSONString());
+        });
+    }
+
+    private void kickToken(UserInfo userInfo, String token) {
+        StatefulRedisConnection connection = LanternContext.getContext().getSessionWorkInfo().getConnection();
+        JSONObject current = JSON.parseObject(connection.sync().get(LanternContext.getContext().getSessionWorkInfo().getSystemName() + "-" + userInfo.getUiId().toString() + ":" + token).toString());
+        current.put("Status", "KickOut");
+        connection.async().set(LanternContext.getContext().getSessionWorkInfo().getSystemName() + "-" + userInfo.getUiId().toString() + ":" + token, current.toJSONString());
+    }
+
+
 }
 
 
@@ -152,5 +180,12 @@ public class ExclusiveAuthHandler extends AbstractAuthHandler<ExclusiveConfig> {
  Redis结构 HashMap
  Exist represents online status
  key(systemName-uiId) -> Hash
-    {IP,UA} -> {deviceType}
+ Different Method uses different HashKey
+    REFUSE: IP -> Data
+    ALLOW_N: IP -> Data
+    KICK_ALL: IP -> Data
+    KICK_SAME: {IP-UA} -> Data
+    KICK_TYPE: Type -> Data
+ Data: JSON:{"Token","User-Agent","IP"}
+
  */

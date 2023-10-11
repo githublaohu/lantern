@@ -19,10 +19,15 @@ public class ExclusiveAuthHandlerTest {
     public void init() {
         exclusiveAuthHandler.setConfig(exclusiveConfig);
         exclusiveAuthHandler.init();
-        exclusiveAuthHandler.setSystemName("test");
         exclusiveAuthHandler.setConnection(connection);
 
         LanternContext context = LanternContext.getContext();
+        LanternContext.SessionWorkInfo sessionWorkInfo = LanternContext.getContext().new SessionWorkInfo();
+        //测试中使用了和Exclusive相同的redis连接
+        sessionWorkInfo.setConnection(connection);
+        sessionWorkInfo.setSystemName("Session");
+        context.setSessionWorkInfo(sessionWorkInfo);
+
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.setRemoteAddr("127.0.0.1");
         request.addHeader("User-Agent", "Mobile");
@@ -53,7 +58,7 @@ public class ExclusiveAuthHandlerTest {
         exclusiveAuthHandler.authAfter(userInfo);
 
 
-        exclusiveConfig.setMethod(ExclusiveConfig.Method.KICK_ALL);
+        exclusiveConfig.setExclusiveMethod(ExclusiveConfig.ExclusiveMethod.KICK_ALL);
 
         request.setRemoteAddr("192.168.3.1");
         request.addHeader("User-Agent", "Windows");
@@ -67,7 +72,7 @@ public class ExclusiveAuthHandlerTest {
     }
     @Test
     public void testKickType() {
-        exclusiveConfig.setMethod(ExclusiveConfig.Method.KICK_TYPE);
+        exclusiveConfig.setExclusiveMethod(ExclusiveConfig.ExclusiveMethod.KICK_TYPE);
         UserInfo userInfo = new UserInfo();
         userInfo.setUiId(1L);
         exclusiveAuthHandler.authBefore(userInfo);
@@ -85,7 +90,7 @@ public class ExclusiveAuthHandlerTest {
 
     @Test
     public void testRefuse() {
-        exclusiveConfig.setMethod(ExclusiveConfig.Method.REFUSE);
+        exclusiveConfig.setExclusiveMethod(ExclusiveConfig.ExclusiveMethod.REFUSE);
         UserInfo userInfo = new UserInfo();
         userInfo.setUiId(1L);
         exclusiveAuthHandler.authBefore(userInfo);
@@ -96,7 +101,8 @@ public class ExclusiveAuthHandlerTest {
 
     @Test
     public void testAllowN() {
-        exclusiveConfig.setMethod(ExclusiveConfig.Method.ALLOW_N(2));
+        exclusiveConfig.setAllowNumber(2);
+        exclusiveConfig.setExclusiveMethod(ExclusiveConfig.ExclusiveMethod.ALLOW_NUMBER);
         UserInfo userInfo = new UserInfo();
         userInfo.setUiId(1L);
         exclusiveAuthHandler.authBefore(userInfo);
@@ -114,7 +120,7 @@ public class ExclusiveAuthHandlerTest {
 
     @Test
     public void testNone() {
-        exclusiveConfig.setMethod(ExclusiveConfig.Method.NONE);
+        exclusiveConfig.setExclusiveMethod(ExclusiveConfig.ExclusiveMethod.NONE);
         UserInfo userInfo = new UserInfo();
         userInfo.setUiId(1L);
         exclusiveAuthHandler.authBefore(userInfo);

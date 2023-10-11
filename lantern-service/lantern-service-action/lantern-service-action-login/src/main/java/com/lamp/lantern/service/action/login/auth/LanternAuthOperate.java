@@ -26,7 +26,7 @@ public class LanternAuthOperate extends AbstractAuthService {
 		UserInfo queryUserInfo = userInfoService.checkUser(userInfo);
 		AuthResultObject authResultObject = new AuthResultObject();
 		if (queryUserInfo == null) {
-			authResultObject.setErrorMessage("用户或则密码不正确");
+			authResultObject.setErrorMessage("用户或者密码不正确");
 			return authResultObject;
 		}
 		String uiSalt = queryUserInfo.getUiSalt();
@@ -34,7 +34,7 @@ public class LanternAuthOperate extends AbstractAuthService {
 		if (Objects.equals(queryUserInfo.getUiSaltPassword(), uiSaltPassword)) {
 			authResultObject.setUserInfo(userInfo);
 		} else {
-			authResultObject.setErrorMessage("用户或则密码不正确");
+			authResultObject.setErrorMessage("用户或者密码不正确");
 		}
 		return authResultObject;
 	}

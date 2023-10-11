@@ -8,7 +8,9 @@ import lombok.Data;
 @Data
 public class ExclusiveConfig {
 
-    private Method method = Method.KICK_SAME;
+    private ExclusiveMethod exclusiveMethod = ExclusiveMethod.KICK_SAME;
+
+    private int allowNumber = 5;
 
 
     /**
@@ -19,52 +21,63 @@ public class ExclusiveConfig {
      * 4.登录成功下线同样类型登录
      * 5.允许n台登录
      */
-    enum Method {
+    enum ExclusiveMethod {
         /**
          * 同类型设备登录后,拒绝新的登录请求
          * Same as ALLOW_N(1)
          */
-        REFUSE,
-        /**
-         * 登录后踢出所有在线设备
-         */
-        KICK_ALL,
-        /**
-         * 登录后踢出之前登录的同一设备
-         */
-        KICK_SAME,
-        /**
-         * 登录后踢出同类型设备
-         */
-        KICK_TYPE,
+        REFUSE("同类型设备登录后,拒绝新的登录请求"),
+
+
         /**
          * 允许n台登录
          */
-        ALLOW_N(5),
-
+        ALLOW_NUMBER("允许n台登录"),
         /**
-         * 不开启
+         * 登录后踢出所有在线设备
          */
-        NONE;
-        public static Method ALLOW_N(int n) {
-            Method method = Method.ALLOW_N;
-            method.n = n;
-            return method;
-        }
-        int N(){
+        KICK_ALL("登录后踢出所有在线设备"),
+        /**
+         * 登录后踢出之前登录的同一设备
+         */
+        KICK_SAME("登录后踢出之前登录的同一设备"),
+        /**
+         * 登录后踢出同类型设备
+         */
+        KICK_TYPE("登录后踢出同类型设备"),
+
+        NONE("不启用");
+
+        int Number() {
             //判断自身是allow_n
-            if (this == Method.ALLOW_N) {
+            if (this == ExclusiveMethod.ALLOW_NUMBER) {
                 return n;
-            }
-            else {
-                throw new RuntimeException("Method is not ALLOW_N");
+            } else {
+                throw new RuntimeException("ExclusiveMethod is not ALLOW_N");
             }
         }
+
         private int n = 5;
-        Method(int i) {
+
+        boolean isKickFamily() {
+            return this == ExclusiveMethod.KICK_ALL ||
+                    this == ExclusiveMethod.KICK_SAME ||
+                    this == ExclusiveMethod.KICK_TYPE;
+        }
+
+        boolean isRefuseFamily() {
+            return this == ExclusiveMethod.REFUSE ||
+                    this == ExclusiveMethod.ALLOW_NUMBER;
+        }
+
+        private String description;
+
+        ExclusiveMethod(int i) {
             this.n = i;
         }
-        Method() {
+
+        ExclusiveMethod(String description) {
+            this.description = description;
         }
     }
 
@@ -72,42 +85,3 @@ public class ExclusiveConfig {
 }
 
 
-//REFUSE - 拒绝其他登录
-//authBefore:
-//
-//如果任何设备已登录,返回拒绝登录的结果
-//authAfter:
-//
-//登记登录状态
-//KICK_ALL - 下线其他登录
-//authBefore:
-//
-//无需特殊处理
-//authAfter:
-//
-//遍历Redis中的设备登录信息,下线其他登录会话
-//登记登录状态
-//KICK_SAME - 下线同一设备的其他登录
-//authBefore:
-//
-//无需特殊处理
-//authAfter:
-//
-//如果设备已登录,下线旧登录会话
-//登记登录状态
-//KICK_TYPE - 下线同类型登录
-//authBefore:
-//
-//无需特殊处理
-//authAfter:
-//
-//判断设备类型
-//遍历Redis设备信息,下线同类型设备的其他登录
-//ALLOW_N - 允许N台登录
-//authBefore:
-//
-//检查已登录设备数是否超过N
-//如果超过,返回拒绝登录结果
-//authAfter:
-//
-//无需特殊处理

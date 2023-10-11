@@ -1,7 +1,7 @@
 server:
   port: 12110
   servlet:
-    context-path: "/lamp/lantern/servcie/core"
+    context-path: "/lamp/lantern/service/core"
 
 dubbo:
   application:
