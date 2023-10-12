@@ -1,16 +1,20 @@
 package com.lamp.lantern.plugins.core.login;
 
 import com.lamp.lantern.plugins.api.config.AuthChannelCofing;
+import com.lamp.lantern.plugins.api.enums.StatusEnum;
 import com.lamp.lantern.plugins.api.mode.AuthResultObject;
 import com.lamp.lantern.plugins.api.mode.UserInfo;
 import com.lamp.lantern.plugins.core.environment.EnvironmentContext;
 import com.lamp.lantern.plugins.core.login.config.HandlerConfig;
 import com.lamp.lantern.plugins.core.login.config.LoginConfig;
+import com.lamp.lantern.plugins.core.servlet.LanternServlet;
 import io.lettuce.core.api.StatefulRedisConnection;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,7 +28,7 @@ public class HandlerServiceTest {
     private UserInfo userInfo = new UserInfo();
 
     @Before
-    public void init(){
+    public void init() {
         userInfo.setUiId(1L);
         userInfo.setUiName("testUserName");
         userInfo.setUiNickname("testNickName");
@@ -35,8 +39,10 @@ public class HandlerServiceTest {
         userInfo.setUiLackFlag(1);
         userInfo.setUiSex("testSex");
         userInfo.setUiAge(1);
+        userInfo.setAllowLogin(StatusEnum.ACTIVE);
 
     }
+
     @Test
     public void createHandlerExecuteTest() throws Exception {
         LoginConfig loginConfig = new LoginConfig();
@@ -51,7 +57,6 @@ public class HandlerServiceTest {
         handlerConfig.setRedisName("testRedis");
         handlerConfigList.add(handlerConfig);
         loginConfig.setHandlerConfigList(handlerConfigList);
-        loginConfig.setAuthChannelCofing(null);
         Map<String, StatefulRedisConnection<String, String>> connectionClientCache = new HashMap<>();
 
 
@@ -62,7 +67,7 @@ public class HandlerServiceTest {
         AuthChannelCofing authChannelCofing = new AuthChannelCofing();
 
 
-        authChannelCofing.setClassName("com.lamp.lantern.plugins.core.login.TestService");//
+        authChannelCofing.setClassName("com.lamp.lantern.plugins.core.login.TestService");
 
         authChannelCofing.setAppId("testAppId");
         authChannelCofing.setAccessKey("testAccessKey");
@@ -71,12 +76,6 @@ public class HandlerServiceTest {
         authChannelCofing.setPublicKey("testPublicKey");
 
         loginConfig.setAuthChannelCofing(authChannelCofing);
-
-//        EnvironmentContext environmentContext = Mockito.mock(EnvironmentContext.class);
-//        AbstractAuthHandler abstrackAuthHandler = Mockito.mock(AbstractAuthHandler.class);
-//        Mockito.when(environmentContext.getBean(Mockito.anyString())).thenReturn(abstrackAuthHandler);
-//        Mockito.when(environmentContext.getBean(Class.class)).thenReturn(abstrackAuthHandler);
-//        Mockito.when(abstrackAuthHandler.)
 
         EnvironmentContext environmentContext = Mockito.mock(EnvironmentContext.class);
         AuthResultObject authResultObject = Mockito.mock(AuthResultObject.class);
@@ -93,6 +92,108 @@ public class HandlerServiceTest {
         //测试getHandlerExecute
         HandlerExecute handlerExecute1 = handlerService.getHandlerExecute(loginConfig.getSystemName());
 
+    }
+
+    /**
+     * 测试所有的Handler, 但是不测试AuthService
+     *
+     * @throws Exception
+     */
+    @Test
+    public void fullTest() throws Exception {
+
+
+        LoginConfig loginConfig = new LoginConfig();
+        loginConfig.setSystemName("testSystem/Service");
+
+        //设置AuthChannel
+        AuthChannelCofing authChannelCofing = new AuthChannelCofing();
+        authChannelCofing.setClassName("com.lamp.lantern.plugins.core.login.TestService");//
+        loginConfig.setAuthChannelCofing(authChannelCofing);
+
+        //根据HandlerList启动Handler
+        List<HandlerConfig> handlerConfigList = new ArrayList<>();
+
+        //设置HandlerConfigList
+
+        //设置一个TokenConfig
+        HandlerConfig tokenHandlerConfig = new HandlerConfig();
+        tokenHandlerConfig.setHandlerName("CreateTokenAuthHandler");
+        tokenHandlerConfig.setRedisName("testTokenRedis");
+
+        //设置CreateTokenConfigMap
+        HashMap<String, String> createTokenConfigMap = new HashMap<>();
+        createTokenConfigMap.put("tokenName", "testTokenName");
+        createTokenConfigMap.put("tokenCreateMode", "UUID");
+        createTokenConfigMap.put("dataPosition", "cookie");
+        createTokenConfigMap.put("cookieDomain", "testCookieDomain");
+
+        tokenHandlerConfig.setConfigMap(createTokenConfigMap);
+
+
+        //设置TimesConfig
+        HandlerConfig timesHandlerConfig = new HandlerConfig();
+        timesHandlerConfig.setHandlerName("LoginTimesAuthHandler");
+        timesHandlerConfig.setRedisName("testTimesRedis");
+
+        HashMap<String, String> timesConfigMap = new HashMap<>();
+        timesConfigMap.put("times", "3");
+
+        timesHandlerConfig.setConfigMap(timesConfigMap);
+
+        //set ExclusiveConfig
+        HandlerConfig exclusiveHandlerConfig = new HandlerConfig();
+        exclusiveHandlerConfig.setHandlerName("ExclusiveAuthHandler");
+        exclusiveHandlerConfig.setRedisName("testExclusiveRedis");
+
+        HashMap<String, String> exclusiveConfigMap = new HashMap<>();
+        exclusiveConfigMap.put("exclusiveMethod", "KICK_SAME");
+        exclusiveConfigMap.put("allowNumber", "3");
+        exclusiveHandlerConfig.setConfigMap(exclusiveConfigMap);
+
+        //set name list config
+        HandlerConfig nameListHandlerConfig = new HandlerConfig();
+        nameListHandlerConfig.setHandlerName("WhiteListAuthHandler");
+        nameListHandlerConfig.setRedisName("testWhiteListRedis");
+
+        HashMap<String, String> nameListConfigMap = new HashMap<>();
+//        nameListConfigMap.put("whiteListSourceType", "entity");
+        nameListConfigMap.put("whiteListSourceType", "list");
+        nameListConfigMap.put("whiteListType", "BLACK");
+        nameListHandlerConfig.setConfigMap(nameListConfigMap);
+
+        //set in HandlerConfigList
+        handlerConfigList.add(tokenHandlerConfig);
+        handlerConfigList.add(timesHandlerConfig);
+        handlerConfigList.add(nameListHandlerConfig);
+        handlerConfigList.add(exclusiveHandlerConfig);
+
+        loginConfig.setHandlerConfigList(handlerConfigList);
+
+        //设置RedisMap
+        Map<String, String> redisMap = new HashMap<>();
+        redisMap.put("testTokenRedis", "redis://localhost:6379/0");
+        redisMap.put("testTimesRedis", "redis://localhost:6379/0");
+        redisMap.put("testWhiteListRedis", "redis://localhost:6379/0");
+        redisMap.put("testExclusiveRedis", "redis://localhost:6379/0");
+        handlerService.createConnection(redisMap);
+
+
+        EnvironmentContext environmentContext = Mockito.mock(EnvironmentContext.class);
+        AuthResultObject authResultObject = Mockito.mock(AuthResultObject.class);
+        Mockito.when(environmentContext.getBean(Mockito.anyString())).thenReturn(authResultObject);
+        Mockito.when(environmentContext.getBean(Class.class)).thenReturn(authResultObject);
+        Mockito.when(authResultObject.getUserInfo()).thenReturn(userInfo);
+
+        //set LanternServlet Mock
+        Mockito.when(environmentContext.getLanternServlet()).thenReturn(Mockito.mock(LanternServlet.class));
+        Mockito.when(environmentContext.getLanternServlet().getRequest()).thenReturn(new MockHttpServletRequest());
+        Mockito.when(environmentContext.getLanternServlet().getResponse()).thenReturn(new MockHttpServletResponse());
+
+
+        HandlerExecute handlerExecute = handlerService.createHandlerExecute(loginConfig, environmentContext);
+
+        handlerExecute.execute(userInfo);
 
     }
 }

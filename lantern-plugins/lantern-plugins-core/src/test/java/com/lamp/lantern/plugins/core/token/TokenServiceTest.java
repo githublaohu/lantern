@@ -18,13 +18,11 @@ public class TokenServiceTest {
         encryptionConfig.setTokenCreateMode(TokenCreateMode.ENCRYPTION);
         encryptionConfig.setAlgorithm("AES");
         encryptionConfig.setKey("1234567890123456");
-        encryptionConfig.setEffective(1000L);
         encryptionConfig.setPosition("header");
         encryptionConfig.setTokenName("token");
         jwtConfig.setTokenCreateMode(TokenCreateMode.JWT);
         jwtConfig.setAlgorithm("AES");
         jwtConfig.setKey("1234567890123456");
-        jwtConfig.setEffective(1000L);
         jwtConfig.setPosition("header");
         jwtConfig.setTokenName("token");
     }

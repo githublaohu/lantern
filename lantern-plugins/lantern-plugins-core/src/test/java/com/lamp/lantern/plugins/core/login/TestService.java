@@ -8,6 +8,11 @@ import org.mockito.Mockito;
 public class TestService extends AbstractAuthService {
 
 
+    /**
+     * 默认登录成功, 用于测试
+     * @param userInfo
+     * @return
+     */
     @Override
     public AuthResultObject auth(UserInfo userInfo) {
         AuthResultObject result = new AuthResultObject();

@@ -8,7 +8,6 @@ import com.lamp.lantern.plugins.api.mode.UserInfo;
 import com.lamp.lantern.plugins.core.login.AbstractAuthHandler;
 import com.lamp.lantern.plugins.core.login.LanternContext;
 import io.lettuce.core.api.StatefulRedisConnection;
-import lombok.Setter;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
@@ -24,7 +23,6 @@ public class ExclusiveAuthHandler extends AbstractAuthHandler<ExclusiveConfig> {
 
     @Override
     public void init() {
-        systemName = Objects.isNull(systemName)?  "Exclusive" : systemName;
         loggedResult = ResultObject.getResultObjectMessgae(10001, "该设备已经登录");
         limitResult = ResultObject.getResultObjectMessgae(10101, "登录设备已达上限");
     }
@@ -36,7 +34,7 @@ public class ExclusiveAuthHandler extends AbstractAuthHandler<ExclusiveConfig> {
         if (!config.getExclusiveMethod().isRefuseFamily()) {
             return null;
         }
-        String key = this.systemName + "-" + userInfo.getUiId().toString();
+        String key = SystemName + "-" + getHandlerName() + "-" + userInfo.getUiId().toString();
 
         //REFUSE模式下,如果该设备已经登录,则拒绝登录
         if (config.getExclusiveMethod() == ExclusiveConfig.ExclusiveMethod.REFUSE) {
@@ -55,7 +53,7 @@ public class ExclusiveAuthHandler extends AbstractAuthHandler<ExclusiveConfig> {
     @Override
     public ResultObject<String> authAfter(UserInfo userInfo) {
 
-        String key = this.systemName + "-" + userInfo.getUiId().toString();
+        String key = SystemName + "-" + getHandlerName() + "-" + userInfo.getUiId().toString();
 
         //KICK_FAMILY方法
         //把JSON字段修改为KickOut
@@ -69,7 +67,9 @@ public class ExclusiveAuthHandler extends AbstractAuthHandler<ExclusiveConfig> {
             String sameDevice = connection.sync().hget(key, getIP() + "-" + getUserAgent());
             if (Objects.nonNull(sameDevice)) {
                 String token = JSON.parseObject(sameDevice).getString("Token");
-                kickToken(userInfo, token);
+                if (Objects.nonNull(token)) {
+                    kickToken(userInfo, token);
+                }
             }
             connection.async().hdel(key, getIP() + "-" + getUserAgent());
 
@@ -79,8 +79,8 @@ public class ExclusiveAuthHandler extends AbstractAuthHandler<ExclusiveConfig> {
             if (Objects.nonNull(sameType)) {
                 String token = JSON.parseObject(sameType).getString("Token");
                 kickToken(userInfo, token);
+                connection.async().hdel(key, getDeviceType());
             }
-            connection.async().hdel(key, getDeviceType());
         }
 
         //无论如何登录, 都要将当前设备的信息写入Redis
@@ -88,6 +88,7 @@ public class ExclusiveAuthHandler extends AbstractAuthHandler<ExclusiveConfig> {
         JSONObject data = new JSONObject();
         data.put("User-Agent", getUserAgent());
         data.put("IP", getIP());
+        LanternContext context = LanternContext.getContext();
         data.put("Token", LanternContext.getContext().getToken());
         if (config.getExclusiveMethod() == ExclusiveConfig.ExclusiveMethod.KICK_SAME) {
             connection.async().hset(key, getIP() + "-" + getUserAgent(), data.toJSONString());
@@ -158,7 +159,7 @@ public class ExclusiveAuthHandler extends AbstractAuthHandler<ExclusiveConfig> {
 
     private void kickAll(UserInfo userInfo) {
         StatefulRedisConnection connection = LanternContext.getContext().getSessionWorkInfo().getConnection();
-        connection.sync().keys(LanternContext.getContext().getSessionWorkInfo().getSystemName() + "-" + userInfo.getUiId().toString() + ":*").forEach(key -> {
+        connection.sync().keys(LanternContext.getContext().getSessionWorkInfo().getTokenHandlerName() + "-" + userInfo.getUiId().toString() + ":*").forEach(key -> {
             JSONObject current = JSON.parseObject(connection.sync().get(key).toString());
             current.put("Status", "KickOut");
             connection.async().set(key, current.toJSONString());
@@ -167,9 +168,13 @@ public class ExclusiveAuthHandler extends AbstractAuthHandler<ExclusiveConfig> {
 
     private void kickToken(UserInfo userInfo, String token) {
         StatefulRedisConnection connection = LanternContext.getContext().getSessionWorkInfo().getConnection();
-        JSONObject current = JSON.parseObject(connection.sync().get(LanternContext.getContext().getSessionWorkInfo().getSystemName() + "-" + userInfo.getUiId().toString() + ":" + token).toString());
-        current.put("Status", "KickOut");
-        connection.async().set(LanternContext.getContext().getSessionWorkInfo().getSystemName() + "-" + userInfo.getUiId().toString() + ":" + token, current.toJSONString());
+        Object current = connection.sync().get(LanternContext.getContext().getSessionWorkInfo().getTokenHandlerName() + "-" + userInfo.getUiId().toString() + ":" + token);
+        if (Objects.isNull(current)) {
+            return;
+        }
+        JSONObject jsonObject = JSON.parseObject(current.toString());
+        jsonObject.put("Status", "KickOut");
+        connection.async().set(LanternContext.getContext().getSessionWorkInfo().getTokenHandlerName() + "-" + userInfo.getUiId().toString() + ":" + token, jsonObject.toJSONString());
     }
 
 
@@ -179,7 +184,7 @@ public class ExclusiveAuthHandler extends AbstractAuthHandler<ExclusiveConfig> {
 /*
  Redis结构 HashMap
  Exist represents online status
- key(systemName-uiId) -> Hash
+ key(systemName-handlerName-uiId) -> Hash
  Different Method uses different HashKey
     REFUSE: IP -> Data
     ALLOW_N: IP -> Data

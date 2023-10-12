@@ -59,7 +59,6 @@ public class HandlerExecute {
 				context.setAuthService(authService);
 				context.setLoginConfig(loginConfig);
 				this.authBefore();
-				//TODO: TOKEN登录逻辑
 				if (Objects.nonNull(resultObject)) {
 					return ( ResultObject<String>)resultObject;
 				}

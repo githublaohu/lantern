@@ -13,7 +13,7 @@ public class TokenConfig {
 	/**
 	 * 有效时间
 	 */
-	private Long effective;
+//	private Long effective;
 
 	/**
 	 * 算法

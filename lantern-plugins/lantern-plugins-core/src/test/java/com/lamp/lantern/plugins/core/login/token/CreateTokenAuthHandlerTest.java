@@ -7,6 +7,7 @@ import com.lamp.lantern.plugins.core.token.TokenCreateMode;
 import io.lettuce.core.api.StatefulRedisConnection;
 import org.junit.Assert;
 import org.mockito.Mockito;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,8 +33,9 @@ public class CreateTokenAuthHandlerTest {
         Mockito.when(connection.sync()).thenReturn(Mockito.mock(io.lettuce.core.api.sync.RedisCommands.class));
         Mockito.when(connection.sync().set(Mockito.anyString(), Mockito.anyString(), Mockito.any())).thenReturn("OK");
         createTokenAuthHandler.setConnection(connection);
-        createTokenAuthHandler.init();
         createTokenAuthHandler.setConfig(new TokenAndSessionConfig());
+        LanternContext context = LanternContext.getContext();
+        createTokenAuthHandler.init();
     }
 
     @Test
@@ -42,6 +44,7 @@ public class CreateTokenAuthHandlerTest {
 
         LanternContext context = LanternContext.getContext();
         context.setResponse(new MockHttpServletResponse());
+        context.setRequest(new MockHttpServletRequest());
         // 创建UserInfo
         UserInfo userInfo = new UserInfo();
         userInfo.setUiId(1L);

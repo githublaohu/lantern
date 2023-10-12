@@ -28,8 +28,8 @@ public class LoginTimesAuthHandler extends AbstractAuthHandler<LoginTimesConfig>
     @Override
     public void init() {
         error = ResultObject.getResultObjectMessgae(3000, "登录失败次数到限制，请明天登录");
-        this.addressTimeKey = this.systemName + "-" + "address-time";
-        this.userIdentificationKey = this.systemName + "-" + "user-time";
+        this.addressTimeKey = this.SystemName + "-" + "address-time";
+        this.userIdentificationKey = this.SystemName + "-" + "user-time";
     }
 
 
@@ -37,7 +37,7 @@ public class LoginTimesAuthHandler extends AbstractAuthHandler<LoginTimesConfig>
     public ResultObject<String> authBefore(UserInfo userInfo) {
         LoginTimesInfo loginTimesInfo = new LoginTimesInfo();
         LanternContext.getContext().setValue(VALUE_KEY, loginTimesInfo);
-        if (config.getAddressTimeLong() > 0) {
+        if (config.getAddressTimes() > 0) {
             HttpServletRequest request = LanternContext.getContext().getRequest();
             String IP = request.getHeader("x-forwarded-for");
             String key = this.addressTimeKey + (Objects.isNull(IP) ? request.getRemoteAddr() : IP);
@@ -45,6 +45,12 @@ public class LoginTimesAuthHandler extends AbstractAuthHandler<LoginTimesConfig>
             String value = connection.sync().get(key);
             Integer integer = Objects.isNull(value) ? null : Integer.valueOf(value);
             loginTimesInfo.setAddressTimes(Objects.isNull(integer) ? -1 : integer);
+
+            if (loginTimesInfo.getAddressTimes() >= config.getAddressTimes()) {
+                log.warn("");
+                //登录失败
+                return error;
+            }
         }
         if (config.getTimes() > 0) {
             String key = this.userIdentificationKey + (Objects.nonNull(userInfo.getUiName()) ? userInfo.getUiName()
@@ -53,12 +59,12 @@ public class LoginTimesAuthHandler extends AbstractAuthHandler<LoginTimesConfig>
             String value = connection.sync().get(key);
             Integer integer = Objects.isNull(value) ? null : Integer.valueOf(value);
             loginTimesInfo.setTimes(Objects.isNull(integer) ? -1 : integer);
-        }
-        if (loginTimesInfo.getTimes() >= config.getTimes()
-                || loginTimesInfo.getAddressTimes() >= config.getAddressTimes()) {
-            log.warn("");
-            //登录失败
-            return error;
+
+            if (loginTimesInfo.getTimes() >= config.getTimes()) {
+                log.warn("");
+                //登录失败
+                return error;
+            }
         }
         return null;
 
@@ -70,10 +76,10 @@ public class LoginTimesAuthHandler extends AbstractAuthHandler<LoginTimesConfig>
         if (Objects.isNull(loginTimesInfo)) {
             return;
         }
-        if (loginTimesInfo.getTimes() != -1) {
+        if (Objects.nonNull(loginTimesInfo.getTimes())&& loginTimesInfo.getTimes() != -1) {
             connection.async().del(loginTimesInfo.getTimesKey());
         }
-        if (loginTimesInfo.getAddressTimes() != -1) {
+        if (Objects.nonNull(loginTimesInfo.getAddressTimes())&&loginTimesInfo.getAddressTimes() != -1) {
             connection.async().del(loginTimesInfo.getAddressTimesKey());
         }
     }

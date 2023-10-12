@@ -60,7 +60,7 @@ public class LanternContext {
         private StatefulRedisConnection connection;
         @Setter
         @Getter
-        private String systemName;
+        private String tokenHandlerName;
         public SessionWorkInfo() {}
     }
 

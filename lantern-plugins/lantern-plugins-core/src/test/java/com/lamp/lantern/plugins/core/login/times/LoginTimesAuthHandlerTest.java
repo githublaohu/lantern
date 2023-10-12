@@ -24,7 +24,7 @@ public class LoginTimesAuthHandlerTest {
         context.setRequest(request);
 
         LoginTimesConfig loginTimesConfig = new LoginTimesConfig();
-        loginTimesAuthHandler.setSystemName("test");
+        loginTimesAuthHandler.setHandlerName("LoginTimesAuthHandler");
         loginTimesAuthHandler.init();
         loginTimesAuthHandler.setConfig(loginTimesConfig);
         loginTimesAuthHandler.setConnection(connection);

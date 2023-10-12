@@ -20,11 +20,11 @@ public class WhiteListAuthHandlerTest {
     @Before
     public void init() {
         whiteListConfig1.setWhiteListSourceType("entity");
-        whiteListConfig1.setWhiteListType("white");
+        whiteListConfig1.setWhiteListType(WhiteListConfig.WhiteListType.WHITE);
 
-        whiteListConfig2.setWhiteListType("white");
+        whiteListConfig2.setWhiteListType(WhiteListConfig.WhiteListType.WHITE);
 
-        whiteListConfig3.setWhiteListType("black");
+        whiteListConfig3.setWhiteListType(WhiteListConfig.WhiteListType.BLACK);
     }
 
     @Test

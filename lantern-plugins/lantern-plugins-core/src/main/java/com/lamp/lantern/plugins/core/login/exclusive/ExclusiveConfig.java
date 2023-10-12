@@ -72,9 +72,7 @@ public class ExclusiveConfig {
 
         private String description;
 
-        ExclusiveMethod(int i) {
-            this.n = i;
-        }
+
 
         ExclusiveMethod(String description) {
             this.description = description;

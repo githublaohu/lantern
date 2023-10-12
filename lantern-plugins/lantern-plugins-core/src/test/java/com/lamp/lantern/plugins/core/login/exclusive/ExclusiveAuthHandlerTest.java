@@ -25,13 +25,14 @@ public class ExclusiveAuthHandlerTest {
         LanternContext.SessionWorkInfo sessionWorkInfo = LanternContext.getContext().new SessionWorkInfo();
         //测试中使用了和Exclusive相同的redis连接
         sessionWorkInfo.setConnection(connection);
-        sessionWorkInfo.setSystemName("Session");
+        sessionWorkInfo.setTokenHandlerName("Session");
         context.setSessionWorkInfo(sessionWorkInfo);
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.setRemoteAddr("127.0.0.1");
         request.addHeader("User-Agent", "Mobile");
         context.setRequest(request);
+        context.setToken("f4770076aa76439ca456225e4964979b");
     }
 
     @Test
@@ -67,7 +68,7 @@ public class ExclusiveAuthHandlerTest {
         exclusiveAuthHandler.authAfter(userInfo);
         exclusiveAuthHandler.authBefore(userInfo);
         exclusiveAuthHandler.authAfter(userInfo);
-        Assert.assertEquals(1, connection.sync().hkeys("test-1").size());
+        Assert.assertEquals(1, connection.sync().hkeys("Exclusive-1").size());
 
     }
     @Test

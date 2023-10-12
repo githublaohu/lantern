@@ -44,6 +44,9 @@ public class HandlerService {
 
     private Map<String, StatefulRedisConnection<String, String>> connectionClientCache = new HashMap<>();
 
+    /**
+     * LoginConfig -> HandlerExecute
+     */
     private Map<String, HandlerExecute> handlerExecuteMap = new ConcurrentHashMap<>();
 
     @Setter
@@ -55,6 +58,10 @@ public class HandlerService {
         CLASS_CACHE.put(clazz.getSimpleName(), clazz);
     }
 
+    /**
+     * 通过配置设置Handler使用的redis连接
+     * @param configMap
+     */
     public void createConnection(Map<String, String> configMap) {
         for (Entry<String, String> entry : configMap.entrySet()) {
             log.info("create connection , name is {} url is {}", entry.getKey(), entry.getValue());
@@ -66,12 +73,17 @@ public class HandlerService {
         return RedisClient.create(config).connect();
     }
 
+    /**
+     * Get HandlerExecute by loginConfig::systemName
+     * @param loginConfig 登录配置
+     * @return 从缓存中获取HandlerExecute
+     */
     public HandlerExecute getHandlerExecute(String loginConfig) {
         return handlerExecuteMap.get(loginConfig);
     }
 
     public HandlerExecute createHandlerExecute(LoginConfig loginConfig, EnvironmentContext environmentContext) throws Exception {
-        log.info("login config is {}", loginConfig);
+        log.info("create handlerExecute , loginConfig is {}", loginConfig);
         HandlerExecute handlerExecute = new HandlerExecute();
         handlerExecute.setLoginConfig(loginConfig);
         handlerExecute.setHandlerList(this.createHandler(loginConfig, environmentContext));
@@ -95,7 +107,7 @@ public class HandlerService {
             authService = (AuthService) environmentContext.getBean(authChannelCofing.getBeanClass());
         }
         if (Objects.isNull(authService)) {
-            // TODO errer
+            // TODO error
             throw new CreateHandlerException("");
         }
         return authService;
@@ -125,11 +137,12 @@ public class HandlerService {
             } else if (Objects.nonNull(handlerConfig.getBeanClass())) {
                 authHandler = (AbstractAuthHandler<Object>) environmentContext.getBean(handlerConfig.getBeanClass());
             }
+            authHandler.setHandlerName(handlerConfig.getHandlerName());
             authHandler.setSystemName(loginConfig.getSystemName());
             authHandler.init();
 
             if (Objects.isNull(authHandler)) {
-                // TODO errer
+                // TODO error
                 throw new CreateHandlerException("");
             }
             authHandlers.add(authHandler);
@@ -137,6 +150,14 @@ public class HandlerService {
         return authHandlers;
     }
 
+    /**
+     *
+     * @param clazz AuthHandler的class
+     * @param handlerConfig 对应Handler的Config
+     * @param environmentContext
+     * @return AuthHandler
+     * @throws Exception
+     */
     @SuppressWarnings("unchecked")
     private AbstractAuthHandler<Object> createAuthHandler(Class<?> clazz, HandlerConfig handlerConfig, EnvironmentContext environmentContext)
             throws Exception {
