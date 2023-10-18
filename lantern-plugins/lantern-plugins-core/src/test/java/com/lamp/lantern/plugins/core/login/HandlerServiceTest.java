@@ -1,6 +1,7 @@
 package com.lamp.lantern.plugins.core.login;
 
-import com.lamp.lantern.plugins.api.config.AuthChannelCofing;
+import com.lamp.lantern.plugins.api.config.AuthChannelConfig;
+import com.lamp.lantern.plugins.api.config.LoginType;
 import com.lamp.lantern.plugins.api.enums.StatusEnum;
 import com.lamp.lantern.plugins.api.mode.AuthResultObject;
 import com.lamp.lantern.plugins.api.mode.UserInfo;
@@ -64,18 +65,20 @@ public class HandlerServiceTest {
         FieldUtils.writeField(handlerService, "connectionClientCache", connectionClientCache, true);
 
 
-        AuthChannelCofing authChannelCofing = new AuthChannelCofing();
+        AuthChannelConfig authChannelConfig = new AuthChannelConfig();
 
 
-        authChannelCofing.setClassName("com.lamp.lantern.plugins.core.login.TestService");
+//        authChannelConfig.setClassName("com.lamp.lantern.plugins.core.login.TestService");
+        authChannelConfig.setSimpleClassName("AlipayPlatformAuthService");
+        authChannelConfig.setAppId("testAppId");
+        authChannelConfig.setAccessKey("testAccessKey");
+        authChannelConfig.setSecretAccessKey("testSecretAccessKey");
+        authChannelConfig.setPrivateKey("testPrivateKey");
+        authChannelConfig.setPublicKey("testPublicKey");
 
-        authChannelCofing.setAppId("testAppId");
-        authChannelCofing.setAccessKey("testAccessKey");
-        authChannelCofing.setSecretAccessKey("testSecretAccessKey");
-        authChannelCofing.setPrivateKey("testPrivateKey");
-        authChannelCofing.setPublicKey("testPublicKey");
-
-        loginConfig.setAuthChannelCofing(authChannelCofing);
+        List<AuthChannelConfig> authChannelConfigList = new ArrayList<>();
+        authChannelConfigList.add(authChannelConfig);
+        loginConfig.setAuthChannelConfigList(authChannelConfigList);
 
         EnvironmentContext environmentContext = Mockito.mock(EnvironmentContext.class);
         AuthResultObject authResultObject = Mockito.mock(AuthResultObject.class);
@@ -107,9 +110,11 @@ public class HandlerServiceTest {
         loginConfig.setSystemName("testSystem/Service");
 
         //设置AuthChannel
-        AuthChannelCofing authChannelCofing = new AuthChannelCofing();
-        authChannelCofing.setClassName("com.lamp.lantern.plugins.core.login.TestService");//
-        loginConfig.setAuthChannelCofing(authChannelCofing);
+        List<AuthChannelConfig> authChannelConfigList = new ArrayList<>();
+        AuthChannelConfig authChannelConfig = new AuthChannelConfig();
+        authChannelConfig.setClassName("com.lamp.lantern.plugins.core.login.TestService");
+        authChannelConfigList.add(authChannelConfig);
+        loginConfig.setAuthChannelConfigList(authChannelConfigList);
 
         //根据HandlerList启动Handler
         List<HandlerConfig> handlerConfigList = new ArrayList<>();
@@ -193,7 +198,7 @@ public class HandlerServiceTest {
 
         HandlerExecute handlerExecute = handlerService.createHandlerExecute(loginConfig, environmentContext);
 
-        handlerExecute.execute(userInfo);
+        handlerExecute.execute(userInfo, LoginType.PLATFORM, "TEST");
 
     }
 }

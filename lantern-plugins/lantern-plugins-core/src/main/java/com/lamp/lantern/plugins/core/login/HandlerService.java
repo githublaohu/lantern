@@ -1,8 +1,13 @@
 package com.lamp.lantern.plugins.core.login;
 
 import com.alibaba.fastjson.JSONObject;
-import com.lamp.lantern.plugins.api.config.AuthChannelCofing;
+import com.lamp.lantern.plugins.api.annotation.AuthTypeChannel;
+import com.lamp.lantern.plugins.api.config.AuthChannelConfig;
+import com.lamp.lantern.plugins.api.config.LoginType;
 import com.lamp.lantern.plugins.api.service.AuthService;
+import com.lamp.lantern.plugins.auth.platform.AlipayPlatformAuthService;
+import com.lamp.lantern.plugins.auth.platform.EnterpriseWechatPlatformAuthService;
+import com.lamp.lantern.plugins.auth.thrid.*;
 import com.lamp.lantern.plugins.core.environment.EnvironmentContext;
 import com.lamp.lantern.plugins.core.exception.CreateHandlerException;
 import com.lamp.lantern.plugins.core.login.broadcast.BroadcastAuthHandler;
@@ -32,8 +37,10 @@ public class HandlerService {
 
     private final static Map<String, Class<?>> CLASS_CACHE = new HashMap<>();
 
+    private final static Map<String, Class<?>> LOGIN_CHANNEL_CACHE = new HashMap<>();
+
+
     static {
-        // 通过url 读取所有的class文件，然后通过
         setClassCache(BroadcastAuthHandler.class);
         setClassCache(WhiteListAuthHandler.class);
         setClassCache(LoginRecordAuthHandler.class);
@@ -41,6 +48,16 @@ public class HandlerService {
         setClassCache(CreateTokenAuthHandler.class);
         setClassCache(ExclusiveAuthHandler.class);
     }
+    static {
+        setLoginCache(AlipayPlatformAuthService.class);
+        setLoginCache(AliPayThirdAuthService.class);
+        setLoginCache(BaiduThirdAuthService.class);
+        setLoginCache(EnterpriseWechatPlatformAuthService.class);
+        setLoginCache(QQThirdAuthService.class);
+        setLoginCache(TaobaoThirdAuthService.class);
+        setLoginCache(WechatThirdAuthService.class);
+    }
+
 
     private Map<String, StatefulRedisConnection<String, String>> connectionClientCache = new HashMap<>();
 
@@ -57,9 +74,13 @@ public class HandlerService {
     public static void setClassCache(Class<?> clazz) {
         CLASS_CACHE.put(clazz.getSimpleName(), clazz);
     }
+    public static void setLoginCache(Class<?> clazz) {
+        LOGIN_CHANNEL_CACHE.put(clazz.getSimpleName(), clazz);
+    }
 
     /**
      * 通过配置设置Handler使用的redis连接
+     *
      * @param configMap
      */
     public void createConnection(Map<String, String> configMap) {
@@ -75,6 +96,7 @@ public class HandlerService {
 
     /**
      * Get HandlerExecute by loginConfig::systemName
+     *
      * @param loginConfig 登录配置
      * @return 从缓存中获取HandlerExecute
      */
@@ -88,35 +110,47 @@ public class HandlerService {
         handlerExecute.setLoginConfig(loginConfig);
         handlerExecute.setHandlerList(this.createHandler(loginConfig, environmentContext));
         handlerExecute.setServlet(environmentContext.getLanternServlet());
-        handlerExecute.setAuthService(this.createAuthService(loginConfig.getAuthChannelCofing()));
+        handlerExecute.setAuthServiceMap(this.createAuthServiceMap(loginConfig.getAuthChannelConfigList()));
         handlerExecuteMap.put(loginConfig.getSystemName(), handlerExecute);
         return handlerExecute;
     }
 
-    private AuthService createAuthService(AuthChannelCofing authChannelCofing)
+    private Map<LoginType,Map<String,AuthService>> createAuthServiceMap(List<AuthChannelConfig> authChannelConfigList) throws Exception {
+
+        Map<LoginType,Map<String,AuthService>>  authServiceMap = new HashMap<>();
+        Arrays.stream(LoginType.values()).forEach(t ->{ authServiceMap.put(t,new HashMap<>());});
+        for (AuthChannelConfig authChannelConfig : authChannelConfigList) {
+            AuthService authService = this.createAuthService(authChannelConfig);
+            AuthTypeChannel authTypeChannel = authService.getClass().getAnnotation(AuthTypeChannel.class);
+            authServiceMap.get(authTypeChannel.loginType()).put(authTypeChannel.authChannel(),authService);
+        }
+        return authServiceMap;
+    }
+
+    private AuthService createAuthService(AuthChannelConfig authChannelConfig)
             throws Exception {
         AuthService authService = null;
-        if (Objects.nonNull(authChannelCofing.getAuthChannel())) {
-            authService = this.createAuthService(null, authChannelCofing);
-        } else if (Objects.nonNull(authChannelCofing.getClassName())) {
-            Class<?> clazz = Class.forName(authChannelCofing.getClassName());
-            authService = this.createAuthService(clazz, authChannelCofing);
-        } else if (Objects.nonNull(authChannelCofing.getBeanName())) {
-            authService = (AuthService) environmentContext.getBean(authChannelCofing.getBeanName());
-        } else if (Objects.nonNull(authChannelCofing.getBeanClass())) {
-            authService = (AuthService) environmentContext.getBean(authChannelCofing.getBeanClass());
+        if (Objects.nonNull(authChannelConfig.getSimpleClassName())) {
+            authService = this.createAuthService(LOGIN_CHANNEL_CACHE.get(authChannelConfig.getSimpleClassName()), authChannelConfig);
+        } else if (Objects.nonNull(authChannelConfig.getClassName())) {
+            Class<?> clazz = Class.forName(authChannelConfig.getClassName());
+            authService = this.createAuthService(clazz, authChannelConfig);
+        } else if (Objects.nonNull(authChannelConfig.getBeanName())) {
+            authService = (AuthService) environmentContext.getBean(authChannelConfig.getBeanName());
+        } else if (Objects.nonNull(authChannelConfig.getBeanClass())) {
+            authService = (AuthService) environmentContext.getBean(authChannelConfig.getBeanClass());
         }
         if (Objects.isNull(authService)) {
             // TODO error
             throw new CreateHandlerException("");
         }
+        authService.initialization(authChannelConfig);
         return authService;
     }
 
-    private AuthService createAuthService(Class<?> clazz, AuthChannelCofing authChannelCofing)
+    private AuthService createAuthService(Class<?> clazz, AuthChannelConfig authChannelConfig)
             throws Exception {
         AuthService authService = (AuthService) (this.objectByEnvironment ? environmentContext.getBean(clazz) : clazz.newInstance());
-        authService.initialization(authChannelCofing);
         return authService;
     }
 
@@ -151,9 +185,8 @@ public class HandlerService {
     }
 
     /**
-     *
-     * @param clazz AuthHandler的class
-     * @param handlerConfig 对应Handler的Config
+     * @param clazz              AuthHandler的class
+     * @param handlerConfig      对应Handler的Config
      * @param environmentContext
      * @return AuthHandler
      * @throws Exception

@@ -1,10 +1,13 @@
 package com.lamp.lantern.plugins.core.login;
 
+import com.lamp.lantern.plugins.api.annotation.AuthTypeChannel;
+import com.lamp.lantern.plugins.api.config.LoginType;
 import com.lamp.lantern.plugins.api.mode.AuthResultObject;
 import com.lamp.lantern.plugins.api.mode.UserInfo;
 import com.lamp.lantern.plugins.api.service.AbstractAuthService;
 import org.mockito.Mockito;
 
+@AuthTypeChannel(loginType = LoginType.PLATFORM, authChannel = "TEST")
 public class TestService extends AbstractAuthService {
 
 

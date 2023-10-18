@@ -22,7 +22,8 @@
 //
 //	private WechatAuthAPI wechatAuthAPI;
 //
-//	public void doInitialization() throws Exception {
+//	@Override
+//    public void doInitialization() throws Exception {
 //		// api.weixin.qq.com
 //		Light light = Light.Builder().tls(true).host(this.config.getServiceAddress()).build();
 //		this.wechatAuthAPI = light.create(WechatAuthAPI.class);

@@ -11,9 +11,6 @@
 
 	<artifactId>lantern-service-action</artifactId>
 	<packaging>pom</packaging>
-	<modules>
-		<module>lantern-service-action-login</module>
-	</modules>
 
 	<properties>
 		<maven.compiler.source>8</maven.compiler.source>
@@ -45,6 +42,30 @@
 			<groupId>com.alipay.sdk</groupId>
 			<artifactId>alipay-sdk-java</artifactId>
 			<version>3.0.52.ALL</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.11</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>5.1.9.RELEASE</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.dubbo</groupId>
+			<artifactId>dubbo</artifactId>
+			<version>2.7.3</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>cn.lampup</groupId>
+			<artifactId>lantern-plugins-core</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<scope>compile</scope>
 		</dependency>
 
 	</dependencies>

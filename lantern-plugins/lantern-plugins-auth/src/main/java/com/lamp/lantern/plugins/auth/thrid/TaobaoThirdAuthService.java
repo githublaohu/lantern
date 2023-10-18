@@ -3,12 +3,15 @@ package com.lamp.lantern.plugins.auth.thrid;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.alipay.api.internal.util.WebUtils;
+import com.lamp.lantern.plugins.api.annotation.AuthTypeChannel;
+import com.lamp.lantern.plugins.api.config.LoginType;
 import com.lamp.lantern.plugins.api.mode.AuthResultObject;
 import com.lamp.lantern.plugins.api.mode.UserInfo;
 import com.lamp.lantern.plugins.api.service.AbstractAuthService;
+import com.lamp.lantern.plugins.api.service.AbstractThirdAuthService;
 
-public class TaobaoThridAuthService extends AbstractAuthService {
+@AuthTypeChannel(loginType = LoginType.THIRD,authChannel = "Taobao")
+public class TaobaoThirdAuthService extends AbstractThirdAuthService {
 
 	@Override
 	public AuthResultObject auth(UserInfo userInfo) {
@@ -30,5 +33,10 @@ public class TaobaoThridAuthService extends AbstractAuthService {
 	public AuthResultObject getUserInfo(UserInfo userInfo) {
 		AuthResultObject authResultObject = AuthResultObject.create();
 		return authResultObject;
+	}
+
+	@Override
+	public RedirectAddress getRedirectAddress() {
+		return null;
 	}
 }

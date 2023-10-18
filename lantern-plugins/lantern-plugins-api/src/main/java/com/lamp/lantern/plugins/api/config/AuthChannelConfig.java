@@ -3,17 +3,22 @@ package com.lamp.lantern.plugins.api.config;
 import lombok.Data;
 
 @Data
-public class AuthChannelCofing {
+public class AuthChannelConfig {
 
 	/**
 	 * 登录方式
 	 */
-	private String loginType;
+	private LoginType loginType;
 
 	/**
 	 * 登录渠道
 	 */
 	private String authChannel;
+
+	/**
+	 * used internally
+	 */
+	private String simpleClassName;
 
 	private String className;
 

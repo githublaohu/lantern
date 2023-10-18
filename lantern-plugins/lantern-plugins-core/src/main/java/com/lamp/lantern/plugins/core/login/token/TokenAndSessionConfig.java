@@ -1,6 +1,5 @@
 package com.lamp.lantern.plugins.core.login.token;
 
-import com.lamp.lantern.plugins.core.token.TokenConfig;
 import com.lamp.lantern.plugins.core.token.TokenCreateMode;
 import lombok.Data;
 
@@ -9,7 +8,7 @@ public class TokenAndSessionConfig {
 
     private TokenCreateMode tokenCreateMode;
 
-    private String tokenName;
+    private String tokenName ;
     /**
      * "cookie" or "header"
      */

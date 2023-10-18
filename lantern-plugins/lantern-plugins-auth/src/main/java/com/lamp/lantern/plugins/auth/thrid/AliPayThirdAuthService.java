@@ -5,14 +5,18 @@ import com.alipay.api.request.AlipaySystemOauthTokenRequest;
 import com.alipay.api.request.AlipayUserInfoShareRequest;
 import com.alipay.api.response.AlipaySystemOauthTokenResponse;
 import com.alipay.api.response.AlipayUserInfoShareResponse;
+import com.lamp.lantern.plugins.api.annotation.AuthTypeChannel;
+import com.lamp.lantern.plugins.api.config.LoginType;
 import com.lamp.lantern.plugins.api.mode.AuthResultObject;
 import com.lamp.lantern.plugins.api.mode.UserInfo;
 import com.lamp.lantern.plugins.api.service.AbstractAuthService;
 
+import com.lamp.lantern.plugins.api.service.AbstractThirdAuthService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class AliPayThirdAuthService extends AbstractAuthService {
+@AuthTypeChannel(loginType = LoginType.THIRD,authChannel = "Alipay")
+public class AliPayThirdAuthService extends AbstractThirdAuthService {
 
 	private DefaultAlipayClient alipayClient;
 
@@ -59,4 +63,8 @@ public class AliPayThirdAuthService extends AbstractAuthService {
 		return authResultObject;
 	}
 
+	@Override
+	public RedirectAddress getRedirectAddress() {
+		return null;
+	}
 }

@@ -2,6 +2,8 @@ package com.lamp.lantern.service.action.login.auth;
 
 import java.util.Objects;
 
+import com.lamp.lantern.plugins.api.annotation.AuthTypeChannel;
+import com.lamp.lantern.plugins.api.config.LoginType;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +19,7 @@ import com.lamp.lantern.plugins.api.service.LanternUserInfoService;
  *
  */
 @Component("first-lantern")
+@AuthTypeChannel(loginType = LoginType.FIRST, authChannel = "Lantern")
 public class LanternAuthOperate extends AbstractAuthService {
 
 	private LanternUserInfoService userInfoService;

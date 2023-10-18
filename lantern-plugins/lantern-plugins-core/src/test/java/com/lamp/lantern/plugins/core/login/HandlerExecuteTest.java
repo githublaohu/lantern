@@ -1,11 +1,12 @@
 package com.lamp.lantern.plugins.core.login;
 
 import com.lamp.decoration.core.result.ResultObject;
+import com.lamp.lantern.plugins.api.config.LoginType;
 import com.lamp.lantern.plugins.api.mode.UserInfo;
+import com.lamp.lantern.plugins.api.service.AuthService;
 import com.lamp.lantern.plugins.core.login.config.HandlerConfig;
 import com.lamp.lantern.plugins.core.login.config.LoginConfig;
 import com.lamp.lantern.plugins.core.servlet.LanternServlet;
-import com.lamp.lantern.plugins.core.servlet.SpringMVCServlet;
 import io.lettuce.core.api.StatefulRedisConnection;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
@@ -14,8 +15,8 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.ui.ModelExtensionsKt;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +30,11 @@ public class HandlerExecuteTest {
     @Before
     public void before() {
 
-        handlerExecute.setAuthService(new TestService());
+        Map<String, AuthService> authServiceMap = new HashMap<>();
+        authServiceMap.put("test", new TestService());
+        Map<LoginType, Map<String, AuthService>> authMap = new HashMap<>();
+        authMap.put(LoginType.PLATFORM, authServiceMap);
+        handlerExecute.setAuthServiceMap(authMap);
 
         //设置loginConfig
         loginConfig.setSystemName("testSystem");
@@ -43,7 +48,7 @@ public class HandlerExecuteTest {
         handlerConfig.setRedisName("testRedis");
         handlerConfigList.add(handlerConfig);
         loginConfig.setHandlerConfigList(handlerConfigList);
-        loginConfig.setAuthChannelCofing(null);
+        loginConfig.setAuthChannelConfigList(null);
         Map<String, StatefulRedisConnection<String, String>> connectionClientCache = new HashMap<>();
 
         handlerExecute.setLoginConfig(loginConfig);

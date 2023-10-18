@@ -1,17 +1,19 @@
 package com.lamp.lantern.plugins.core.login;
 
-import java.util.List;
-import java.util.Objects;
-
 import com.lamp.decoration.core.result.ResultObject;
+import com.lamp.lantern.plugins.api.annotation.AuthTypeChannel;
+import com.lamp.lantern.plugins.api.config.LoginType;
 import com.lamp.lantern.plugins.api.mode.AuthResultObject;
 import com.lamp.lantern.plugins.api.mode.UserInfo;
 import com.lamp.lantern.plugins.api.service.AuthService;
 import com.lamp.lantern.plugins.core.login.config.LoginConfig;
-
 import com.lamp.lantern.plugins.core.servlet.LanternServlet;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * 用于执行登录
@@ -19,96 +21,114 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class HandlerExecute {
 
-	@Setter
-	private List<AuthHandler> handlerList;
+    @Setter
+    private List<AuthHandler> handlerList;
+
+    @Setter
+    private Map<LoginType, Map<String, AuthService>> authServiceMap;
 
 
-	@Setter
-	private AuthService authService;
-	
-	@Setter
-	private LoginConfig loginConfig;
+    @Setter
+    private LoginConfig loginConfig;
 
-	@Setter
-	private LanternServlet servlet;
+    @Setter
+    private LanternServlet servlet;
 
-	/**
-	 * authBefore(Handler) -> auth(AuthService) -> authAfter
-	 * @param userInfo
-	 * @return
-	 */
-	public ResultObject<String> execute(UserInfo userInfo) {
-		HandlerExecute2 handlerExecute2 = new HandlerExecute2();
-		handlerExecute2.userInfo = userInfo;
-		return handlerExecute2.execute();
-	}
+    /**
+     * authBefore(Handler) -> auth(AuthService) -> authAfter
+     *
+     * @param userInfo 用户信息
+     *                 loginType 登录方式
+     *                 authChannel 登录渠道
+     * @return
+     */
+    public ResultObject<String> execute(UserInfo userInfo, LoginType loginType, String authChannel) {
+        HandlerExecute2 handlerExecute2 = new HandlerExecute2();
+        handlerExecute2.userInfo = userInfo;
+        handlerExecute2.loginType = loginType;
+        handlerExecute2.authChannel = authChannel;
+        return handlerExecute2.execute();
+    }
 
-	class HandlerExecute2 {
-		
-		private UserInfo userInfo;
+    public ResultObject<String> execute(UserInfo userInfo) {
+        HandlerExecute2 handlerExecute2 = new HandlerExecute2();
+        handlerExecute2.userInfo = userInfo;
+        handlerExecute2.loginType = LoginType.FIRST;
+        handlerExecute2.authChannel = "Lantern";
+        return handlerExecute2.execute();
+    }
 
-		ResultObject<?> resultObject;
 
-		@SuppressWarnings("unchecked")
-		public ResultObject<String> execute() {
-			try {
-				LanternContext context = LanternContext.getContext();
-				context.setResponse(servlet.getResponse());
-				context.setRequest(servlet.getRequest());
+    class HandlerExecute2 {
 
-				context.setAuthService(authService);
-				context.setLoginConfig(loginConfig);
-				this.authBefore();
-				if (Objects.nonNull(resultObject)) {
-					return ( ResultObject<String>)resultObject;
-				}
-				AuthResultObject object = authService.auth(userInfo);
-				if (Objects.isNull(object.getErrorMessage())) {
-					this.userInfo = object.getUserInfo();
-				} else {
-					log.warn(" auth fail message {}", object);
-					resultObject = ResultObject.getResultObjectMessgae(3000, object.getErrorMessage());
-					this.error();
-				}
-				this.authAfter();
-				resultObject = ResultObject.getResultObject(200, this.userInfo);
-			} catch (Exception e) {
-				log.error(e.getMessage(), e);
-				resultObject =  ResultObject.getResultObjectMessgae(3000, e.getMessage());
-			} finally {
-				LanternContext.getContext().clear();
-			}
-			return (ResultObject<String>)resultObject;
-		}
+        private UserInfo userInfo;
+        LoginType loginType;
+        String authChannel;
 
-		public void authBefore() {
-			for (AuthHandler authHandler : handlerList) {
-				resultObject = authHandler.authBefore(userInfo);
-				if (Objects.nonNull(resultObject)) {
-					log.warn("authBefore fail resultObject is {} , userInfo is {}", resultObject , userInfo);
-					return;
-				}
-			}
-		}
+        ResultObject<?> resultObject;
 
-		public void authAfter() {
-			for (AuthHandler authHandler : handlerList) {
-				resultObject = authHandler.authAfter(userInfo);
-				if (Objects.nonNull(resultObject)) {
-					log.warn("authBefore fail resultObject is {} , userInfo is {}", resultObject , userInfo);
-					return;
-				}
-			}
-		}
+        @SuppressWarnings("unchecked")
+        public ResultObject<String> execute() {
+            try {
+                LanternContext context = LanternContext.getContext();
+                context.setResponse(servlet.getResponse());
+                context.setRequest(servlet.getRequest());
 
-		public void error() {
-			for (AuthHandler authHandler : handlerList) {
-				resultObject = authHandler.error(userInfo);
-				if (Objects.nonNull(resultObject)) {
-					log.warn("authBefore fail resultObject is {} , userInfo is {}", resultObject , userInfo);
-					return;
-				}
-			}
-		}
-	}
+                AuthService authService = authServiceMap.get(loginType).get(authChannel);
+
+                context.setAuthService(authService);
+                context.setLoginConfig(loginConfig);
+                this.authBefore();
+                if (Objects.nonNull(resultObject)) {
+                    return (ResultObject<String>) resultObject;
+                }
+                AuthResultObject object = authService.auth(userInfo);
+                if (Objects.isNull(object.getErrorMessage())) {
+                    this.userInfo = object.getUserInfo();
+                } else {
+                    log.warn(" auth fail message {}", object);
+                    resultObject = ResultObject.getResultObjectMessgae(3000, object.getErrorMessage());
+                    this.error();
+                }
+                this.authAfter();
+                resultObject = ResultObject.getResultObject(200, this.userInfo);
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+                resultObject = ResultObject.getResultObjectMessgae(3000, e.getMessage());
+            } finally {
+                LanternContext.getContext().clear();
+            }
+            return (ResultObject<String>) resultObject;
+        }
+
+        public void authBefore() {
+            for (AuthHandler authHandler : handlerList) {
+                resultObject = authHandler.authBefore(userInfo);
+                if (Objects.nonNull(resultObject)) {
+                    log.warn("authBefore fail resultObject is {} , userInfo is {}", resultObject, userInfo);
+                    return;
+                }
+            }
+        }
+
+        public void authAfter() {
+            for (AuthHandler authHandler : handlerList) {
+                resultObject = authHandler.authAfter(userInfo);
+                if (Objects.nonNull(resultObject)) {
+                    log.warn("authBefore fail resultObject is {} , userInfo is {}", resultObject, userInfo);
+                    return;
+                }
+            }
+        }
+
+        public void error() {
+            for (AuthHandler authHandler : handlerList) {
+                resultObject = authHandler.error(userInfo);
+                if (Objects.nonNull(resultObject)) {
+                    log.warn("authBefore fail resultObject is {} , userInfo is {}", resultObject, userInfo);
+                    return;
+                }
+            }
+        }
+    }
 }
