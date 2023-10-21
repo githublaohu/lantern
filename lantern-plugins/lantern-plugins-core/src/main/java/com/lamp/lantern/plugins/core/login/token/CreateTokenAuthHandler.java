@@ -42,12 +42,13 @@ public class CreateTokenAuthHandler extends AbstractAuthHandler<TokenAndSessionC
         String token = tokenCreateService.createToken(tokenConstructData);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("User-Agent", LanternContext.getContext().getRequest().getHeader("User-Agent"));
+        jsonObject.put("UserID", userInfo.getUiId().toString() );
         String IP = LanternContext.getContext().getRequest().getHeader("X-Forwarded-For");
         IP = Objects.isNull(IP) ? LanternContext.getContext().getRequest().getRemoteAddr() : IP;
         jsonObject.put("IP", IP);
         jsonObject.put("Status", "Normal");
         SetArgs setArgs = SetArgs.Builder.ex(config.getTokenExpire());
-        connection.sync().set(SystemName + "-" + getHandlerName() + "-" + userInfo.getUiId().toString() + ":" + token, jsonObject.toJSONString(), setArgs);
+        connection.sync().set(SystemName + "-" + getHandlerName() + "-" + token, jsonObject.toJSONString(), setArgs);
         LanternContext.getContext().setToken(token);
         HttpServletResponse response = LanternContext.getContext().getResponse();
         if (Objects.equals("cookie", super.config.getDataPosition())) {
@@ -65,7 +66,7 @@ public class CreateTokenAuthHandler extends AbstractAuthHandler<TokenAndSessionC
 /*
 //session Redis
 如果被踢出了, 应该在下一次获取后把这个session删除
-//systemName-HANDLER_SYSTEM_NAME-UserID:sessionID -> JSON:{"User-Agent","IP","Status"}
+//systemName-HANDLER_SYSTEM_NAME-sessionID -> JSON:{"User-Agent","IP","UserID","Status"}
 //Status: Normal:正常登录
 //        KickOut:被踢出
 

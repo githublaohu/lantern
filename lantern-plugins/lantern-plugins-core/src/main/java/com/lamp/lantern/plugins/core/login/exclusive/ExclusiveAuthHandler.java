@@ -58,8 +58,14 @@ public class ExclusiveAuthHandler extends AbstractAuthHandler<ExclusiveConfig> {
         //KICK_FAMILY方法
         //把JSON字段修改为KickOut
         if (config.getExclusiveMethod() == ExclusiveConfig.ExclusiveMethod.KICK_ALL) {
-            //踢出所有在线设备
-            kickAll(userInfo);
+            //踢出所有在线设备, 但是我默认只有一个设备在线，可能有点问题
+            String onlyDevice = connection.sync().hget(key, getIP());
+            if (Objects.nonNull(onlyDevice)) {
+                String token = JSON.parseObject(onlyDevice).getString("Token");
+                if (Objects.nonNull(token)) {
+                    kickToken(token);
+                }
+            }
             connection.async().del(key);
 
         } else if (config.getExclusiveMethod() == ExclusiveConfig.ExclusiveMethod.KICK_SAME) {
@@ -68,7 +74,7 @@ public class ExclusiveAuthHandler extends AbstractAuthHandler<ExclusiveConfig> {
             if (Objects.nonNull(sameDevice)) {
                 String token = JSON.parseObject(sameDevice).getString("Token");
                 if (Objects.nonNull(token)) {
-                    kickToken(userInfo, token);
+                    kickToken(token);
                 }
             }
             connection.async().hdel(key, getIP() + "-" + getUserAgent());
@@ -78,7 +84,7 @@ public class ExclusiveAuthHandler extends AbstractAuthHandler<ExclusiveConfig> {
             String sameType = connection.sync().hget(key, getDeviceType());
             if (Objects.nonNull(sameType)) {
                 String token = JSON.parseObject(sameType).getString("Token");
-                kickToken(userInfo, token);
+                kickToken(token);
                 connection.async().hdel(key, getDeviceType());
             }
         }
@@ -156,25 +162,15 @@ public class ExclusiveAuthHandler extends AbstractAuthHandler<ExclusiveConfig> {
     /**
      * 这个方法使用了TokenHandler的Redis连接
      */
-
-    private void kickAll(UserInfo userInfo) {
+    private void kickToken(String token) {
         StatefulRedisConnection connection = LanternContext.getContext().getSessionWorkInfo().getConnection();
-        connection.sync().keys(LanternContext.getContext().getSessionWorkInfo().getTokenHandlerName() + "-" + userInfo.getUiId().toString() + ":*").forEach(key -> {
-            JSONObject current = JSON.parseObject(connection.sync().get(key).toString());
-            current.put("Status", "KickOut");
-            connection.async().set(key, current.toJSONString());
-        });
-    }
-
-    private void kickToken(UserInfo userInfo, String token) {
-        StatefulRedisConnection connection = LanternContext.getContext().getSessionWorkInfo().getConnection();
-        Object current = connection.sync().get(LanternContext.getContext().getSessionWorkInfo().getTokenHandlerName() + "-" + userInfo.getUiId().toString() + ":" + token);
+        Object current = connection.sync().get(SystemName + "-" +LanternContext.getContext().getSessionWorkInfo().getTokenHandlerName() + "-" +  token);
         if (Objects.isNull(current)) {
             return;
         }
         JSONObject jsonObject = JSON.parseObject(current.toString());
         jsonObject.put("Status", "KickOut");
-        connection.async().set(LanternContext.getContext().getSessionWorkInfo().getTokenHandlerName() + "-" + userInfo.getUiId().toString() + ":" + token, jsonObject.toJSONString());
+        connection.async().set(SystemName + "-" +LanternContext.getContext().getSessionWorkInfo().getTokenHandlerName() + "-"  + token, jsonObject.toJSONString());
     }
 
 
