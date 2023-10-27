@@ -85,6 +85,12 @@
             <artifactId>spring-boot-actuator-autoconfigure</artifactId>
             <version>2.1.7.RELEASE</version>
         </dependency>
+        <dependency>
+            <groupId>cn.lampup</groupId>
+            <artifactId>lantern-service-core-consumer</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
 
 
     </dependencies>

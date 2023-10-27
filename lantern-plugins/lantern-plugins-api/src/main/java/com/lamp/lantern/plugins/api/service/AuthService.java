@@ -3,6 +3,7 @@ package com.lamp.lantern.plugins.api.service;
 import com.lamp.lantern.plugins.api.config.AuthChannelConfig;
 import com.lamp.lantern.plugins.api.mode.AuthResultObject;
 import com.lamp.lantern.plugins.api.mode.UserInfo;
+import lombok.Data;
 
 public interface AuthService {
 	
@@ -21,4 +22,19 @@ public interface AuthService {
 	 * @return
 	 */
 	public AuthResultObject getUserInfo(UserInfo userInfo);
+
+	public default RedirectAddress getRedirectAddress(){
+		return null;
+	}
+
+	//TODO 第三方的放到这里了
+	@Data
+	class RedirectAddress{
+		public static RedirectAddress create(String url){
+			RedirectAddress redirectAddress = new RedirectAddress();
+			redirectAddress.url = url;
+			return redirectAddress;
+		}
+		String url;
+	}
 }

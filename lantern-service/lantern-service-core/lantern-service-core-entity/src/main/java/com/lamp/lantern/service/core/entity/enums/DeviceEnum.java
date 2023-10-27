@@ -12,7 +12,7 @@ public enum DeviceEnum {
     SAMSUNG("SAMSUNG"),
     LENOVO("LENOVO"),
     DELL("DELL"),
-    ALLENWARE("ALLENWARE"),
+    ALIENWARE("ALIENWARE"),
     OTHER("OTHER");
 
 	@Getter

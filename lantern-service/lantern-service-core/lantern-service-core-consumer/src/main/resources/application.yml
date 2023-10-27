@@ -8,7 +8,7 @@ dubbo:
     name: lamp-lantern-core-consumer
     owner: dome
 
-  provider:
+  consumer:
     timeout: 30000
     retries: 0
 
@@ -18,5 +18,3 @@ dubbo:
     subscribe: true
 
 
-decoration:
-   defaultExceptionResult: com.test.consumer.utils.VaastExceptionResult

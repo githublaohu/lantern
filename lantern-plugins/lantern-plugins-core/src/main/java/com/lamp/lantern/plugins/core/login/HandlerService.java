@@ -5,6 +5,7 @@ import com.lamp.lantern.plugins.api.annotation.AuthTypeChannel;
 import com.lamp.lantern.plugins.api.config.AuthChannelConfig;
 import com.lamp.lantern.plugins.api.config.LoginType;
 import com.lamp.lantern.plugins.api.service.AuthService;
+import com.lamp.lantern.plugins.api.service.LanternUserInfoService;
 import com.lamp.lantern.plugins.auth.platform.AlipayPlatformAuthService;
 import com.lamp.lantern.plugins.auth.platform.EnterpriseWechatPlatformAuthService;
 import com.lamp.lantern.plugins.auth.thrid.*;
@@ -12,6 +13,7 @@ import com.lamp.lantern.plugins.core.environment.EnvironmentContext;
 import com.lamp.lantern.plugins.core.exception.CreateHandlerException;
 import com.lamp.lantern.plugins.core.login.broadcast.BroadcastAuthHandler;
 import com.lamp.lantern.plugins.core.login.config.HandlerConfig;
+import com.lamp.lantern.plugins.core.login.config.LanternUserInfoConfig;
 import com.lamp.lantern.plugins.core.login.config.LoginConfig;
 import com.lamp.lantern.plugins.core.login.exclusive.ExclusiveAuthHandler;
 import com.lamp.lantern.plugins.core.login.namelist.WhiteListAuthHandler;
@@ -111,6 +113,7 @@ public class HandlerService {
         handlerExecute.setHandlerList(this.createHandler(loginConfig, environmentContext));
         handlerExecute.setServlet(environmentContext.getLanternServlet());
         handlerExecute.setAuthServiceMap(this.createAuthServiceMap(loginConfig.getAuthChannelConfigList()));
+        handlerExecute.setLanternUserInfoService(this.createLanternUserInfoService(loginConfig.getLanternUserInfoConfig()));
         handlerExecuteMap.put(loginConfig.getSystemName(), handlerExecute);
         return handlerExecute;
     }
@@ -182,6 +185,20 @@ public class HandlerService {
             authHandlers.add(authHandler);
         }
         return authHandlers;
+    }
+
+    private LanternUserInfoService createLanternUserInfoService (LanternUserInfoConfig lanternUserInfoConfig) throws Exception {
+        LanternUserInfoService lanternUserInfoService = null;
+        if (Objects.nonNull(lanternUserInfoConfig.getLanternUserInfoService())){
+            lanternUserInfoService = lanternUserInfoConfig.getLanternUserInfoService();
+        }
+        else if (Objects.nonNull(lanternUserInfoConfig.getBeanClass())){
+            lanternUserInfoService = (LanternUserInfoService) environmentContext.getBean(lanternUserInfoConfig.getBeanClass());
+        }
+        else if (Objects.nonNull(lanternUserInfoConfig.getBeanName())){
+            lanternUserInfoService = (LanternUserInfoService) environmentContext.getBean(lanternUserInfoConfig.getBeanName());
+        }
+        return lanternUserInfoService;
     }
 
     /**

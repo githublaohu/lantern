@@ -1,5 +1,8 @@
 package com.lamp.lantern.service.action.login.auth;
 
+import com.lamp.lantern.plugins.api.config.AuthChannelConfig;
+import com.lamp.lantern.plugins.api.mode.AuthResultObject;
+import com.lamp.lantern.plugins.api.service.AuthService;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.stereotype.Component;
 
@@ -15,15 +18,15 @@ public class LoginUserInfoServiceImpl implements LanternUserInfoService {
 	private UserInfoService userInfoService;
 
 	@Override
-	public Integer registerUserInfoEntity(UserInfo userInfo) {
+	public UserInfo registerUserInfoEntity(UserInfo userInfo) {
 		return userInfoService.registerUserInfoEntity((UserInfoEntity) userInfo);
 	}
 
 	@Override
 	public UserInfo checkUser(UserInfo userInfo) {
-		UserInfoEntity userInfoEntity = (UserInfoEntity) userInfo;
-		UserInfoEntity newUserInfo = userInfoService.checkUserByUserId(userInfoEntity);
+		UserInfo newUserInfo = userInfoService.checkUserByUserId((UserInfoEntity) userInfo);
 		return newUserInfo;
 	}
+
 
 }

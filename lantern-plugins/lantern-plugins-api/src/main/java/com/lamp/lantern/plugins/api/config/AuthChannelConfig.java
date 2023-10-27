@@ -37,14 +37,18 @@ public class AuthChannelConfig {
 	private String appId;
 
 	/**
-	 * ak
+	 * accessKey
 	 */
 	private String accessKey;
 
 	/**
-	 * sk
+	 * secretAccessKey
 	 */
 	private String secretAccessKey;
+
+	private String redirectUri;
+
+	private String scope;
 	
 	private String privateKey;
 	

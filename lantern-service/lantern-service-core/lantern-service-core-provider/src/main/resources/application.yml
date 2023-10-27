@@ -35,11 +35,15 @@ dubbo:
   provider:
     timeout: 30000
     retries: 0
+#  registry:
+#    address: nacos://127.0.0.1:8848
+#    parmeters:
+#      namespace: lamp-lantern-dev
+#    register: true
+#    subscribe: true
   registry:
-    address: nacos://127.0.0.1:8848
-    parmeters:
-      namespace: lamp-lantern-dev
-    register: true
+    address: N/A
+    register: false
     subscribe: true
 
 mybatis:

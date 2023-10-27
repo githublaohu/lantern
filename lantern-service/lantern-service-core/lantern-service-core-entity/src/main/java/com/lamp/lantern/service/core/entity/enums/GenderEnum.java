@@ -6,9 +6,9 @@ public enum GenderEnum {
 
     MALE("MAlE"),
 
-    FAMALE("FAMALE"),
+    FEMALE("FEMALE"),
 
-    UNKNOWN("UNKOWN");
+    UNKNOWN("UNKNOWN");
 
 	@Getter
     private String gender;

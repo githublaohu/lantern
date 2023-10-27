@@ -4,9 +4,4 @@ public interface ThirdAuthService extends AuthService{
     public RedirectAddress getRedirectAddress();
 
 
-
-
-    class RedirectAddress{
-        String url;
-    }
 }

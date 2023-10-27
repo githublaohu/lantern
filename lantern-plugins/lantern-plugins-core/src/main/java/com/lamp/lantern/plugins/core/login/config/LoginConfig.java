@@ -17,4 +17,6 @@ public class LoginConfig {
 	private List<HandlerConfig> handlerConfigList;
 	
 	private List<AuthChannelConfig> authChannelConfigList;
+
+	private LanternUserInfoConfig lanternUserInfoConfig;
 }

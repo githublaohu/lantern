@@ -1,11 +1,11 @@
 package com.lamp.lantern.plugins.core.login;
 
 import com.lamp.decoration.core.result.ResultObject;
-import com.lamp.lantern.plugins.api.annotation.AuthTypeChannel;
 import com.lamp.lantern.plugins.api.config.LoginType;
 import com.lamp.lantern.plugins.api.mode.AuthResultObject;
 import com.lamp.lantern.plugins.api.mode.UserInfo;
 import com.lamp.lantern.plugins.api.service.AuthService;
+import com.lamp.lantern.plugins.api.service.LanternUserInfoService;
 import com.lamp.lantern.plugins.core.login.config.LoginConfig;
 import com.lamp.lantern.plugins.core.servlet.LanternServlet;
 import lombok.Setter;
@@ -34,6 +34,9 @@ public class HandlerExecute {
     @Setter
     private LanternServlet servlet;
 
+    @Setter
+    private LanternUserInfoService lanternUserInfoService;
+
     /**
      * authBefore(Handler) -> auth(AuthService) -> authAfter
      *
@@ -57,15 +60,21 @@ public class HandlerExecute {
         handlerExecute2.authChannel = "Lantern";
         return handlerExecute2.execute();
     }
+    public String getRedirectUrl(String authChannel) {
+        return authServiceMap.get(LoginType.THIRD).get(authChannel).getRedirectAddress().getUrl();
+    }
 
 
     class HandlerExecute2 {
+
+
 
         private UserInfo userInfo;
         LoginType loginType;
         String authChannel;
 
         ResultObject<?> resultObject;
+
 
         @SuppressWarnings("unchecked")
         public ResultObject<String> execute() {
@@ -84,7 +93,14 @@ public class HandlerExecute {
                 }
                 AuthResultObject object = authService.auth(userInfo);
                 if (Objects.isNull(object.getErrorMessage())) {
-                    this.userInfo = object.getUserInfo();
+                    UserInfo userInfo = object.getUserInfo();
+                    if (Objects.isNull(userInfo)){
+                        userInfo = lanternUserInfoService.checkUser(this.userInfo);
+                        if(Objects.isNull(userInfo)){
+                            this.userInfo = authService.getUserInfo(this.userInfo).getUserInfo();
+                            this.userInfo = lanternUserInfoService.registerUserInfoEntity(this.userInfo);
+                        }
+                    }
                 } else {
                     log.warn(" auth fail message {}", object);
                     resultObject = ResultObject.getResultObjectMessgae(3000, object.getErrorMessage());

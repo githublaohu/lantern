@@ -39,7 +39,6 @@ public class HandlerServiceTest {
         userInfo.setUiHeadPortrait("testHeadPortrait");
         userInfo.setUiLackFlag(1);
         userInfo.setUiSex("testSex");
-        userInfo.setUiAge(1);
         userInfo.setAllowLogin(StatusEnum.ACTIVE);
 
     }

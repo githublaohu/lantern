@@ -16,6 +16,9 @@ spring:
 
 server:
   port: 8083
+  servlet:
+    context-path: "/lamp/lantern/login"
+
 
 dubbo:
   scan:

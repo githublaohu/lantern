@@ -4,6 +4,7 @@ import java.util.Objects;
 
 import com.lamp.lantern.plugins.api.annotation.AuthTypeChannel;
 import com.lamp.lantern.plugins.api.config.LoginType;
+import com.lamp.lantern.service.core.entity.UserInfoEntity;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +19,7 @@ import com.lamp.lantern.plugins.api.service.LanternUserInfoService;
  * @author laohu
  *
  */
-@Component("first-lantern")
+@Component("lanternAuthOperate")
 @AuthTypeChannel(loginType = LoginType.FIRST, authChannel = "Lantern")
 public class LanternAuthOperate extends AbstractAuthService {
 
@@ -26,7 +27,7 @@ public class LanternAuthOperate extends AbstractAuthService {
 
 	@Override
 	public AuthResultObject auth(UserInfo userInfo) {
-		UserInfo queryUserInfo = userInfoService.checkUser(userInfo);
+		UserInfo queryUserInfo = userInfoService.checkUser((UserInfoEntity) userInfo);
 		AuthResultObject authResultObject = new AuthResultObject();
 		if (queryUserInfo == null) {
 			authResultObject.setErrorMessage("用户或者密码不正确");

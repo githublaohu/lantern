@@ -4,7 +4,6 @@ import com.lamp.lantern.plugins.api.annotation.AuthTypeChannel;
 import com.lamp.lantern.plugins.api.config.LoginType;
 import com.lamp.lantern.plugins.api.mode.AuthResultObject;
 import com.lamp.lantern.plugins.api.mode.UserInfo;
-import com.lamp.lantern.plugins.api.service.AbstractAuthService;
 import com.lamp.lantern.plugins.api.service.AbstractThirdAuthService;
 
 @AuthTypeChannel(loginType = LoginType.THIRD,authChannel = "QQ")

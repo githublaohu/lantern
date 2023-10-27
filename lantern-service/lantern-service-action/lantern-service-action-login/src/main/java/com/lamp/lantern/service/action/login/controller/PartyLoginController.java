@@ -9,6 +9,7 @@ import javax.annotation.PostConstruct;
 
 import com.lamp.lantern.plugins.api.config.AuthChannelConfig;
 import com.lamp.lantern.plugins.core.environment.SpringEnvironmentContext;
+import com.lamp.lantern.plugins.core.login.config.LanternUserInfoConfig;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -27,7 +28,7 @@ import com.lamp.lantern.service.core.entity.UserInfoEntity;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-@RequestMapping("/partyLogging")
+@RequestMapping("/partyLogin")
 @RestController("partyLoginController")
 @Api(tags = { "一方登录" })
 public class PartyLoginController implements ApplicationContextAware {
@@ -42,21 +43,35 @@ public class PartyLoginController implements ApplicationContextAware {
 	private void init() throws Exception {
 
 		AuthChannelConfig authChannelConfig = new AuthChannelConfig();
-		authChannelConfig.setBeanName("loginUserInfoService");
+		authChannelConfig.setBeanName("lanternAuthOperate");
+		List<AuthChannelConfig> authChannelConfigList = new ArrayList<AuthChannelConfig>();
+		authChannelConfigList.add(authChannelConfig);
 
+		//TODO 在这里加载Handler的配置
 		List<HandlerConfig> handlerConfigList = new ArrayList<HandlerConfig>();
 		
 		loginConfig = new LoginConfig();
-		loginConfig.setSystemName("lantern");
-		loginConfig.setAuthChannelConfigList(authChannelConfig);
+		loginConfig.setSystemName("lanternFirst");
+		loginConfig.setAuthChannelConfigList(authChannelConfigList);
 		loginConfig.setHandlerConfigList(handlerConfigList);
 		SpringEnvironmentContext springEvnironmentContext = new SpringEnvironmentContext(applicationContext);
 
+		LanternUserInfoConfig lanternUserInfoConfig = new LanternUserInfoConfig();
+		lanternUserInfoConfig.setBeanName("loginUserInfoService");
+		loginConfig.setLanternUserInfoConfig(lanternUserInfoConfig);
+
 		handlerService = new HandlerService();
+		handlerService.setEnvironmentContext(springEvnironmentContext);
+
+		//设置RedisMap
+		Map<String, String> redisMap = new HashMap<>();
+		redisMap.put("testTokenRedis", "redis://localhost:6379/0");
+		redisMap.put("testTimesRedis", "redis://localhost:6379/0");
+		redisMap.put("testWhiteListRedis", "redis://localhost:6379/0");
+		redisMap.put("testExclusiveRedis", "redis://localhost:6379/0");
+		handlerService.createConnection(redisMap);
 		
-		Map<String,String> redisConfig = new HashMap<>();
-		
-		handlerService.createConnection(redisConfig);
+		handlerService.createConnection(redisMap);
 		handlerService.createHandlerExecute(loginConfig, springEvnironmentContext);
 
 	}
