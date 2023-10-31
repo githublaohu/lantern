@@ -13,6 +13,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lamp.decoration.core.result.ResultObject;
@@ -63,7 +64,7 @@ public class PartyLoginController implements ApplicationContextAware {
 
 	@PostMapping("accountLogin")
 	@ApiOperation(value = "账户密码登录")
-	public ResultObject<String> accountLogin(@RequestBody UserInfoEntity userInfoEntity) {
+	public ResultObject<String> accountLogin(@RequestBody @RequestParam UserInfoEntity userInfoEntity) {
 		HandlerExecute handlerExecute = handlerService.getHandlerExecute(loginConfig.getSystemName());
 		return handlerExecute.execute(userInfoEntity);
 	}
