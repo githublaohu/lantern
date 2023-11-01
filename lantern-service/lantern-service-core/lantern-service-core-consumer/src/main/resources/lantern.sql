@@ -1,3 +1,14 @@
+create table platform_user_info
+(
+    pui_id          bigint auto_increment
+        primary key,
+    pui_user_id     bigint                                               not null,
+    pui_open_id     bigint                                               not null,
+    pui_type        enum ('PLATFORM', 'SECOND', 'THIRD') default 'THIRD' not null,
+    pui_authchannel enum ('Github', 'Alipay', 'Wechat', 'Taobao', 'QQ')  not null,
+    pui_union_id    bigint                               default 0       not null
+);
+
 create table resource_role_relation
 (
     rrr_id          bigint auto_increment comment ' id '
@@ -10,8 +21,7 @@ create table resource_role_relation
     rrr_create_time datetime     default current_timestamp() not null comment ' 创建时间 ',
     rrr_update_time datetime     default current_timestamp() not null on update current_timestamp() comment ' 修改时间 ',
     rrr_end_time    datetime     default current_timestamp() not null comment ' 结束时间 ',
-    rrr_valid_time  datetime     default current_timestamp() not null comment ' 有效时间 ',
-    rrr_is_delete   int          default 0                   not null comment ' 状态 '
+    rrr_valid_time  datetime     default current_timestamp() not null comment ' 有效时间 '
 );
 
 create index resource_role_relation_rrr_resource_id_rrr_role_id_index
@@ -41,7 +51,7 @@ create table resources
 
 create table role
 (
-    role_id          int auto_increment comment ' id '
+    role_id          bigint(11) auto_increment comment ' id '
         primary key,
     role_name        varchar(127) default ''                  not null comment ' 角色名 ',
     role_create_time datetime     default current_timestamp() not null comment ' 创建时间 ',
@@ -54,9 +64,10 @@ create table role
 
 create table roletype
 (
-    roletype_id   bigint auto_increment
+    roletype_id        bigint auto_increment
         primary key,
-    roletype_name varchar(127) default '' not null
+    roletype_is_delete int          default 0  not null,
+    roletype_name      varchar(127) default '' not null
 );
 
 create table roletype_role_relation
@@ -75,28 +86,26 @@ create table user_info
 (
     ui_id            bigint unsigned auto_increment comment '用户Id'
         primary key,
-    ui_name          varchar(16)                                             not null comment '用户名',
-    ui_nickname      varchar(16)                 default `ui_name`           not null comment '用户昵称',
-    ui_idcard        varchar(20)                                             not null comment '用户唯一标识符',
-    ui_phone         varchar(12)                 default ''                  not null comment '用户联系方式',
-    ui_email         varchar(32)                 default ''                  not null comment '用户邮箱',
-    ui_head_portrait varchar(32)                 default ''                  null comment '用户图像',
-    ui_lack_flag     int unsigned                default 0                   not null comment '用户缺失字段标志位',
-    ui_sex           enum ('MALE', 'FEMALE', 'UNKNOW')                       null comment '用户性别',
-    ui_age           tinyint                     default -1                  null comment '用户年龄',
-    ui_birth         date                        default '1970-01-01'        not null comment '用户生日',
-    ui_address       varchar(32)                 default ''                  not null comment '用户家庭地址',
-    ui_password      varchar(16)                 default `ui_salt_password`  not null comment '用户密码',
-    ui_salt          varchar(64)                 default ''                  not null comment '用户盐',
-    ui_salt_password varchar(64)                 default ''                  not null comment '用户盐密',
-    ui_token         varchar(512)                default ''                  not null comment '用户令牌',
-    ui_login_address varchar(32)                 default ''                  not null comment '用户最近登录地址',
-    ui_login_time    datetime                    default current_timestamp() not null comment '用户最近登录时间',
-    ui_exit_time     datetime                                                null comment '用户最近退出时间',
-    ui_first_login   enum ('True', 'False')      default 'True'              null comment '用户是否为第一次登录',
-    tri_id           bigint unsigned             default 0                   null comment '用户第三方信息Id',
-    ui_status        enum ('ACTIVE', 'INACTIVE') default 'ACTIVE'            null comment '用户状态',
-    allow_login      enum ('ACTIVE', 'INACTIVE') default 'ACTIVE'            null comment '是否限制登录'
+    ui_name          varchar(16)                                                    not null comment '用户名',
+    ui_nickname      varchar(16)                        default `ui_name`           not null comment '用户昵称',
+    ui_idcard        varchar(20)                                                    not null comment '用户唯一标识符',
+    ui_phone         varchar(12)                        default ''                  not null comment '用户联系方式',
+    ui_email         varchar(32)                        default ''                  not null comment '用户邮箱',
+    ui_head_portrait varchar(32)                        default ''                  null comment '用户图像',
+    ui_lack_flag     int unsigned                       default 0                   not null comment '用户缺失字段标志位',
+    ui_sex           enum ('MALE', 'FEMALE', 'UNKNOWN') default 'UNKNOWN'           null comment '用户性别',
+    ui_birth         date                               default '1970-01-01'        not null comment '用户生日',
+    ui_address       varchar(32)                        default ''                  not null comment '用户家庭地址',
+    ui_salt          varchar(64)                        default ''                  not null comment '用户盐',
+    ui_salt_password varchar(64)                        default ''                  not null comment '用户盐密',
+    ui_login_address varchar(32)                        default ''                  not null comment '用户最近登录地址',
+    ui_login_time    datetime                           default current_timestamp() not null comment '用户最近登录时间',
+    ui_exit_time     datetime                                                       null comment '用户最近退出时间',
+    ui_first_login   enum ('True', 'False')             default 'True'              null comment '用户是否为第一次登录',
+    ui_status        enum ('ACTIVE', 'INACTIVE')        default 'ACTIVE'            null comment '用户状态',
+    allow_login      enum ('ACTIVE', 'INACTIVE')        default 'ACTIVE'            null comment '是否限制登录',
+    ui_is_delete     int                                default 0                   not null,
+    token            varchar(128)                       default ''                  null
 );
 
 create table user_role_relation
@@ -108,8 +117,7 @@ create table user_role_relation
     urr_create_time datetime default current_timestamp() not null comment ' 创建时间 ',
     urr_update_time datetime default current_timestamp() not null on update current_timestamp() comment ' 修改时间 ',
     urr_end_time    datetime default current_timestamp() not null comment ' 结束时间 ',
-    urr_valid_time  datetime default current_timestamp() not null comment ' 有效时间 ',
-    urr_is_delete   int      default 0                   not null comment '0未删除，1已删除'
+    urr_valid_time  datetime default current_timestamp() not null comment ' 有效时间 '
 );
 
 create table user_roletype_relation

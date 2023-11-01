@@ -7,31 +7,7 @@ import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
-/**
- * CREATE TABLE `user_info` (
- *   `ui_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '用户Id',
- *   `ui_name` varchar(16) NOT NULL COMMENT '用户名',
- *   `ui_nickname` varchar(16) NOT NULL DEFAULT `ui_name` COMMENT '用户昵称',
- *   `ui_idcard` varchar(20) NOT NULL COMMENT '用户唯一标识符',
- *   `ui_phone` varchar(12) NOT NULL DEFAULT '' COMMENT '用户联系方式',
- *   `ui_email` varchar(32) NOT NULL DEFAULT '' COMMENT '用户邮箱',
- *   `ui_head_portrait` varchar(32) DEFAULT '' COMMENT '用户图像',
- *   `ui_lack_flag` int(10) unsigned NOT NULL DEFAULT 0 COMMENT '用户缺失字段标志位',
- *   `ui_sex` enum('MALE','FEMALE','UNKNOW') DEFAULT NULL COMMENT '用户性别',
- *   `ui_birth` date NOT NULL DEFAULT '1970-01-01' COMMENT '用户生日',
- *   `ui_address` varchar(32) NOT NULL DEFAULT '' COMMENT '用户家庭地址',
- *   `ui_salt` varchar(64) NOT NULL DEFAULT '' COMMENT '用户盐',
- *   `ui_salt_password` varchar(64) NOT NULL DEFAULT '' COMMENT '用户盐密',
- *   `ui_login_address` varchar(32) NOT NULL DEFAULT '' COMMENT '用户最近登录地址',
- *   `ui_login_time` datetime NOT NULL DEFAULT current_timestamp() COMMENT '用户最近登录时间',
- *   `ui_exit_time` datetime DEFAULT NULL COMMENT '用户最近退出时间',
- *   `ui_first_login` enum('True','False') DEFAULT 'True' COMMENT '用户是否为第一次登录',
- *   `tri_id` bigint(20) unsigned DEFAULT 0 COMMENT '用户第三方信息Id',
- *   `ui_status` enum('ACTIVE','INACTIVE') DEFAULT 'ACTIVE' COMMENT '用户状态',
- *   `allow_login` enum('ACTIVE','INACTIVE') DEFAULT 'ACTIVE' COMMENT '是否限制登录',
- *   PRIMARY KEY (`ui_id`)
- * ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
- */
+
 @Mapper
 public interface UserInfoMapper {
 
@@ -58,7 +34,6 @@ public interface UserInfoMapper {
         "<if test='#{uiAddress} != null'>ui_address,</if>",
         "<if test='#{uiLoginAddress} != null'>ui_login_address,</if>",
         "<if test='#{uiFirstLogin} != null'>ui_first_login,</if>",
-        "<if test='#{triId} != null'>tri_id,</if>",
         "<if test='#{uiStatus} != null'>ui_status,</if>",
         "<if test='#{allowLogin} != null'>allow_login,</if>",
         "ui_salt, ui_salt_password",
@@ -75,7 +50,6 @@ public interface UserInfoMapper {
         "<if test='#{uiAddress} != null'>#{uiAddress},</if>",
         "<if test='#{uiLoginAddress} != null'>#{uiLoginAddress},</if>",
         "<if test='#{uiFirstLogin} != null'>#{uiFirstLogin},</if>",
-        "<if test='#{triId} != null'>#{triId},</if>",
         "<if test='#{uiStatus} != null'>#{uiStatus},</if>",
         "<if test='#{allowLogin} != null'>#{allowLogin},</if>",
         "#{uiSalt}, #{uiSaltPassword}",
@@ -83,7 +57,7 @@ public interface UserInfoMapper {
         "</script>"
         })
     //TODO:有问题, 不能检测到null
-public UserInfoEntity registerUserInfoEntity(UserInfo userInfoEntity);
+public Integer registerUserInfoEntity(UserInfo userInfoEntity);
 
     @Results(
             id = "userMap",
@@ -92,7 +66,7 @@ public UserInfoEntity registerUserInfoEntity(UserInfo userInfoEntity);
                     @Result(column = "ui_phone", property = "uiPhone"), @Result(column = "ui_email", property = "uiEmail"), @Result(column = "ui_head_portrait", property = "uiHeadPortrait"),
                     @Result(column = "ui_lack_flag", property = "uiLackFlag"), @Result(column = "ui_sex", property = "uiSex"), @Result(column = "ui_age", property = "uiAge"), @Result(column = "ui_birth", property = "uiBirth"),
                     @Result(column = "ui_address", property = "uiAddress"), @Result(column = "ui_password", property = "uiPassword"), @Result(column = "ui_salt", property = "uiSalt"), @Result(column = "ui_salt_password", property = "uiSaltPassword"), @Result(column = "ui_token", property = "uiToken"),
-                    @Result(column = "ui_login_address", property = "uiLoginAddress"), @Result(column = "ui_login_time", property = "uiLoginTime"), @Result(column = "ui_exit_time", property = "uiExitTime"), @Result(column = "ui_first_login", property = "uiFirstLogin"), @Result(column = "tri_id", property = "triId"),
+                    @Result(column = "ui_login_address", property = "uiLoginAddress"), @Result(column = "ui_login_time", property = "uiLoginTime"), @Result(column = "ui_exit_time", property = "uiExitTime"), @Result(column = "ui_first_login", property = "uiFirstLogin"),
                     @Result(column = "ui_status", property = "uiStatus"), @Result(column = "allow_login", property = "allowLogin")
             }
     )
@@ -166,4 +140,9 @@ public UserInfoEntity registerUserInfoEntity(UserInfo userInfoEntity);
 
     @Select("select * from user_info")
     List<UserInfo> getAllUserInfos();
+
+    @ResultMap("userMap")
+    @Options(useGeneratedKeys = true, keyProperty = "uiId", keyColumn = "ui_id")
+    @Insert("insert into user_info (ui_name) values (#{uiName})")
+    Integer registerThirdLoginUser(UserInfoEntity userInfo);
 }

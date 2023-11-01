@@ -34,6 +34,7 @@ public class CreateTokenAuthHandler extends AbstractAuthHandler<TokenAndSessionC
         }
         LanternContext.getContext().getSessionWorkInfo().setConnection(connection);
         LanternContext.getContext().getSessionWorkInfo().setTokenHandlerName(getHandlerName());
+        LanternContext.getContext().getSessionWorkInfo().setSystemName(SystemName);
     }
 
     @Override
@@ -43,6 +44,7 @@ public class CreateTokenAuthHandler extends AbstractAuthHandler<TokenAndSessionC
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("User-Agent", LanternContext.getContext().getRequest().getHeader("User-Agent"));
         jsonObject.put("UserID", userInfo.getUiId().toString() );
+        jsonObject.put("UserInfo", JSONObject.toJSONString(userInfo));
         String IP = LanternContext.getContext().getRequest().getHeader("X-Forwarded-For");
         IP = Objects.isNull(IP) ? LanternContext.getContext().getRequest().getRemoteAddr() : IP;
         jsonObject.put("IP", IP);
@@ -65,8 +67,8 @@ public class CreateTokenAuthHandler extends AbstractAuthHandler<TokenAndSessionC
 }
 /*
 //session Redis
-如果被踢出了, 应该在下一次获取后把这个session删除
-//systemName-HANDLER_SYSTEM_NAME-sessionID -> JSON:{"User-Agent","IP","UserID","Status"}
+如果被踢出了, 应该在下一次获取后把这个session删除 TODO:我们现在缺一个authbefore的逻辑
+//systemName-HANDLER_SYSTEM_NAME-sessionID -> JSON:{"User-Agent","IP","UserID","UserInfo","Status"}
 //Status: Normal:正常登录
 //        KickOut:被踢出
 

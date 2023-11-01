@@ -51,7 +51,7 @@ public class ExclusiveAuthHandler extends AbstractAuthHandler<ExclusiveConfig> {
     }
 
     @Override
-    public ResultObject<String> authAfter(UserInfo userInfo) {
+    public void doAuthAfter(UserInfo userInfo) {
 
         String key = SystemName + "-" + getHandlerName() + "-" + userInfo.getUiId().toString();
 
@@ -103,7 +103,7 @@ public class ExclusiveAuthHandler extends AbstractAuthHandler<ExclusiveConfig> {
             connection.async().hset(key, getDeviceType(), data.toJSONString());
         }
         connection.async().hset(key, getIP(), data.toJSONString());
-        return null;
+        return ;
     }
 
     /**

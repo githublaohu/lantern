@@ -28,7 +28,6 @@ public class UserInfoServiceImpl implements UserInfoService {
         userInfoEntity.setUiSalt("123456");
         userInfoEntity.setUiNickname("admin");
         userInfoEntity.setUiBirth(LocalDate.now());
-        userInfoEntity.setTriId(0);
         userInfoEntity.setUiSaltPassword("123456");
         userInfoEntity.setUiStatus(StatusEnum.ACTIVE);
         userInfoEntity.setAllowLogin(StatusEnum.ACTIVE);
@@ -46,7 +45,8 @@ public class UserInfoServiceImpl implements UserInfoService {
 
     @Override
     public UserInfoEntity registerUserInfoEntity(UserInfoEntity userInfoEntity){
-        return userInfoEntityMapper.registerUserInfoEntity(userInfoEntity);
+        userInfoEntityMapper.registerUserInfoEntity(userInfoEntity);
+        return userInfoEntity;
     }
 
     @Override
@@ -95,9 +95,17 @@ public class UserInfoServiceImpl implements UserInfoService {
     }
 
     @Override
+    public UserInfo registerThirdLoginUser(UserInfoEntity userInfo) {
+        userInfoEntityMapper.registerThirdLoginUser(userInfo);
+        return userInfo;
+    }
+
+
+    @Override
     public UserInfo checkUserByUserId(UserInfoEntity userInfoEntity) {
         return userInfoEntityMapper.checkUserByUserId(userInfoEntity);
     }
+
 
     @Override
     public UserInfo checkUserByUserIdOrPhoneOrEmail(UserInfoEntity userInfoEntity){

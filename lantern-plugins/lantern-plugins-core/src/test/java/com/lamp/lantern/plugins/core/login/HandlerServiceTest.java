@@ -7,6 +7,7 @@ import com.lamp.lantern.plugins.api.mode.AuthResultObject;
 import com.lamp.lantern.plugins.api.mode.UserInfo;
 import com.lamp.lantern.plugins.core.environment.EnvironmentContext;
 import com.lamp.lantern.plugins.core.login.config.HandlerConfig;
+import com.lamp.lantern.plugins.core.login.config.LanternUserInfoConfig;
 import com.lamp.lantern.plugins.core.login.config.LoginConfig;
 import com.lamp.lantern.plugins.core.servlet.LanternServlet;
 import io.lettuce.core.api.StatefulRedisConnection;
@@ -182,10 +183,14 @@ public class HandlerServiceTest {
         redisMap.put("testExclusiveRedis", "redis://localhost:6379/0");
         handlerService.createConnection(redisMap);
 
+        LanternUserInfoConfig lanternUserInfoConfig = new LanternUserInfoConfig();
+        lanternUserInfoConfig.setBeanName("loginUserInfoService");
+        loginConfig.setLanternUserInfoConfig(lanternUserInfoConfig);
+
 
         EnvironmentContext environmentContext = Mockito.mock(EnvironmentContext.class);
         AuthResultObject authResultObject = Mockito.mock(AuthResultObject.class);
-        Mockito.when(environmentContext.getBean(Mockito.anyString())).thenReturn(authResultObject);
+        Mockito.when(environmentContext.getBean("loginUserInfoService")).thenReturn(Mockito.mock(LanternUserInfoServiceMock.class));
         Mockito.when(environmentContext.getBean(Class.class)).thenReturn(authResultObject);
         Mockito.when(authResultObject.getUserInfo()).thenReturn(userInfo);
 
@@ -193,6 +198,8 @@ public class HandlerServiceTest {
         Mockito.when(environmentContext.getLanternServlet()).thenReturn(Mockito.mock(LanternServlet.class));
         Mockito.when(environmentContext.getLanternServlet().getRequest()).thenReturn(new MockHttpServletRequest());
         Mockito.when(environmentContext.getLanternServlet().getResponse()).thenReturn(new MockHttpServletResponse());
+
+        handlerService.setEnvironmentContext(environmentContext);
 
 
         HandlerExecute handlerExecute = handlerService.createHandlerExecute(loginConfig, environmentContext);

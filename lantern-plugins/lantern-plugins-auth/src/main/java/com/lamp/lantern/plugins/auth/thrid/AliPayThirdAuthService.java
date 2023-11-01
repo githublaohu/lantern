@@ -55,6 +55,8 @@ public class AliPayThirdAuthService extends AbstractThirdAuthService {
             AlipayUserInfoShareResponse response = alipayClient.execute(request, userInfo.getToken());
             if (response.isSuccess()) {
                 UserInfo userInfoEntity = new UserInfo();
+                //TODO 插入用户信息
+                authResultObject.setUserInfo(userInfoEntity);
             } else {
                 authResultObject.setErrorMessage("根据 access_token获取用户信息失败!");
             }

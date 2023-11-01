@@ -22,7 +22,7 @@ public class ExclusiveAuthHandlerTest {
         exclusiveAuthHandler.setConnection(connection);
 
         LanternContext context = LanternContext.getContext();
-        LanternContext.SessionWorkInfo sessionWorkInfo = LanternContext.getContext().new SessionWorkInfo();
+        LanternContext.SessionWorkInfo sessionWorkInfo = LanternContext.getContext().getSessionWorkInfo();
         //测试中使用了和Exclusive相同的redis连接
         sessionWorkInfo.setConnection(connection);
         sessionWorkInfo.setTokenHandlerName("Session");

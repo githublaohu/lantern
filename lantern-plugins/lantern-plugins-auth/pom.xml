@@ -27,6 +27,16 @@
             <version>0.0.2</version>
         </dependency>
         <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+            <version>4.1.86.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-codec-http</artifactId>
+            <version>4.1.86.Final</version>
+        </dependency>
+        <dependency>
             <groupId>com.alipay.sdk</groupId>
             <artifactId>alipay-sdk-java</artifactId>
             <version>3.0.52.ALL</version>
@@ -43,6 +53,10 @@
                 <exclusion>
                     <groupId>log4j</groupId>
                     <artifactId>log4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.jboss</groupId>
+                    <artifactId>netty</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -84,5 +98,5 @@
             <artifactId>test-mock-dependent</artifactId>
             <version>0.1.4</version>
         </dependency>
-    </dependencies>
+    </dependencies><build><plugins><plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-compiler-plugin</artifactId><configuration><source>8</source><target>8</target></configuration></plugin></plugins></build>
 </project>

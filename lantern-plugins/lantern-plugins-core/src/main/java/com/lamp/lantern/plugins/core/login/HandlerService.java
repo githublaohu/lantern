@@ -8,6 +8,7 @@ import com.lamp.lantern.plugins.api.service.AuthService;
 import com.lamp.lantern.plugins.api.service.LanternUserInfoService;
 import com.lamp.lantern.plugins.auth.platform.AlipayPlatformAuthService;
 import com.lamp.lantern.plugins.auth.platform.EnterpriseWechatPlatformAuthService;
+import com.lamp.lantern.plugins.auth.qrcode.QrcodeAuthService;
 import com.lamp.lantern.plugins.auth.thrid.*;
 import com.lamp.lantern.plugins.core.environment.EnvironmentContext;
 import com.lamp.lantern.plugins.core.exception.CreateHandlerException;
@@ -58,6 +59,8 @@ public class HandlerService {
         setLoginCache(QQThirdAuthService.class);
         setLoginCache(TaobaoThirdAuthService.class);
         setLoginCache(WechatThirdAuthService.class);
+        setLoginCache(GithubThirdAuthService.class);
+        setLoginCache(QrcodeAuthService.class);
     }
 
 
@@ -114,6 +117,7 @@ public class HandlerService {
         handlerExecute.setServlet(environmentContext.getLanternServlet());
         handlerExecute.setAuthServiceMap(this.createAuthServiceMap(loginConfig.getAuthChannelConfigList()));
         handlerExecute.setLanternUserInfoService(this.createLanternUserInfoService(loginConfig.getLanternUserInfoConfig()));
+        handlerExecute.setSessionWorkInfo(LanternContext.getContext().getSessionWorkInfo());
         handlerExecuteMap.put(loginConfig.getSystemName(), handlerExecute);
         return handlerExecute;
     }

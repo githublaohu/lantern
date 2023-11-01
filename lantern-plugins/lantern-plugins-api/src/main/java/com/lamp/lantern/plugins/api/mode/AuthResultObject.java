@@ -11,6 +11,8 @@ public class AuthResultObject {
 
 	private UserInfo userInfo;
 
+	private PlatformUserInfo platformUserInfo;
+
 	private EnterpriseAttestationInfo enterpriseAttestationInfo;
 
 	private OrganizationInfo organizationInfo;

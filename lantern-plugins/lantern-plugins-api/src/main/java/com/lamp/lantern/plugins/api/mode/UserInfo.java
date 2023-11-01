@@ -62,7 +62,6 @@ public class UserInfo {
     /**
      * 用户生日
      */
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDate uiBirth;
 
     /**
@@ -96,11 +95,6 @@ public class UserInfo {
      */
     private LocalDate uiExitTime;
 
-
-    /**
-     * 用户第三方记录表Id, 默认从1开始
-     */
-    private Integer triId;
 
     /**
      * 用户状态

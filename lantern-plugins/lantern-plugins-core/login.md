@@ -45,12 +45,12 @@ AuthHandler提供三个功能:
 
 #### Config
 
-| Config                                                                                                               | 说明                                                                                                                                                            |
-|----------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [LoginConfig](./src/main/java/com/lamp/lantern/plugins/core/login/config/LoginConfig.java)                           | 登录系统总配置, 最终在Ex粗特中使用的一项<br/>包括系统名(作为Redis前缀), 登录项配置`authChannelConfig`,handlerConfig列表                                                                         |
-| AuthChannelConfigList                                                                                                | 一个储存了AuthChannelConfig的列表, 登录系统会根据`AuthChannelConfigList`登录方式                                                                                                 |
-| [AuthChannelConfig](../lantern-plugins-api/src/main/java/com/lamp/lantern/plugins/api/config/AuthChannelConfig.java) | Auth配置, 用来生成AuthService, 支持多种登录方式                                                                                                                             |
-| HandlerConfigList                                                                                                    | 一个储存了HandlerConfig的列表, 登录系统会根据`HandlerConfigList`配置启用哪些Handler                                                                                                |
+| Config                                                                                                               | 说明                                                                                                                                                              |
+|----------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [LoginConfig](./src/main/java/com/lamp/lantern/plugins/core/login/config/LoginConfig.java)                           | 登录系统总配置, 最终在Execute中使用的一项<br/>包括系统名(作为Redis前缀), 登录项配置`authChannelConfig`,handlerConfig列表                                                                       |
+| AuthChannelConfigList                                                                                                | 一个储存了AuthChannelConfig的列表, 登录系统会根据`AuthChannelConfigList`登录方式                                                                                                   |
+| [AuthChannelConfig](../lantern-plugins-api/src/main/java/com/lamp/lantern/plugins/api/config/AuthChannelConfig.java) | Auth配置, 用来生成AuthService, 支持多种登录方式                                                                                                                               |
+| HandlerConfigList                                                                                                    | 一个储存了HandlerConfig的列表, 登录系统会根据`HandlerConfigList`配置启用哪些Handler                                                                                                  |
 | HandlerConfig                                                                                                        | 每个Handler都有自己的配置项, 而配置项会在[AbstractAuthHandler](././src/main/java/com/lamp/lantern/plugins/core/login/AbstractAuthHandler.java)中以泛型参数传入, 所以说Config和Handler类型是绑定的 |
 
 

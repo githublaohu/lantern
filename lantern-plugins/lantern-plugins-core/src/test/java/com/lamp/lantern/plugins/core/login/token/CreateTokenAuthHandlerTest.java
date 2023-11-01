@@ -4,6 +4,7 @@ import com.lamp.lantern.plugins.api.mode.UserInfo;
 import com.lamp.lantern.plugins.core.login.LanternContext;
 import com.lamp.lantern.plugins.core.token.TokenConfig;
 import com.lamp.lantern.plugins.core.token.TokenCreateMode;
+import io.lettuce.core.RedisClient;
 import io.lettuce.core.api.StatefulRedisConnection;
 import org.junit.Assert;
 import org.mockito.Mockito;
@@ -34,6 +35,7 @@ public class CreateTokenAuthHandlerTest {
         Mockito.when(connection.sync().set(Mockito.anyString(), Mockito.anyString(), Mockito.any())).thenReturn("OK");
         createTokenAuthHandler.setConnection(connection);
         createTokenAuthHandler.setConfig(new TokenAndSessionConfig());
+        createTokenAuthHandler.setSystemName("testSystemName");
         LanternContext context = LanternContext.getContext();
         createTokenAuthHandler.init();
     }
@@ -49,9 +51,10 @@ public class CreateTokenAuthHandlerTest {
         UserInfo userInfo = new UserInfo();
         userInfo.setUiId(1L);
 
-        StatefulRedisConnection connection = Mockito.mock(StatefulRedisConnection.class);
-        Mockito.when(connection.sync()).thenReturn(Mockito.mock(io.lettuce.core.api.sync.RedisCommands.class));
-        Mockito.when(connection.sync().set(Mockito.anyString(), Mockito.anyString(), Mockito.any())).thenReturn("OK");
+//        StatefulRedisConnection connection = Mockito.mock(StatefulRedisConnection.class);
+//        Mockito.when(connection.sync()).thenReturn(Mockito.mock(io.lettuce.core.api.sync.RedisCommands.class));
+//        Mockito.when(connection.sync().set(Mockito.anyString(), Mockito.anyString(), Mockito.any())).thenReturn("OK");
+        StatefulRedisConnection<String,String> connection = RedisClient.create("redis://127.0.0.1").connect();
         createTokenAuthHandler.setConnection(connection);
         // 调用要测试的方法
         createTokenAuthHandler.doAuthAfter(userInfo);

@@ -1,5 +1,7 @@
 package com.lamp.lantern.plugins.api.config;
 
+import io.lettuce.core.api.StatefulRedisConnection;
+import jdk.jfr.Unsigned;
 import lombok.Data;
 
 @Data
@@ -57,7 +59,12 @@ public class AuthChannelConfig {
 	private String format = "json";
 	
     private String charset = "UTF-8";
-    
+
+	private String redisUrl;
+
+	private Integer qrcodeExpire;
+
+	private String qrcodeKeyPrefix = "LanternQrcode:";
     
     private String signType = "RSA2";
 }

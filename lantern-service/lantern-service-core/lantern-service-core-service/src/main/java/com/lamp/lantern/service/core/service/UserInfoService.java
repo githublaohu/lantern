@@ -19,6 +19,7 @@ public interface UserInfoService {
 
     public UserInfo checkUserByUserId(UserInfoEntity userInfoEntity);
 
+
     public UserInfo checkUserByUserIdOrPhoneOrEmail(UserInfoEntity userInfoEntity);
 
     public UserInfo checkUserExistByIdcard(UserInfoEntity userInfoEntity);
@@ -34,4 +35,5 @@ public interface UserInfoService {
 
     public List<UserInfo> getAllUserInfos();
 
+    public UserInfo registerThirdLoginUser(UserInfoEntity userInfo);
 }

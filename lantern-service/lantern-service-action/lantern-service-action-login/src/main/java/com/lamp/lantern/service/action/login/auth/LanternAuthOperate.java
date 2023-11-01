@@ -27,7 +27,7 @@ public class LanternAuthOperate extends AbstractAuthService {
 
 	@Override
 	public AuthResultObject auth(UserInfo userInfo) {
-		UserInfo queryUserInfo = userInfoService.checkUser((UserInfoEntity) userInfo);
+		UserInfo queryUserInfo = userInfoService.checkUserByUserId((UserInfoEntity) userInfo);
 		AuthResultObject authResultObject = new AuthResultObject();
 		if (queryUserInfo == null) {
 			authResultObject.setErrorMessage("用户或者密码不正确");

@@ -55,13 +55,9 @@ public class LanternContext {
 
     @Data
     public class SessionWorkInfo {
-        @Setter
-        @Getter
-        private StatefulRedisConnection connection;
-        @Setter
-        @Getter
+        private StatefulRedisConnection<String,String> connection;
         private String tokenHandlerName;
-        public SessionWorkInfo() {}
+        private String systemName;
     }
 
     public void setValue(String key, Object value) {
