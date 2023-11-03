@@ -1,3 +1,9 @@
+server:
+  port: 8083
+  servlet:
+    context-path: "/lamp/lantern/service/action"
+
+
 spring:
   jackson:
     time-zone: GMT+8
@@ -11,11 +17,11 @@ spring:
         min-idle: 0
         max-wait: -1ms
         max-active: 8
-    timeout: 3000ms
+    timeout: 30000
 
 
-server:
-  port: 8083
+
+
 
 dubbo:
   scan:
@@ -31,6 +37,8 @@ dubbo:
     address: nacos://127.0.0.1:8848
   metadata-report:
     address: nacos://127.0.0.1:8848
+  consumer:
+    timeout: 30000
 
 wx:
   open:

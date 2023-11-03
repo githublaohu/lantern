@@ -9,11 +9,11 @@ public enum LoginPatternEnum {
 
     PARTY_EMAIL("party","email"),
 
-    PARTY_VERIFYCODE("party","verifycode"),
+    PARTY_VERIFY_CODE("party","verifycode"),
 
     PARTY_TOKEN("party", "token"),
 
-    PLATFORM_WECHAT("platfrom","wechat"),
+    PLATFORM_WECHAT("platform","wechat"),
 
     TRIPARTITE_APPLET("tripartite","applet");
 

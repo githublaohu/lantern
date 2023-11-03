@@ -28,9 +28,9 @@ import lombok.Data;
 @Data
 public class LanternConfig {
 
-	private AuthenticationConfig authenticationConfig;
-
-	private List<AuthenticationConfig> authenticationConfigList;
+//	private AuthenticationConfig authenticationConfig;
+//
+//	private List<AuthenticationConfig> authenticationConfigList;
 	
 	 
 }

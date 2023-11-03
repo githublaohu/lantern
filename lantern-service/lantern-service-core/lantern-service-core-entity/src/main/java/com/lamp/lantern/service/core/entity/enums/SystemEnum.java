@@ -7,7 +7,7 @@ public enum SystemEnum {
     WINDOWS("WINDOWS"),
     LINUX("LINUX"),
     IOS("IOS"),
-    ANDRIOD("ANDRIOD"),
+    ANDROID("ANDROID"),
     HARMONY("HARMONY"),
     OTHER("OTHER");
 

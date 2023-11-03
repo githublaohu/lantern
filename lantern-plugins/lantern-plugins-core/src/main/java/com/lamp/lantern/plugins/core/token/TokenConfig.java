@@ -19,12 +19,12 @@ public class TokenConfig {
 	/**
 	 * 
 	 */
-	private TokenCreateMode tockenCreateMode;
+	private TokenCreateMode tokenCreateMode;
 
 	/**
 	 * 有效时间
 	 */
-	private Long effective;
+//	private Long effective;
 
 	/**
 	 * 算法

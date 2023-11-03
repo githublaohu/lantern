@@ -14,6 +14,9 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @Configuration
 @EnableSwagger2
+/**
+ * http://127.0.0.1:12110/lamp/lantern/service/core/swagger-ui.html
+ */
 public class SwaggerConfig {
 
     @Bean

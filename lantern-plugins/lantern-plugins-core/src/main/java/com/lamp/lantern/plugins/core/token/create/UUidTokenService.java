@@ -19,7 +19,7 @@ import com.lamp.lantern.plugins.core.token.TokenCreateService;
 public class UUidTokenService implements TokenCreateService {
 
 	@Override
-	public String createToken(TokenConstructData tockenConstructData) {
+	public String createToken(TokenConstructData tokenConstructData) {
 		return UUID.randomUUID().toString().replaceAll("-", "");
 	}
 }

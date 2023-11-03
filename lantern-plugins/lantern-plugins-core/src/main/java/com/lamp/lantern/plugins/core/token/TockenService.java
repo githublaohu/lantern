@@ -22,11 +22,11 @@ public class TockenService {
 	}
 	
 	public TokenCreateService  createToken(TokenConfig tokenConfig) {
-		if(tokenConfig.getTockenCreateMode() == TokenCreateMode.UUID) {
+		if(tokenConfig.getTokenCreateMode() == TokenCreateMode.UUID) {
 			return new UUidTokenService();
-		}else if(tokenConfig.getTockenCreateMode() == TokenCreateMode.RANDOMSTRING) {
+		}else if(tokenConfig.getTokenCreateMode() == TokenCreateMode.RANDOMSTRING) {
 			return new RandomTokenService();
-		}else if(tokenConfig.getTockenCreateMode() == TokenCreateMode.ENCRYPTION) {
+		}else if(tokenConfig.getTokenCreateMode() == TokenCreateMode.ENCRYPTION) {
 			EncryptionTokenService tockenCreateService = new EncryptionTokenService();
 			tockenCreateService.config(tokenConfig);
 			return tockenCreateService;
