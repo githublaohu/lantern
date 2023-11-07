@@ -2,7 +2,7 @@ package com.lamp.lantern.service.core.consumer.controller;
 
 import com.lamp.lantern.service.core.consumer.utils.ResultObjectEnums;
 import com.lamp.lantern.service.core.entity.LoginRecordEntity;
-import com.lamp.lantern.service.core.entity.database.LoginRecord;
+import com.lamp.lantern.plugins.api.mode.LoginRecord;
 import com.lamp.lantern.service.core.entity.UserInfoEntity;
 import com.lamp.lantern.service.core.service.LoginRecordService;
 import io.swagger.annotations.Api;

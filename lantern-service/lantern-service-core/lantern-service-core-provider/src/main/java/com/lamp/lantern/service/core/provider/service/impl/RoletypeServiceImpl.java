@@ -1,7 +1,6 @@
 package com.lamp.lantern.service.core.provider.service.impl;
 
 import com.lamp.lantern.service.core.entity.RoletypeEntity;
-import com.lamp.lantern.service.core.entity.database.Roletype;
 import com.lamp.lantern.service.core.provider.mapper.RoletypeMapper;
 import com.lamp.lantern.service.core.service.RoletypeService;
 import org.apache.dubbo.config.annotation.Service;
@@ -14,12 +13,12 @@ import java.util.List;
 public class RoletypeServiceImpl implements RoletypeService {
     @Autowired
     private RoletypeMapper roletypeMapper;
-    @PostConstruct
-    public void test(){
-        RoletypeEntity roletypeEntity = new RoletypeEntity();
-        roletypeEntity.setRoletypeName("admin");
-        this.insertRoletype(roletypeEntity);
-    }
+//    @PostConstruct
+//    public void test(){
+//        RoletypeEntity roletypeEntity = new RoletypeEntity();
+//        roletypeEntity.setRoletypeName("admin");
+//        this.insertRoletype(roletypeEntity);
+//    }
     @Override
     public Integer insertRoletype(RoletypeEntity roletypeEntity) {
         return roletypeMapper.insertRoletype(roletypeEntity);

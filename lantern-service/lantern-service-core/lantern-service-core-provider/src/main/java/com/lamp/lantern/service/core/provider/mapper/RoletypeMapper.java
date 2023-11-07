@@ -1,7 +1,7 @@
 package com.lamp.lantern.service.core.provider.mapper;
 
 import com.lamp.lantern.service.core.entity.RoletypeEntity;
-import com.lamp.lantern.service.core.entity.database.Roletype;
+import com.lamp.lantern.plugins.api.mode.Roletype;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Update;

@@ -1,4 +1,4 @@
-package com.lamp.lantern.service.core.entity.database;
+package com.lamp.lantern.plugins.api.mode;
 
 import io.swagger.annotations.ApiModel;
 import lombok.Data;

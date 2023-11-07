@@ -1,11 +1,10 @@
 package com.lamp.lantern.service.core.entity;
 
-import com.lamp.lantern.service.core.entity.database.Role;
+import com.lamp.lantern.plugins.api.mode.Role;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 @Data
 @ApiModel(value = "RoleEntity", description = "角色实体类")

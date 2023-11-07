@@ -3,6 +3,7 @@ package com.lamp.lantern.service.core.service;
 import com.lamp.lantern.plugins.api.mode.UserInfo;
 import com.lamp.lantern.service.core.entity.UserInfoEntity;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface UserInfoService {
@@ -34,6 +35,8 @@ public interface UserInfoService {
     public Integer deleteUsers(List<UserInfoEntity> userInfoEntities);
 
     public List<UserInfo> getAllUserInfos();
+
+    public List<UserInfo> getUpdatedUserInfos(LocalDateTime time);
 
     public UserInfo registerThirdLoginUser(UserInfoEntity userInfo);
 }

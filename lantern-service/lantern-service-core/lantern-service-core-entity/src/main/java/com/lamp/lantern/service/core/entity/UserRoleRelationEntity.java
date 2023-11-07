@@ -1,10 +1,8 @@
 package com.lamp.lantern.service.core.entity;
 
-import com.lamp.lantern.service.core.entity.database.UserRoleRelation;
+import com.lamp.lantern.plugins.api.mode.UserRoleRelation;
 import io.swagger.annotations.Api;
 import lombok.Data;
-
-import java.time.LocalDateTime;
 
 @Data
 @Api(value = "UserRoleRelationEntity", description = "用户角色关系实体类")

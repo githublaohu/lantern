@@ -17,13 +17,10 @@ import javax.servlet.http.HttpServletRequest;
 import com.lamp.lantern.plugins.api.mode.UserInfo;
 import com.lamp.lantern.plugins.core.login.LanternContext;
 import com.lamp.lantern.service.core.entity.LoginRecordEntity;
-import com.lamp.lantern.service.core.entity.database.LoginRecord;
-import com.lamp.lantern.service.core.entity.enums.LoginStatusEnum;
+import com.lamp.lantern.plugins.api.enums.LoginStatusEnum;
 import com.lamp.lantern.service.core.service.LoginRecordService;
 import com.lamp.lantern.plugins.core.login.AbstractAuthHandler;
 
-import java.sql.Date;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class LoginRecordAuthHandler extends AbstractAuthHandler<Object> {

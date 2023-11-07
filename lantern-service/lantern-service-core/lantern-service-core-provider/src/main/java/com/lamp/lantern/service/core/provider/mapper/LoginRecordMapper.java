@@ -1,7 +1,7 @@
 package com.lamp.lantern.service.core.provider.mapper;
 
 import com.lamp.lantern.plugins.api.mode.UserInfo;
-import com.lamp.lantern.service.core.entity.database.LoginRecord;
+import com.lamp.lantern.plugins.api.mode.LoginRecord;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;

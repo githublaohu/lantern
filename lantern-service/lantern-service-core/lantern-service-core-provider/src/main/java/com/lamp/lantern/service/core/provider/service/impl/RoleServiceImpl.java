@@ -1,7 +1,7 @@
 package com.lamp.lantern.service.core.provider.service.impl;
 
 import com.lamp.lantern.service.core.entity.RoleEntity;
-import com.lamp.lantern.service.core.entity.database.Role;
+import com.lamp.lantern.plugins.api.mode.Role;
 import com.lamp.lantern.service.core.entity.UserInfoEntity;
 import com.lamp.lantern.service.core.provider.mapper.RoleMapper;
 import com.lamp.lantern.service.core.service.RoleService;
@@ -21,24 +21,24 @@ public class RoleServiceImpl implements RoleService {
   @Autowired
   private RoleMapper roleMapper;
 
-  @PostConstruct
-  public void test(){
-    RoleEntity roleEntity = new RoleEntity();
-    roleEntity.setRoleId(1l);
-    roleEntity.setRoleName("test");
-    roleEntity.setRoleDescription("test");
-    roleEntity.setRoleValidTime(LocalDateTime.now());
-//    this.insertRole(roleEntity);
-    int a = this.checkRoleValid(roleEntity);
-    this.endRole(roleEntity);
-    int b = this.checkRoleValid(roleEntity);
-    var c = this.getValidRoles();
-
-    UserInfoEntity userInfoEntity = new UserInfoEntity();
-    userInfoEntity.setUiId(1l);
-    var d = this.getAllValidRoleByUserId(userInfoEntity);
-
-  }
+//  @PostConstruct
+//  public void test(){
+//    RoleEntity roleEntity = new RoleEntity();
+//    roleEntity.setRoleId(1l);
+//    roleEntity.setRoleName("test");
+//    roleEntity.setRoleDescription("test");
+//    roleEntity.setRoleValidTime(LocalDateTime.now());
+////    this.insertRole(roleEntity);
+//    int a = this.checkRoleValid(roleEntity);
+//    this.endRole(roleEntity);
+//    int b = this.checkRoleValid(roleEntity);
+//    var c = this.getValidRoles();
+//
+//    UserInfoEntity userInfoEntity = new UserInfoEntity();
+//    userInfoEntity.setUiId(1l);
+//    var d = this.getAllValidRoleByUserId(userInfoEntity);
+//
+//  }
   @Override
   public List<Role> queryByForm(RoleEntity roleEntity) {
     return roleMapper.queryByForm(roleEntity); }
@@ -93,6 +93,5 @@ public class RoleServiceImpl implements RoleService {
   @Override
   public List<Role> getAllValidRoleByUserId(UserInfoEntity userInfoEntity) {
     return roleMapper.getAllValidRoleByUserId(userInfoEntity);}
-
 
 }

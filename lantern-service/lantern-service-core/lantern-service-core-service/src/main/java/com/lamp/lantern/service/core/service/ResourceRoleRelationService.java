@@ -2,7 +2,7 @@ package com.lamp.lantern.service.core.service;
 
 
 import com.lamp.lantern.service.core.entity.ResourceRoleRelationEntity;
-import com.lamp.lantern.service.core.entity.database.ResourceRoleRelation;
+import com.lamp.lantern.plugins.api.mode.ResourceRoleRelation;
 
 import java.util.List;
 

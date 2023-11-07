@@ -71,6 +71,4 @@ public class CreateTokenAuthHandler extends AbstractAuthHandler<TokenAndSessionC
 //systemName-HANDLER_SYSTEM_NAME-sessionID -> JSON:{"User-Agent","IP","UserID","UserInfo","Status"}
 //Status: Normal:正常登录
 //        KickOut:被踢出
-
-
 */

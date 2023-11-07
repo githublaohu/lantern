@@ -1,8 +1,8 @@
 package com.lamp.lantern.service.core.provider.mapper;
 
 import com.lamp.lantern.service.core.entity.ResourcesEntity;
-import com.lamp.lantern.service.core.entity.database.Resources;
-import com.lamp.lantern.service.core.entity.database.Role;
+import com.lamp.lantern.plugins.api.mode.Resources;
+import com.lamp.lantern.plugins.api.mode.Role;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -86,7 +86,7 @@ public interface ResourcesMapper {
     })
     List<Resources> selectValidResourcesByRoleIds(List<Role> roleEntityList);
 
-    @Select("select * from resources where resource_id = #{resourceId} and resource_is_delete = 0")
+    @Select("select * from resources where resource_id = #{resourceId} and resource_is_delete = 0 LIMIT 1")
     Resources selectById(Resources resources);
 
     @Select("select * from resources where resource_module_id = #{resourceModuleId} and resource_is_delete = 0")
@@ -105,4 +105,10 @@ public interface ResourcesMapper {
             "</script>"
     })
     Integer deleteResources(List<ResourcesEntity> resources);
+
+    @Select("select * from resources where resource_is_delete = 0")
+    List<Resources> selectAllResources();
+
+    @Select("select * from resources where resource_is_delete = 0 and resource_update_time > #{time}")
+    List<Resources> selectUpdatedResources(Resources resources);
 }

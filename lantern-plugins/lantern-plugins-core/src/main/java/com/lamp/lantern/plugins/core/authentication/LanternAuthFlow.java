@@ -1,9 +1,11 @@
 package com.lamp.lantern.plugins.core.authentication;
 
-import com.lamp.lantern.plugins.api.mode.AuthenticationConfig;
+import com.lamp.lantern.plugins.api.config.AuthenticationConfig;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Objects;
 
 /**
  * @author laohu
@@ -14,7 +16,19 @@ public class LanternAuthFlow {
 
 
     public String getToken(HttpServletRequest request) {
-        return "";
+        if (Objects.equals(authenticationConfig.getTokenSpot(), "header")) {
+            return request.getHeader(authenticationConfig.getTokenName());
+        }
+        if (Objects.equals(authenticationConfig.getTokenSpot(), "cookie")) {
+            Cookie[] cookies = request.getCookies();
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals(authenticationConfig.getTokenName())) {
+                    return cookie.getValue();
+                }
+            }
+            return null;
+        }
+        throw new RuntimeException("Wrong token location configuration");
     }
 
     public String getResource(ServletRequest request) {

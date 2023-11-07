@@ -1,18 +1,20 @@
 package com.lamp.lantern.plugins.api.auth;
 
 import java.util.Map;
+
+import com.lamp.lantern.plugins.api.mode.UserInfo;
 import lombok.Data;
 
 /**
  * @author laohu
  */
 @Data
-public class AuthenticationServiceResult {
+public class AuthenticationServiceResult implements java.io.Serializable{
 
     /**
      * 用户
      */
-    private Object userInfo;
+    private UserInfo userInfo;
 
 
     /**
@@ -31,5 +33,8 @@ public class AuthenticationServiceResult {
 
     private boolean success;
 
-
+    public AuthenticationServiceResult setSuccess(boolean success) {
+        this.success = success;
+        return this;
+    }
 }

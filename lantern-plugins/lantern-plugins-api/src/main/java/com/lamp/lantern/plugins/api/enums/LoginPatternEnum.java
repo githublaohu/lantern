@@ -1,4 +1,4 @@
-package com.lamp.lantern.service.core.entity.enums;
+package com.lamp.lantern.plugins.api.enums;
 
 public enum LoginPatternEnum {
 

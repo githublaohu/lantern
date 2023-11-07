@@ -11,6 +11,7 @@
  */
 package com.lamp.lantern.plugins.api.mode;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Date;
 
@@ -23,7 +24,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 @Data
 @ApiModel(value="用户登录对象",description="用户登录对象")
-public class UserInfo {
+public class UserInfo implements Serializable {
     /**
      * 用户唯一Id
      */

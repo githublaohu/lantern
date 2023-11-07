@@ -1,9 +1,7 @@
 package com.lamp.lantern.service.core.entity;
 
-import com.lamp.lantern.service.core.entity.database.RoletypeRoleRelation;
+import com.lamp.lantern.plugins.api.mode.RoletypeRoleRelation;
 import lombok.Data;
-
-import java.time.LocalDateTime;
 
 @Data
 public class RoletypeRoleRelationEntity extends RoletypeRoleRelation {

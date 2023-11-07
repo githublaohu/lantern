@@ -1,7 +1,7 @@
 package com.lamp.lantern.service.core.provider.mapper;
 
 import com.lamp.lantern.service.core.entity.UserRoleRelationEntity;
-import com.lamp.lantern.service.core.entity.database.UserRoleRelation;
+import com.lamp.lantern.plugins.api.mode.UserRoleRelation;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Update;
@@ -32,4 +32,5 @@ public interface UserRoleRelationMapper {
             "</script>"
     })
     Integer endUserRoleRelations(List<UserRoleRelationEntity> userRoleRelationEntities);
+
 }

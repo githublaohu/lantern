@@ -1,10 +1,9 @@
 package com.lamp.lantern.service.core.consumer.controller;
 
-import com.lamp.lantern.plugins.api.mode.UserInfo;
 import com.lamp.lantern.service.core.consumer.utils.ResultObjectEnums;
 import com.lamp.lantern.service.core.entity.ResourcesEntity;
 import com.lamp.lantern.service.core.entity.UserInfoEntity;
-import com.lamp.lantern.service.core.entity.database.Resources;
+import com.lamp.lantern.plugins.api.mode.Resources;
 import com.lamp.lantern.service.core.service.ResourcesService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

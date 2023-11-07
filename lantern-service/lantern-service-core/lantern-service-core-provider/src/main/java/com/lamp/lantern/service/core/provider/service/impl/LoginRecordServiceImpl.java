@@ -2,18 +2,17 @@ package com.lamp.lantern.service.core.provider.service.impl;
 
 import com.lamp.lantern.service.core.entity.LoginRecordEntity;
 import com.lamp.lantern.service.core.entity.UserInfoEntity;
-import com.lamp.lantern.service.core.entity.database.LoginRecord;
-import com.lamp.lantern.service.core.entity.enums.LoginPatternEnum;
-import com.lamp.lantern.service.core.entity.enums.LoginStatusEnum;
-import com.lamp.lantern.service.core.entity.enums.SystemEnum;
-import com.lamp.lantern.service.core.entity.enums.TerminalEnum;
+import com.lamp.lantern.plugins.api.mode.LoginRecord;
+import com.lamp.lantern.plugins.api.enums.LoginPatternEnum;
+import com.lamp.lantern.plugins.api.enums.LoginStatusEnum;
+import com.lamp.lantern.plugins.api.enums.SystemEnum;
+import com.lamp.lantern.plugins.api.enums.TerminalEnum;
 import com.lamp.lantern.service.core.provider.mapper.LoginRecordMapper;
 import com.lamp.lantern.service.core.service.LoginRecordService;
 
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 import org.apache.dubbo.config.annotation.Service;
@@ -35,21 +34,21 @@ public class LoginRecordServiceImpl implements LoginRecordService {
     @Autowired
     private LoginRecordMapper loginRecordEntityMapper;
 
-    @PostConstruct
-    public void test(){
-        LoginRecordEntity loginRecordEntity = new LoginRecordEntity();
-        loginRecordEntity.setUlId(1l);
-        loginRecordEntity.setUlSessionId("123");
-        loginRecordEntity.setUlLoginTime(LocalDateTime.now());
-        loginRecordEntity.setUlLoginAddress("Changsha");
-        loginRecordEntity.setUlLoginIp("211.1.1.1");
-        loginRecordEntity.setUlLoginSystem(SystemEnum.IOS);
-        loginRecordEntity.setUlLoginWay(LoginPatternEnum.PARTY_ACCOUNT);
-        loginRecordEntity.setUlLoginTerminal(TerminalEnum.MbBrowser);
-        loginRecordEntity.setTriId(1);
-        loginRecordEntity.setUlLoginStatus(LoginStatusEnum.SUCCESS);
-        this.insertLoginRecord(loginRecordEntity);
-    }
+//    @PostConstruct
+//    public void test(){
+//        LoginRecordEntity loginRecordEntity = new LoginRecordEntity();
+//        loginRecordEntity.setUlId(1l);
+//        loginRecordEntity.setUlSessionId("123");
+//        loginRecordEntity.setUlLoginTime(LocalDateTime.now());
+//        loginRecordEntity.setUlLoginAddress("Changsha");
+//        loginRecordEntity.setUlLoginIp("211.1.1.1");
+//        loginRecordEntity.setUlLoginSystem(SystemEnum.IOS);
+//        loginRecordEntity.setUlLoginWay(LoginPatternEnum.PARTY_ACCOUNT);
+//        loginRecordEntity.setUlLoginTerminal(TerminalEnum.MbBrowser);
+//        loginRecordEntity.setTriId(1);
+//        loginRecordEntity.setUlLoginStatus(LoginStatusEnum.SUCCESS);
+//        this.insertLoginRecord(loginRecordEntity);
+//    }
 
     @Override
     public Integer insertLoginRecord(LoginRecordEntity loginRecordEntity) {

@@ -1,7 +1,6 @@
 package com.lamp.lantern.service.core.provider.service.impl;
 
 import com.lamp.lantern.service.core.entity.RoletypeRoleRelationEntity;
-import com.lamp.lantern.service.core.entity.database.RoletypeRoleRelation;
 import com.lamp.lantern.service.core.provider.mapper.RoletypeRoleRelationMapper;
 import com.lamp.lantern.service.core.service.RoletypeRoleRelationService;
 import org.apache.dubbo.config.annotation.Service;
@@ -19,14 +18,14 @@ public class RoletypeRoleRelationImpl implements RoletypeRoleRelationService {
     private RoletypeRoleRelationMapper roletypeRoleRelationMapper;
 
 
-    @PostConstruct
-    void test(){
-        RoletypeRoleRelationEntity roletypeRoleRelationEntity = new RoletypeRoleRelationEntity();
-        roletypeRoleRelationEntity.setTrrRoleId(1l);
-        roletypeRoleRelationEntity.setTrrRoletypeId(1l);
-        roletypeRoleRelationEntity.setTrrValidTime(LocalDateTime.now());
-        this.insertRoletypeRoleRelation(roletypeRoleRelationEntity);
-    }
+//    @PostConstruct
+//    void test(){
+//        RoletypeRoleRelationEntity roletypeRoleRelationEntity = new RoletypeRoleRelationEntity();
+//        roletypeRoleRelationEntity.setTrrRoleId(1l);
+//        roletypeRoleRelationEntity.setTrrRoletypeId(1l);
+//        roletypeRoleRelationEntity.setTrrValidTime(LocalDateTime.now());
+//        this.insertRoletypeRoleRelation(roletypeRoleRelationEntity);
+//    }
     @Override
     public Integer insertRoletypeRoleRelation(RoletypeRoleRelationEntity roletypeRoleRelationEntity) {
         return roletypeRoleRelationMapper.insertRoletypeRoleRelation(roletypeRoleRelationEntity);

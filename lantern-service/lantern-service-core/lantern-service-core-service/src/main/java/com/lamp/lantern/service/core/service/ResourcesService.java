@@ -4,7 +4,7 @@ package com.lamp.lantern.service.core.service;
 import com.lamp.lantern.service.core.entity.ResourcesEntity;
 import com.lamp.lantern.service.core.entity.RoleEntity;
 import com.lamp.lantern.service.core.entity.UserInfoEntity;
-import com.lamp.lantern.service.core.entity.database.Resources;
+import com.lamp.lantern.plugins.api.mode.Resources;
 
 import java.util.List;
 

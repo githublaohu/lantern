@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.lamp.lantern.service.core.entity.LoginRecordEntity;
 import com.lamp.lantern.service.core.entity.UserInfoEntity;
-import com.lamp.lantern.service.core.entity.database.LoginRecord;
+import com.lamp.lantern.plugins.api.mode.LoginRecord;
 
 public interface LoginRecordService {
 

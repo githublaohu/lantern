@@ -2,8 +2,7 @@ package com.lamp.lantern.service.core.provider.mapper;
 
 import com.lamp.lantern.plugins.api.mode.UserInfo;
 import com.lamp.lantern.service.core.entity.RoleEntity;
-import com.lamp.lantern.service.core.entity.database.Role;
-import com.lamp.lantern.service.core.entity.UserInfoEntity;
+import com.lamp.lantern.plugins.api.mode.Role;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;

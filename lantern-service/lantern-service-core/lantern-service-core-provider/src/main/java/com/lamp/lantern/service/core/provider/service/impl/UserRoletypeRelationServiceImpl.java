@@ -1,7 +1,6 @@
 package com.lamp.lantern.service.core.provider.service.impl;
 
 import com.lamp.lantern.service.core.entity.UserRoletypeRelationEntity;
-import com.lamp.lantern.service.core.entity.database.UserRoletypeRelation;
 import com.lamp.lantern.service.core.provider.mapper.UserRoletypeRelationMapper;
 import com.lamp.lantern.service.core.service.UserRoletypeRelationService;
 import org.apache.dubbo.config.annotation.Service;
@@ -19,15 +18,15 @@ public class UserRoletypeRelationServiceImpl implements UserRoletypeRelationServ
     @Autowired
     private UserRoletypeRelationMapper userRoletypeRelationMapper;
 
-    @PostConstruct
-    void test(){
-        UserRoletypeRelationEntity roletypeRoleRelationEntity = new UserRoletypeRelationEntity();
-        roletypeRoleRelationEntity.setUtrUserId(1l);
-        roletypeRoleRelationEntity.setUtrRoletypeId(1l);
-        roletypeRoleRelationEntity.setUtrValidTime(LocalDateTime.now());
-
-        this.insertUserRoletypeRelation(roletypeRoleRelationEntity);
-    }
+//    @PostConstruct
+//    void test(){
+//        UserRoletypeRelationEntity roletypeRoleRelationEntity = new UserRoletypeRelationEntity();
+//        roletypeRoleRelationEntity.setUtrUserId(1l);
+//        roletypeRoleRelationEntity.setUtrRoletypeId(1l);
+//        roletypeRoleRelationEntity.setUtrValidTime(LocalDateTime.now());
+//
+//        this.insertUserRoletypeRelation(roletypeRoleRelationEntity);
+//    }
 
     @Override
     public Integer insertUserRoletypeRelation(UserRoletypeRelationEntity userRoletypeRelationEntity) {

@@ -1,7 +1,7 @@
 package com.lamp.lantern.service.core.provider.service.impl;
 
 import com.lamp.lantern.service.core.entity.ResourceRoleRelationEntity;
-import com.lamp.lantern.service.core.entity.database.ResourceRoleRelation;
+import com.lamp.lantern.plugins.api.mode.ResourceRoleRelation;
 import com.lamp.lantern.service.core.provider.mapper.ResourceRoleRelationMapper;
 import com.lamp.lantern.service.core.service.ResourceRoleRelationService;
 import lombok.extern.slf4j.Slf4j;
@@ -21,18 +21,18 @@ public class ResourceRoleRelationServiceImpl implements ResourceRoleRelationServ
     @Autowired
     private ResourceRoleRelationMapper resourceRoleRelationMapper;
 
-    @PostConstruct
-    public void init() {
-        ResourceRoleRelationEntity resourceRoleRelationEntity = new ResourceRoleRelationEntity();
-        resourceRoleRelationEntity.setRrrResourceId(1l);
-        resourceRoleRelationEntity.setRrrRoleId(1l);
-        resourceRoleRelationEntity.setRrrOperatorId(1l);
-        resourceRoleRelationEntity.setRrrType("test");
-        resourceRoleRelationEntity.setRrrTypeId(1l);
-        resourceRoleRelationEntity.setRrrValidTime(LocalDateTime.now());
-        int a = this.insertResourceRoleRelation(resourceRoleRelationEntity);
-        log.info("insertResourceRoleRelation:{}", a);
-    }
+//    @PostConstruct
+//    public void init() {
+//        ResourceRoleRelationEntity resourceRoleRelationEntity = new ResourceRoleRelationEntity();
+//        resourceRoleRelationEntity.setRrrResourceId(1l);
+//        resourceRoleRelationEntity.setRrrRoleId(1l);
+//        resourceRoleRelationEntity.setRrrOperatorId(1l);
+//        resourceRoleRelationEntity.setRrrType("test");
+//        resourceRoleRelationEntity.setRrrTypeId(1l);
+//        resourceRoleRelationEntity.setRrrValidTime(LocalDateTime.now());
+//        int a = this.insertResourceRoleRelation(resourceRoleRelationEntity);
+//        log.info("insertResourceRoleRelation:{}", a);
+//    }
 
     @Override
     public Integer insertResourceRoleRelation(ResourceRoleRelationEntity resourceRoleRelationEntity) {

@@ -5,6 +5,7 @@ import com.lamp.lantern.plugins.api.mode.UserInfo;
 import com.lamp.lantern.service.core.entity.UserInfoEntity;
 import org.apache.ibatis.annotations.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -145,4 +146,10 @@ public Integer registerUserInfoEntity(UserInfo userInfoEntity);
     @Options(useGeneratedKeys = true, keyProperty = "uiId", keyColumn = "ui_id")
     @Insert("insert into user_info (ui_name) values (#{uiName})")
     Integer registerThirdLoginUser(UserInfoEntity userInfo);
+
+    @Select("select * from user_info where ui_update_time > #{time}")
+    List<UserInfo> getUpdatedUserInfos(LocalDateTime time);
+
+    @Select("select * from user_info where token = #{token} LIMIT 1")
+    UserInfo selectUserInfoByToken(String token);
 }

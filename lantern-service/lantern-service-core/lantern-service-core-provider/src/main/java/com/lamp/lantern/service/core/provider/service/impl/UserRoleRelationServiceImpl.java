@@ -2,7 +2,6 @@ package com.lamp.lantern.service.core.provider.service.impl;
 
 import com.lamp.lantern.service.core.entity.UserInfoEntity;
 import com.lamp.lantern.service.core.entity.UserRoleRelationEntity;
-import com.lamp.lantern.service.core.entity.database.UserRoleRelation;
 import com.lamp.lantern.service.core.provider.mapper.UserRoleRelationMapper;
 import com.lamp.lantern.service.core.service.UserRoleRelationService;
 import lombok.extern.slf4j.Slf4j;
@@ -21,19 +20,19 @@ public class UserRoleRelationServiceImpl implements UserRoleRelationService {
 
     @Autowired
     private UserRoleRelationMapper userRoleRelationMapper;
-    @PostConstruct
-    void test(){
-        UserRoleRelationEntity userRoleRelationEntity = new UserRoleRelationEntity();
-        userRoleRelationEntity.setUrrUserId(1l);
-        userRoleRelationEntity.setUrrRoleId(1l);
-        userRoleRelationEntity.setUrrValidTime(LocalDateTime.now());
-        this.insertUserRoleRelation(userRoleRelationEntity);
-
-        UserInfoEntity userInfoEntity = new UserInfoEntity();
-        userInfoEntity.setUiId(1l);
-
-
-    }
+//    @PostConstruct
+//    void test(){
+//        UserRoleRelationEntity userRoleRelationEntity = new UserRoleRelationEntity();
+//        userRoleRelationEntity.setUrrUserId(1l);
+//        userRoleRelationEntity.setUrrRoleId(1l);
+//        userRoleRelationEntity.setUrrValidTime(LocalDateTime.now());
+//        this.insertUserRoleRelation(userRoleRelationEntity);
+//
+//        UserInfoEntity userInfoEntity = new UserInfoEntity();
+//        userInfoEntity.setUiId(1l);
+//
+//
+//    }
 
     @Override
     public Integer insertUserRoleRelation(UserRoleRelationEntity userRoleRelationEntity) {

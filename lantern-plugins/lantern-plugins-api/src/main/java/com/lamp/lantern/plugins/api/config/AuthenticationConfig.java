@@ -1,9 +1,11 @@
-package com.lamp.lantern.plugins.api.mode;
+package com.lamp.lantern.plugins.api.config;
 
 import com.lamp.lantern.plugins.api.auth.AuthenticationDataService;
 import com.lamp.lantern.plugins.api.auth.AuthenticationService;
 import com.lamp.lantern.plugins.api.auth.AuthenticationType;
 import java.util.Set;
+
+import com.lamp.lantern.plugins.api.auth.config.AuthenticationServiceConfig;
 import lombok.Data;
 
 /**
@@ -26,6 +28,9 @@ public class AuthenticationConfig {
 
 	private String redirectData;
 
+	/**
+	 * token位置 "cookie" or "header"
+	 */
 	private String tokenSpot;
 
 	private String tokenName;
@@ -39,5 +44,9 @@ public class AuthenticationConfig {
 	private Long dataSyncInterval;
 
 	private AuthenticationService authenticationService;
+
+	private AuthenticationServiceConfig userInfoAuthenticationServiceConfig;
+
+	private AuthenticationServiceConfig authenticationServiceConfig;
 
 }

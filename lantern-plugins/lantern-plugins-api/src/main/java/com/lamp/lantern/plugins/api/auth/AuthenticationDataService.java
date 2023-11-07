@@ -13,11 +13,10 @@ package com.lamp.lantern.plugins.api.auth;
 
 
 /**
- * 1.
+ *
  * @author laohu
  */
 public interface AuthenticationDataService {
-
 
     LanternAuthCachePool getLanternAuthCachePool(AuthenticationData authenticationData);
 

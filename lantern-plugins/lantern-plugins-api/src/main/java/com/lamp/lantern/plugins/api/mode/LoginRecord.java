@@ -1,15 +1,15 @@
-package com.lamp.lantern.service.core.entity.database;
+package com.lamp.lantern.plugins.api.mode;
 
 
 import java.time.LocalDateTime;
 
 
-import com.lamp.lantern.service.core.entity.enums.DeviceEnum;
-import com.lamp.lantern.service.core.entity.enums.ExitWayEnum;
-import com.lamp.lantern.service.core.entity.enums.LoginPatternEnum;
-import com.lamp.lantern.service.core.entity.enums.LoginStatusEnum;
-import com.lamp.lantern.service.core.entity.enums.SystemEnum;
-import com.lamp.lantern.service.core.entity.enums.TerminalEnum;
+import com.lamp.lantern.plugins.api.enums.DeviceEnum;
+import com.lamp.lantern.plugins.api.enums.ExitWayEnum;
+import com.lamp.lantern.plugins.api.enums.LoginPatternEnum;
+import com.lamp.lantern.plugins.api.enums.LoginStatusEnum;
+import com.lamp.lantern.plugins.api.enums.SystemEnum;
+import com.lamp.lantern.plugins.api.enums.TerminalEnum;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

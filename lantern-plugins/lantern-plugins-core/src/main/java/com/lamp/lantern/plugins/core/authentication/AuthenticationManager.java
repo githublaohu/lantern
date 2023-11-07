@@ -1,14 +1,14 @@
 package com.lamp.lantern.plugins.core.authentication;
 
-import com.lamp.lantern.plugins.api.auth.AuthenticationData;
-import com.lamp.lantern.plugins.api.auth.AuthenticationDataService;
-import com.lamp.lantern.plugins.api.auth.AuthenticationService;
-import com.lamp.lantern.plugins.api.auth.AuthenticationServiceResult;
-import com.lamp.lantern.plugins.api.auth.AuthenticationType;
-import com.lamp.lantern.plugins.api.mode.AuthenticationConfig;
-import java.util.Objects;
+import com.lamp.lantern.plugins.api.auth.*;
+import com.lamp.lantern.plugins.api.auth.config.AuthenticationServiceConfig;
+import com.lamp.lantern.plugins.api.config.AuthenticationConfig;
+import com.lamp.lantern.plugins.core.authentication.service.DubboAuthenticationService;
+import com.lamp.lantern.plugins.core.authentication.service.ProxyAuthenticationService;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Objects;
 
 /**
  * @author laohu
@@ -23,6 +23,48 @@ public class AuthenticationManager {
 
     private AuthenticationConfig authenticationConfig;
 
+
+    public AuthenticationManager(AuthenticationDataService authOperation,
+                                 AuthenticationService authenticationService,
+                                 AuthenticationConfig authenticationConfig) {
+        this.authOperation = authOperation;
+        this.authenticationService = authenticationService;
+        this.authenticationConfig = authenticationConfig;
+    }
+
+    private void initAuthenticationService() {
+        //不使用代理
+        if (Objects.nonNull(this.authenticationConfig.getAuthenticationService())) {
+            this.authenticationService = this.authenticationConfig.getAuthenticationService();
+            return;
+        }
+        AuthenticationServiceConfig authenticationServiceConfig = authenticationConfig.getAuthenticationServiceConfig();
+
+        //使用代理
+        AuthenticationService authenticationService = null;
+        if (Objects.nonNull(authenticationServiceConfig.getAuthenticationService())) {
+            authenticationService = authenticationServiceConfig.getAuthenticationService();
+        }
+
+        AuthenticationService userInfoAuthenticationService = null;
+        authenticationServiceConfig = authenticationConfig.getUserInfoAuthenticationServiceConfig();
+        if (Objects.nonNull(authenticationServiceConfig)) {
+            userInfoAuthenticationService = authenticationServiceConfig.getAuthenticationService();
+        } else {
+            // REDIS
+            userInfoAuthenticationService = new DubboAuthenticationService(authenticationServiceConfig.getDubboAuthenticationConfig());
+
+
+        }
+
+
+        ProxyAuthenticationService proxyAuthenticationService = new ProxyAuthenticationService();
+        proxyAuthenticationService.setAuthenticationService(authenticationService);
+        proxyAuthenticationService.setUserInfoService(userInfoAuthenticationService);
+
+        this.authenticationService = proxyAuthenticationService;
+
+    }
 
     public boolean authentication(HttpServletRequest request, HttpServletResponse response) {
 
@@ -42,7 +84,7 @@ public class AuthenticationManager {
             authenticationService.getUserInfo(authenticationData);
             return true;
         }
-
+        //AuthenticationType.RESOURCE
         AuthenticationServiceResult authenticationServiceResult =
                 authenticationService.authentication(authenticationData);
         if (authenticationServiceResult.isSuccess()) {
