@@ -120,6 +120,14 @@ public class HandlerService {
         return handlerExecuteMap.get(loginConfig);
     }
 
+    /**
+     * Create HandlerExecute by loginConfig
+     * 需要在使用handlerExecute之前调用
+     * @param loginConfig
+     * @param environmentContext
+     * @return
+     * @throws Exception
+     */
     public HandlerExecute createHandlerExecute(LoginConfig loginConfig, EnvironmentContext environmentContext) throws Exception {
         log.info("create handlerExecute , loginConfig is {}", loginConfig);
         HandlerExecute handlerExecute = new HandlerExecute();

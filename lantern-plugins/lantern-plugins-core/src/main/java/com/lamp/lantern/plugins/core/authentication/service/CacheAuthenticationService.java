@@ -4,9 +4,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.lamp.lantern.plugins.api.auth.AuthenticationData;
 import com.lamp.lantern.plugins.api.auth.AuthenticationService;
 import com.lamp.lantern.plugins.api.auth.AuthenticationServiceResult;
+import com.lamp.lantern.plugins.api.auth.config.RedisCacheConfig;
 import com.lamp.lantern.plugins.api.mode.Resources;
 import com.lamp.lantern.plugins.api.mode.Role;
 import com.lamp.lantern.plugins.api.mode.UserInfo;
+import io.lettuce.core.RedisClient;
 import io.lettuce.core.api.StatefulRedisConnection;
 import lombok.Setter;
 
@@ -19,13 +21,19 @@ import java.util.Objects;
  */
 public class CacheAuthenticationService implements AuthenticationService {
 
-    @Setter
+
     protected StatefulRedisConnection<String, String> connection;
 
-    static String tokenPrefix = "CacheAuthenticationService:tokenUser:";
-    static String userPrefix = "CacheAuthenticationService:userRole:";
-    static String rolePrefix = "CacheAuthenticationService:roleResource:";
+     String tokenPrefix = ":tokenUser:";
+     String userPrefix = ":userRole:";
+     String rolePrefix = ":roleResource:";
 
+    public CacheAuthenticationService(RedisCacheConfig redisCacheConfig) {
+        this.connection = RedisClient.create(redisCacheConfig.getRedisCacheUrl()).connect();
+        this.tokenPrefix = redisCacheConfig.getRedisCacheSystemName()+tokenPrefix;
+        this.userPrefix = redisCacheConfig.getRedisCacheSystemName()+userPrefix;
+        this.rolePrefix = redisCacheConfig.getRedisCacheSystemName()+rolePrefix;
+    }
     @Override
     public AuthenticationServiceResult getUserInfo(AuthenticationData authData) {
         AuthenticationServiceResult authenticationServiceResult = new AuthenticationServiceResult();

@@ -11,7 +11,7 @@ import java.io.Serializable;
 @Data
 public class AuthenticationData implements Serializable {
 
-    private String system;
+    private String systemId;
 
     private String resource;
 

@@ -15,6 +15,7 @@ import com.lamp.lantern.service.core.entity.UserInfoEntity;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.web.bind.annotation.*;
@@ -34,6 +35,7 @@ public class LoginController implements ApplicationContextAware {
     private ApplicationContext applicationContext;
 
     private HandlerService handlerService;
+
 
     private LoginConfig loginConfig;
 

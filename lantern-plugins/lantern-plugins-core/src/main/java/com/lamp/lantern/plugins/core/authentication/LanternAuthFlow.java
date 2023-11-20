@@ -5,6 +5,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Objects;
 
 /**
@@ -32,18 +33,21 @@ public class LanternAuthFlow {
     }
 
     public String getResource(ServletRequest request) {
+        //TODO
         return null;
     }
 
-    public void failed(ServletResponse response) {
-
+    public void failed(HttpServletResponse response) {
+        response.setStatus(401);
     }
 
     public boolean notAuthentication(String resource) {
+        //TODO
         return false;
     }
 
     public boolean userAuthentication(String resource) {
+        //TODO
         return false;
     }
 }

@@ -13,5 +13,6 @@
   <modules>
   	<module>lantern-service</module>
   	<module>lantern-plugins</module>
+      <module>lantern-example</module>
   </modules>
 </project>

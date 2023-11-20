@@ -11,6 +11,7 @@
  */
 package com.lamp.lantern.plugins.core.login;
 
+import com.lamp.lantern.plugins.api.mode.UserInfo;
 import com.lamp.lantern.plugins.api.service.AuthService;
 import com.lamp.lantern.plugins.core.login.config.LoginConfig;
 import io.lettuce.core.api.StatefulRedisConnection;
@@ -22,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author laohu
@@ -52,6 +54,11 @@ public class LanternContext {
     @Getter
     @Setter
     private HttpServletRequest request;
+
+
+    @Setter
+    private Object userInfo;
+
 
     @Getter
     @Setter
@@ -84,6 +91,10 @@ public class LanternContext {
     protected void clear() {
         this.authService = null;
         this.values.clear();
+    }
+
+    public <T>T getUserInfo() {
+    	return (T)userInfo;
     }
 
 }

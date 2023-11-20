@@ -11,8 +11,6 @@
  */
 package com.lamp.lantern.plugins.api.config;
 
-import io.lettuce.core.api.StatefulRedisConnection;
-import jdk.jfr.Unsigned;
 import lombok.Data;
 
 @Data

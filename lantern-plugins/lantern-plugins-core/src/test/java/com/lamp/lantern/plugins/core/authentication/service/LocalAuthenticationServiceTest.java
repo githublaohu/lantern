@@ -33,7 +33,7 @@ public class LocalAuthenticationServiceTest {
         roles.add(role);
         userRoleMap.put(1L, roles);
 
-        localAuthenticationService.updateUserRole(userRoleMap);
+        localAuthenticationService.updateUserRoleFull(userRoleMap);
 
         HashMap<Long, List<Resources>> roleResourceMap = new HashMap<>();
         Resources resources = new Resources();
@@ -41,7 +41,7 @@ public class LocalAuthenticationServiceTest {
         List<Resources> resourcesList = new ArrayList<>();
         resourcesList.add(resources);
         roleResourceMap.put(1L, resourcesList);
-        localAuthenticationService.updateRoleResource(roleResourceMap);
+        localAuthenticationService.updateRoleResourceFull(roleResourceMap);
 
     }
 

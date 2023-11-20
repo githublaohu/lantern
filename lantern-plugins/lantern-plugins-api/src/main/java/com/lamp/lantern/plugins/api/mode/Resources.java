@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Api(value = "ResourcesEntity", description = "资源实体类")
 public class Resources {
 
-  private Long resourceId;
+    private Long resourceId;
     private Long resourceSystemId;
     private Long resourceProjectId;
     private String resourceProjectName;

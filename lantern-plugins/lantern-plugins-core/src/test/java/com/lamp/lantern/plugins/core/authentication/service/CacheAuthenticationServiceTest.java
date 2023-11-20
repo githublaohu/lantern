@@ -2,6 +2,7 @@ package com.lamp.lantern.plugins.core.authentication.service;
 
 import com.lamp.lantern.plugins.api.auth.AuthenticationData;
 import com.lamp.lantern.plugins.api.auth.AuthenticationServiceResult;
+import com.lamp.lantern.plugins.api.auth.config.RedisCacheConfig;
 import com.lamp.lantern.plugins.api.mode.Resources;
 import com.lamp.lantern.plugins.api.mode.Role;
 import com.lamp.lantern.plugins.api.mode.UserInfo;
@@ -15,13 +16,17 @@ import java.util.HashMap;
 import java.util.List;
 
 public class CacheAuthenticationServiceTest {
-    private final CacheAuthenticationService cacheAuthenticationService = new CacheAuthenticationService();
+    private CacheAuthenticationService cacheAuthenticationService = null;
 
     private AuthenticationData authenticationData = new AuthenticationData();
 
     @Before
     public void init() {
-        cacheAuthenticationService.setConnection(RedisClient.create("redis://127.0.0.1").connect());
+        RedisCacheConfig redisCacheConfig = new RedisCacheConfig();
+        redisCacheConfig.setRedisCacheUrl("redis://127.0.0.1:6379/0");
+        redisCacheConfig.setRedisCacheSystemName("testCache");
+
+        cacheAuthenticationService = new CacheAuthenticationService(redisCacheConfig);
 
         HashMap<String, UserInfo> map = new HashMap<>();
         UserInfo userInfo = new UserInfo();

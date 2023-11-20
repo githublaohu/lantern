@@ -8,16 +8,21 @@ import com.lamp.lantern.plugins.api.mode.Resources;
 import com.lamp.lantern.plugins.api.mode.Role;
 import com.lamp.lantern.plugins.api.mode.UserInfo;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 /**
  * @author laohu
  */
 public class LocalAuthenticationService implements AuthenticationService {
 
-    private final LanternAuthCachePool lanternAuthCachePool = new LanternAuthCachePool();
+
+
+    public void setLanternAuthCachePool(LanternAuthCachePool lanternAuthCachePool) {
+        this.lanternAuthCachePool = lanternAuthCachePool;
+    }
+
+    private volatile LanternAuthCachePool lanternAuthCachePool = new LanternAuthCachePool();
 
 
     @Override
@@ -41,19 +46,31 @@ public class LocalAuthenticationService implements AuthenticationService {
         UserInfo userInfo = authData.getUserInfo();
 
         if (Objects.isNull(userInfo)) {
+            // 如果免认证呢？TODO
             return authenticationServiceResult.setSuccess(false);
         }
 
         LanternAuthCachePool lanternAuthCachePool = this.lanternAuthCachePool;
-        List<Role> roles = lanternAuthCachePool.getUserRoleMap().get(userInfo.getUiId());
-        if (Objects.isNull(roles)) {
+        List<Long> rolesIds = lanternAuthCachePool.getUserRoleMap().get(userInfo.getUiId());
+        if (Objects.isNull(rolesIds)) {
             return authenticationServiceResult.setSuccess(false);
         }
-        for (Role role : roles) {
-            List<Resources> resources = lanternAuthCachePool.getRoleResourceMap().get(role.getRoleId());
-            for (Resources resources1 : resources) {
-                //这里判断了资源的id，但是进来的资源是什么?
-                if (Objects.equals(resources1.getResourceId().toString(), resource)) {
+        for (Long roleId : rolesIds) {
+            Role role = lanternAuthCachePool.getRoleMap().get(roleId);
+            if (Objects.isNull(role)) {
+                continue;
+            }
+            List<Long> resourceIds = lanternAuthCachePool.getRoleResourceMap().get(roleId);
+            if (Objects.isNull(resourceIds)) {
+                continue;
+            }
+            for (Long resourceId : resourceIds) {
+                Resources resources = lanternAuthCachePool.getResourceMap().get(resourceId);
+                if (Objects.isNull(resources)) {
+                    continue;
+                }
+                //TODO resource是什么
+                if (Objects.equals(resources.getResourceId().toString(), resource)) {
                     return authenticationServiceResult.setSuccess(true);
                 }
             }
@@ -68,15 +85,41 @@ public class LocalAuthenticationService implements AuthenticationService {
         return map.size();
     }
 
-    public Integer updateRoleResource(Map<Long, List<Resources>> map){
+    public Integer updateRoleResourceFull(Map<Long, List<Resources>> map){
         LanternAuthCachePool lanternAuthCachePool = this.lanternAuthCachePool;
-        lanternAuthCachePool.getRoleResourceMap().putAll(map);
+        Map<Long, Resources> resourceMap = new HashMap<>(lanternAuthCachePool.getResourceMap());
+        Map<Long, List<Long>> roleResourceMap = new HashMap<>(lanternAuthCachePool.getRoleResourceMap());
+        for (Map.Entry<Long, List<Resources>> entry : map.entrySet()) {
+            Long roleId = entry.getKey();
+            List<Resources> resources = entry.getValue();
+            List<Long> resourceIds = new ArrayList<>(resources.size());
+            for (Resources resource : resources) {
+                resourceMap.put(resource.getResourceId(),resource);
+                resourceIds.add(resource.getResourceId());
+            }
+            roleResourceMap.put(roleId,resourceIds);
+        }
+        lanternAuthCachePool.setResourceMap(resourceMap);
+        lanternAuthCachePool.setRoleResourceMap(roleResourceMap);
         return map.size();
     }
 
-    public Integer updateUserRole(Map<Long, List<Role>> map){
+    public Integer updateUserRoleFull(Map<Long, List<Role>> map){
         LanternAuthCachePool lanternAuthCachePool = this.lanternAuthCachePool;
-        lanternAuthCachePool.getUserRoleMap().putAll(map);
+        Map<Long, Role> roleMap = new HashMap<>(lanternAuthCachePool.getRoleMap());
+        Map<Long, List<Long>> userRoleMap = new HashMap<>(lanternAuthCachePool.getUserRoleMap());
+        for (Map.Entry<Long, List<Role>> entry : map.entrySet()) {
+            Long userId = entry.getKey();
+            List<Role> roles = entry.getValue();
+            List<Long> roleIds = new ArrayList<>(roles.size());
+            for (Role role : roles) {
+                roleMap.put(role.getRoleId(),role);
+                roleIds.add(role.getRoleId());
+            }
+            userRoleMap.put(userId,roleIds);
+        }
+        lanternAuthCachePool.setRoleMap(roleMap);
+        lanternAuthCachePool.setUserRoleMap(userRoleMap);
         return map.size();
     }
 

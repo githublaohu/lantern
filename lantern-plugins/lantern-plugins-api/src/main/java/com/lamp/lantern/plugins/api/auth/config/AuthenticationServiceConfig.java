@@ -12,4 +12,10 @@ public class AuthenticationServiceConfig {
 
     private AuthenticationService authenticationService;
 
+    private LocalCacheConfig localCacheConfig;
+
+    private String authenticationServiceName;
+
+    private String authenticationServiceClassName;
+
 }

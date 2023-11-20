@@ -17,9 +17,13 @@ public class LanternAuthCachePool {
 
     private volatile Map<String, UserInfo> tokenUserMap = new ConcurrentHashMap<>();
 
-    private volatile Map<Long, List<Role>> userRoleMap = new ConcurrentHashMap<>();
+    private volatile Map<Long, List<Long>> userRoleMap = new ConcurrentHashMap<>();
 
-    private volatile Map<Long, List<Resources>> roleResourceMap = new ConcurrentHashMap<>();
+    private volatile Map<Long, List<Long>> roleResourceMap = new ConcurrentHashMap<>();
+
+    private volatile Map<Long, Role> roleMap = new ConcurrentHashMap<>();
+
+    private volatile Map<Long, Resources> resourceMap = new ConcurrentHashMap<>();
 
 
 }
