@@ -4,15 +4,20 @@ import java.util.List;
 
 import com.lamp.lantern.service.core.entity.LoginRecordEntity;
 import com.lamp.lantern.service.core.entity.UserInfoEntity;
+import com.lamp.lantern.plugins.api.mode.LoginRecord;
 
 public interface LoginRecordService {
 
     public Integer insertLoginRecord(LoginRecordEntity loginRecordEntity);
 
-    public List<LoginRecordEntity> checkLoginRecordEntitysByUserId(UserInfoEntity userInfoEntity);
+    public Integer insertLoginRecords(List<LoginRecordEntity> loginRecordEntities);
 
-    public Integer updateLoginRecordEntityExitTimeField(LoginRecordEntity loginRecordEntity);
+    public List<LoginRecord> checkLoginRecordByUserId(UserInfoEntity userInfoEntity);
 
-    public Integer updateLoginRecordEntityQuitWayField(LoginRecordEntity loginRecordEntity);
+    public List<LoginRecord> getAllLoginRecords();
+
+    public Integer updateLoginRecordExitTimeField(LoginRecordEntity loginRecordEntity);
+
+    public Integer updateLoginRecordQuitWayField(LoginRecordEntity loginRecordEntity);
 
 }

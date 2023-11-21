@@ -85,6 +85,12 @@
             <artifactId>spring-boot-actuator-autoconfigure</artifactId>
             <version>2.1.7.RELEASE</version>
         </dependency>
+        <dependency>
+            <groupId>cn.lampup</groupId>
+            <artifactId>lantern-service-core-consumer</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
 
 
     </dependencies>
@@ -106,6 +112,14 @@
                 </executions>
                 <configuration>
                     <fork>true</fork>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
                 </configuration>
             </plugin>
         </plugins>

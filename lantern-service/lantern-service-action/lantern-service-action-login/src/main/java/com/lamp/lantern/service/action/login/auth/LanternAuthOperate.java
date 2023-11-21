@@ -2,6 +2,9 @@ package com.lamp.lantern.service.action.login.auth;
 
 import java.util.Objects;
 
+import com.lamp.lantern.plugins.api.annotation.AuthTypeChannel;
+import com.lamp.lantern.plugins.api.config.LoginType;
+import com.lamp.lantern.service.core.entity.UserInfoEntity;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.stereotype.Component;
 
@@ -16,17 +19,18 @@ import com.lamp.lantern.plugins.api.service.LanternUserInfoService;
  * @author laohu
  *
  */
-@Component("first-lantern")
+@Component("lanternAuthOperate")
+@AuthTypeChannel(loginType = LoginType.FIRST, authChannel = "Lantern")
 public class LanternAuthOperate extends AbstractAuthService {
 
 	private LanternUserInfoService userInfoService;
 
 	@Override
 	public AuthResultObject auth(UserInfo userInfo) {
-		UserInfo queryUserInfo = userInfoService.checkUser(userInfo);
+		UserInfo queryUserInfo = userInfoService.checkUserByUserId((UserInfoEntity) userInfo);
 		AuthResultObject authResultObject = new AuthResultObject();
 		if (queryUserInfo == null) {
-			authResultObject.setErrorMessage("用户或则密码不正确");
+			authResultObject.setErrorMessage("用户或者密码不正确");
 			return authResultObject;
 		}
 		String uiSalt = queryUserInfo.getUiSalt();
@@ -34,7 +38,7 @@ public class LanternAuthOperate extends AbstractAuthService {
 		if (Objects.equals(queryUserInfo.getUiSaltPassword(), uiSaltPassword)) {
 			authResultObject.setUserInfo(userInfo);
 		} else {
-			authResultObject.setErrorMessage("用户或则密码不正确");
+			authResultObject.setErrorMessage("用户或者密码不正确");
 		}
 		return authResultObject;
 	}

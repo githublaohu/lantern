@@ -12,28 +12,49 @@
 package com.lamp.lantern.plugins.core.login.record;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
-import com.lamp.lantern.plugins.api.mode.LoginRecordInfo;
 import com.lamp.lantern.plugins.api.mode.UserInfo;
-import com.lamp.lantern.plugins.api.service.LoginRecordService;
-import com.lamp.lantern.plugins.core.login.AbstrackAuthHandler;
+import com.lamp.lantern.plugins.core.login.LanternContext;
+import com.lamp.lantern.service.core.entity.LoginRecordEntity;
+import com.lamp.lantern.plugins.api.enums.LoginStatusEnum;
+import com.lamp.lantern.service.core.service.LoginRecordService;
+import com.lamp.lantern.plugins.core.login.AbstractAuthHandler;
 
-public class LoginRecordAuthHandler extends AbstrackAuthHandler<Object> {
+import java.time.LocalDateTime;
+
+public class LoginRecordAuthHandler extends AbstractAuthHandler<Object> {
 	
 	@Resource
 	private LoginRecordService loginRecordService;
 	
 	@Override
 	public void doAuthAfter(UserInfo userInfo) {
-		this.loginRecord("success", userInfo);
+		this.loginRecord(
+				LoginStatusEnum.SUCCESS, userInfo);
 	}
 	
-	public void doErrer(UserInfo userInfo){
-		this.loginRecord("fail", userInfo);
+	@Override
+	public void doError(UserInfo userInfo){
+		this.loginRecord(LoginStatusEnum.FAIL, userInfo);
 	}
 	
-	private void loginRecord(String type , UserInfo userInfo ) {
-		LoginRecordInfo loginRecordInfo = new LoginRecordInfo();
-		loginRecordService.insertLoginRecord(loginRecordInfo);
+	private void loginRecord(LoginStatusEnum type , UserInfo userInfo ) {
+
+		HttpServletRequest request = LanternContext.getContext().getRequest();
+		String ip = request.getHeader("x-forwarded-for");
+		ip = ip == null ? request.getRemoteAddr() : ip;
+
+
+		LoginRecordEntity loginRecordEntity = new LoginRecordEntity();
+		loginRecordEntity.setUiId(userInfo.getUiId());
+		loginRecordEntity.setUlLoginTime(LocalDateTime.now());
+
+		loginRecordEntity.setUlLoginIp(ip);
+
+		loginRecordEntity.setUlLoginStatus(type);
+
+
+		loginRecordService.insertLoginRecord(loginRecordEntity);
 	}
 }

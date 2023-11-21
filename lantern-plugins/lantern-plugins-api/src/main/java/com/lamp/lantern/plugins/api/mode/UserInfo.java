@@ -11,17 +11,24 @@
  */
 package com.lamp.lantern.plugins.api.mode;
 
+import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
 
 import com.lamp.lantern.plugins.api.enums.StatusEnum;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Data
-public class UserInfo {
+@ApiModel(value="用户登录对象",description="用户登录对象")
+public class UserInfo implements Serializable {
     /**
      * 用户唯一Id
      */
+    @ApiModelProperty(value = "用户唯一ID")
     private Long uiId;
 
     /**
@@ -65,25 +72,14 @@ public class UserInfo {
     private String uiSex;
 
     /**
-     * 用户年龄
-     */
-    private Integer uiAge;
-
-    /**
      * 用户生日
      */
-
-    private Date uiBirth;
+    private LocalDate uiBirth;
 
     /**
      * 用户地址
      */
     private String uiAddress;
-
-    /**
-     * 用户密码 需要加密
-     */
-    private String uiPassword;
 
     /**
      * 用户盐
@@ -95,10 +91,6 @@ public class UserInfo {
      */
     private String uiSaltPassword;
 
-    /**
-     * 用户令牌
-     */
-    private String uiToken;
 
     /**
      * 用户最近登录地址
@@ -108,18 +100,13 @@ public class UserInfo {
     /**
      * 用户最近登录时间
      */
-    private Date uiLoginTime;
+    private LocalDate uiLoginTime;
 
     /**
      * 用户最近退出时间
      */
-    private Date uiExitTime;
+    private LocalDate uiExitTime;
 
-
-    /**
-     * 用户第三方记录表Id, 默认从1开始
-     */
-    private Integer triId;
 
     /**
      * 用户状态
@@ -130,6 +117,17 @@ public class UserInfo {
      * 用户是否允许登录 （黑白名单功能）
      */
     private StatusEnum allowLogin;
-    
+
+    /**
+     * 用户是否为第一次登录
+     */
+
+    private boolean uiFirstLogin;
+
+    private Integer uiIsDelete;
+
     private String token;
+
+    private String uiPassword;
+
 }

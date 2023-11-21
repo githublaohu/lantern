@@ -3,6 +3,7 @@ package com.lamp.lantern.plugins.core.authentication.service;
 import com.lamp.lantern.plugins.api.auth.AuthenticationData;
 import com.lamp.lantern.plugins.api.auth.AuthenticationService;
 import com.lamp.lantern.plugins.api.auth.AuthenticationServiceResult;
+import lombok.Setter;
 
 /**
  * 1. 获得用户信息可以使用 缓存
@@ -14,17 +15,18 @@ import com.lamp.lantern.plugins.api.auth.AuthenticationServiceResult;
  */
 public class ProxyAuthenticationService implements AuthenticationService {
 
-    private AuthenticationService userInfo;
+    @Setter
+    private AuthenticationService userInfoService;
 
+    @Setter
     private AuthenticationService authenticationService;
 
-    @Override
     public AuthenticationServiceResult getUserInfo(AuthenticationData authData) {
-        return userInfo.getUserInfo(authData);
+        return userInfoService.getUserInfo(authData);
     }
 
     @Override
     public AuthenticationServiceResult authentication(AuthenticationData authData) {
-        return userInfo.authentication(authData);
+        return userInfoService.authentication(authData);
     }
 }
