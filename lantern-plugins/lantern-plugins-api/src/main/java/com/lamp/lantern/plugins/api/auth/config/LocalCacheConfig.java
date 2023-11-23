@@ -6,6 +6,10 @@ import lombok.Data;
 @Data
 public class LocalCacheConfig {
 
+    private DubboAuthenticationConfig dubboAuthenticationConfig;
+
+    private RedisCacheConfig redisCacheConfig;
+
     private AuthenticationDataService authOperation;
 
     private String authenticationDataServiceName;

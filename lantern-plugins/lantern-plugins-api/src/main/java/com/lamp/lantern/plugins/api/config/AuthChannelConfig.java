@@ -16,64 +16,64 @@ import lombok.Data;
 @Data
 public class AuthChannelConfig {
 
-	/**
-	 * 登录方式
-	 */
-	private LoginType loginType;
+    /**
+     * 登录方式
+     */
+    private LoginType loginType;
 
-	/**
-	 * 登录渠道
-	 */
-	private String authChannel;
+    /**
+     * 登录渠道
+     */
+    private String authChannel;
 
-	/**
-	 * used internally
-	 */
-	private String simpleClassName;
+    /**
+     * used internally
+     */
+    private String simpleClassName;
 
-	private String className;
+    private String className;
 
-	private String beanName;
+    private String beanName;
 
-	private String beanClass;
+    private String beanClass;
 
-	/**
-	 * 服务器地址
-	 */
-	private String serviceAddress;
+    /**
+     * 服务器地址
+     */
+    private String serviceAddress;
 
-	/**
-	 * appId
-	 */
-	private String appId;
+    /**
+     * appId
+     */
+    private String appId;
 
-	/**
-	 * accessKey
-	 */
-	private String accessKey;
+    /**
+     * accessKey
+     */
+    private String accessKey;
 
-	/**
-	 * secretAccessKey
-	 */
-	private String secretAccessKey;
+    /**
+     * secretAccessKey
+     */
+    private String secretAccessKey;
 
-	private String redirectUri;
+    private String redirectUri;
 
-	private String scope;
-	
-	private String privateKey;
-	
-	private String publicKey;
-	
-	private String format = "json";
-	
+    private String scope;
+
+    private String privateKey;
+
+    private String publicKey;
+
+    private String format = "json";
+
     private String charset = "UTF-8";
 
-	private String redisUrl;
+    private String redisUrl;
 
-	private Integer qrcodeExpire;
+    private Integer qrcodeExpire;
 
-	private String qrcodeKeyPrefix = "LanternQrcode:";
-    
+    private String qrcodeKeyPrefix = "LanternQrcode:";
+
     private String signType = "RSA2";
 }

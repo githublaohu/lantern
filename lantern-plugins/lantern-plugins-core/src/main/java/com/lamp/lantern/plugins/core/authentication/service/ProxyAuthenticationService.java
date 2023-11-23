@@ -21,6 +21,7 @@ public class ProxyAuthenticationService implements AuthenticationService {
     @Setter
     private AuthenticationService authenticationService;
 
+    @Override
     public AuthenticationServiceResult getUserInfo(AuthenticationData authData) {
         return userInfoService.getUserInfo(authData);
     }

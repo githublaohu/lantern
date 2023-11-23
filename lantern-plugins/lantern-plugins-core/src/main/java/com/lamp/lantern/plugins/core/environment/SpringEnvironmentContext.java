@@ -17,7 +17,7 @@ import org.springframework.context.ApplicationContext;
 
 public class SpringEnvironmentContext implements EnvironmentContext {
 
-	private ApplicationContext applicationContext;
+	private final ApplicationContext applicationContext;
 	
 	public SpringEnvironmentContext(ApplicationContext applicationContext) {
 		this.applicationContext = applicationContext;

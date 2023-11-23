@@ -4,6 +4,7 @@ import com.lamp.lantern.service.core.entity.UserRoleRelationEntity;
 import com.lamp.lantern.plugins.api.mode.UserRoleRelation;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
@@ -32,5 +33,9 @@ public interface UserRoleRelationMapper {
             "</script>"
     })
     Integer endUserRoleRelations(List<UserRoleRelationEntity> userRoleRelationEntities);
+
+
+    @Select("select * from user_role_relation ")
+    List<UserRoleRelationEntity> selectUserRoleRelations();
 
 }

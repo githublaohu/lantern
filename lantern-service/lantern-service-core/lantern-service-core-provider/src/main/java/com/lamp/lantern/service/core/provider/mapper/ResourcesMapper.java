@@ -1,5 +1,6 @@
 package com.lamp.lantern.service.core.provider.mapper;
 
+import com.lamp.lantern.plugins.api.auth.AuthenticationData;
 import com.lamp.lantern.service.core.entity.ResourcesEntity;
 import com.lamp.lantern.plugins.api.mode.Resources;
 import com.lamp.lantern.plugins.api.mode.Role;
@@ -111,4 +112,11 @@ public interface ResourcesMapper {
 
     @Select("select * from resources where resource_is_delete = 0 and resource_update_time > #{time}")
     List<Resources> selectUpdatedResources(Resources resources);
+
+    @Select({" select * from user_role_relation as urr join inner `role` as r on urr.urrRoleId = r.roleId join inner resource_role_relation as rrr on r.roleId = rrr.rrrRoleId join inner resources as re on rrr.rrr_resource_id = re.resource_id where re.resource_name = #{resourceName}  "})
+    Resources authentication(AuthenticationData authenticationData);
+
+    @Select({"select * from resources "})
+    List<Resources> selectResources();
+
 }

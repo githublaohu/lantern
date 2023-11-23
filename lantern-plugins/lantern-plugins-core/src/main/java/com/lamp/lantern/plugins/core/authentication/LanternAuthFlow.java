@@ -1,6 +1,7 @@
 package com.lamp.lantern.plugins.core.authentication;
 
 import com.lamp.lantern.plugins.api.config.AuthenticationConfig;
+import com.lamp.lantern.plugins.api.config.AuthenticationFlowConfig;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
@@ -13,7 +14,7 @@ import java.util.Objects;
  */
 public class LanternAuthFlow {
 
-    private AuthenticationConfig authenticationConfig;
+    private AuthenticationFlowConfig authenticationConfig;
 
 
     public String getToken(HttpServletRequest request) {

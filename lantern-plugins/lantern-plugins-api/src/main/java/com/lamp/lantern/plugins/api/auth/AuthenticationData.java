@@ -13,10 +13,14 @@ public class AuthenticationData implements Serializable {
 
     private String systemId;
 
+    private Long userId;
+
     private String resource;
 
     private String token;
 
     private UserInfo userInfo;
+
+    private Long time;
 
 }

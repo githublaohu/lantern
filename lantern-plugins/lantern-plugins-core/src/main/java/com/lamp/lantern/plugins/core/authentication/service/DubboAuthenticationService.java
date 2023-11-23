@@ -31,7 +31,7 @@ public class DubboAuthenticationService implements AuthenticationService {
         else{
             referenceConfig.setRegistry(new RegistryConfig(config.getRegistryAddress()));
         }
-        referenceConfig.setInterface(AuthenticationRpcService.class);
+        referenceConfig.setInterface(AuthenticationService.class);
         referenceConfig.setTimeout(config.getTimeout());
         referenceConfig.setGroup(config.getGroup());
         referenceConfig.setVersion(config.getVersion());

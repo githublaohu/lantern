@@ -4,6 +4,7 @@ import com.lamp.lantern.service.core.entity.RoletypeRoleRelationEntity;
 import com.lamp.lantern.plugins.api.mode.RoletypeRoleRelation;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
@@ -37,4 +38,8 @@ public interface RoletypeRoleRelationMapper {
             "</script>"
     })
     Integer endRoletpeRoleRelations(List<RoletypeRoleRelationEntity> roletypeRoleRelationEntities);
+
+
+    @Select({"select * from roletype_role_relation "})
+    List<RoletypeRoleRelationEntity> selectRoletypeRoleRelation();
 }

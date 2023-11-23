@@ -10,21 +10,37 @@ import java.time.LocalDateTime;
 public class Resources {
 
     private Long resourceId;
+
     private Long resourceSystemId;
+
     private Long resourceProjectId;
+
     private String resourceProjectName;
+
     private Long resourceModuleId;
+
     private String resourceModuleName;
+
     private String resourceType;
+
     private String resourceName;
+
     private LocalDateTime resourceCreateTime;
+
     private LocalDateTime resourceUpdateTime;
+
     private LocalDateTime resourceEndTime;
+
     private LocalDateTime resourceValidTime;
+
     private Integer resourceIsDelete;
+
     private String resourceOperator;
+
     private String resourceConditions;
+
     private Long resourceParentResourceId;
+
     private String resourceDescription;
 
 }
