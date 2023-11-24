@@ -60,14 +60,13 @@ public interface RoleMapper {
     public Integer endRole(Role roleEntity);
 
     @Select({"select * from `role` where role_id in (",
-            "select urr_role_id from `user_role_relation` where urr_user_id = #{uiId} ",
-            "union",
-            " select trr_role_id from (roletype_role_relation join `user_roletype_relation` on trr_roletype_id = utr_roletype_id) where utr_user_id = #{uiId}) and role_is_delete = 0"}
+            "select urr_role_id from `user_role_relation` where urr_user_id = #{uiId} )",
+            "and role_is_delete = 0"}
     )
     List<Role> getAllRoleByUserId(UserInfo userInfoEntity);
 
-    @Select({"select * from `role` where role_id in (",
-    "select urr_role_id from `user_role_relation` where urr_user_id = #{uiId} and urr_valid_time > now() union select trr_role_id from (roletype_role_relation join `user_roletype_relation` on trr_roletype_id = utr_roletype_id and trr_valid_time > now() and utr_valid_time > now()) where utr_user_id = #{uiId}) and role_valid_time > now() and role_is_delete = 0"})
+    @Select({"select * from `role` inner join `user_role_relation` on role_id = urr_role_id where urr_user_id = #{uiId} and role_is_delete = 0 and role_valid_time > now()"}
+    )
     List<Role> getAllValidRoleByUserId(UserInfo userInfoEntity);
 
     @Update({
@@ -82,6 +81,6 @@ public interface RoleMapper {
     })
     Integer endRoles(List<RoleEntity> roleEntities);
 
-    @Select(" select * from role where role_is_delete = 0 and  role_end_time > now() ")
+    @Select(" select * from role where is_delete = 0 and  role_end_time > now() ")
     List<Role>  selectRoles();
 }

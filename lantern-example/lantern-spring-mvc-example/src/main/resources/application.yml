@@ -1,0 +1,8 @@
+server:
+  port: 12330
+  servlet:
+    context-path: "/lamp/lantern/example"
+
+lantern:
+  loginConfig:
+    systemName: "Lantern"

@@ -107,7 +107,7 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>1.18.8</version>
+			<version>1.18.26</version>
 		</dependency>
         <dependency>
             <groupId>org.apache.struts</groupId>
@@ -130,12 +130,6 @@
         <dependency>
             <groupId>cn.lampup</groupId>
             <artifactId>lantern-service-core-service</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>cn.lampup</groupId>
-            <artifactId>lantern-service-core-provider</artifactId>
             <version>0.0.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>

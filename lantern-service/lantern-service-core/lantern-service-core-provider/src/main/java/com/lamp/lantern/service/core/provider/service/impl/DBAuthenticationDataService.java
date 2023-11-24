@@ -7,7 +7,6 @@ import com.lamp.lantern.plugins.api.auth.config.DBAuthenticationDataConfig;
 import com.lamp.lantern.plugins.api.auth.config.DBAuthenticationDataModel;
 import com.lamp.lantern.service.core.provider.mapper.ResourcesMapper;
 import com.lamp.lantern.service.core.provider.mapper.RoleMapper;
-import com.lamp.lantern.service.core.provider.mapper.RoletypeRoleRelationMapper;
 import com.lamp.lantern.service.core.provider.mapper.UserRoleRelationMapper;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,16 +34,12 @@ public class DBAuthenticationDataService implements AuthenticationDataService {
     private RoleMapper roleMapper;
 
     @Autowired
-    private RoletypeRoleRelationMapper roletypeRoleRelationMapper;
-
-
-    @Autowired
     private ResourcesMapper resourcesMapper;
 
     @Autowired
     private UserRoleRelationMapper userRoleRelationMapper;
 
-    private ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(255,511,10, TimeUnit.SECONDS , new LinkedBlockingQueue<>())
+    private ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(255,511,10, TimeUnit.SECONDS , new LinkedBlockingQueue<>());
 
     @PostConstruct
     public void init(){
