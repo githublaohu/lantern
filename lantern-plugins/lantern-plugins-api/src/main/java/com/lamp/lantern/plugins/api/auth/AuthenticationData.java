@@ -11,7 +11,7 @@ import java.io.Serializable;
 @Data
 public class AuthenticationData implements Serializable {
 
-    private String systemId;
+    private String productId;
 
     private Long userId;
 

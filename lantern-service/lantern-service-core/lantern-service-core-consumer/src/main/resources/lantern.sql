@@ -1,7 +1,3 @@
-# drop database if exists `lantern_v2`;
-# create database `lantern_v2` ;
-# use `lantern_v2`;
-
 create table user_info
 (
     ui_id             bigint unsigned auto_increment primary key,
@@ -106,11 +102,17 @@ create table resources
     is_delete                   int          not null default 0 comment '0未删除，1已删除'
 );
 # 角色维度：单个项目维度，全局维度。如果这样 是否一个全局维度指向多个维度。查询select语句不好查询哈。
+
 create table role
 (
-    role_id             bigint(11) primary key auto_increment comment ' id ',
+    role_id          bigint(11) primary key auto_increment comment ' id ',
     role_type_id        bigint       not null comment ' 角色类型id ',
-    role_name           varchar(127) not null default '' comment ' 角色名 ',
+    system_id                   bigint       not null default 0 comment ' 系统id ',
+    product_id                  bigint       not null default 0 comment '产品id',
+    project_id                  bigint       not null default 0 comment ' 项目id ',
+    project_name                varchar(127) not null default '' comment ' 项目名称 ',
+    role_type varchar(15) not null default  '' comment  '角色类型',
+    role_name        varchar(127) not null default '' comment ' 角色名 ',
     role_create_time    datetime     not null default current_timestamp comment ' 创建时间 ',
     role_start_time     datetime     not null default current_timestamp comment ' 开始时间 ',
     role_update_time    datetime     not null default current_timestamp on update current_timestamp comment ' 修改时间 ',
@@ -118,9 +120,9 @@ create table role
     role_valid_time     datetime     not null default current_timestamp comment ' 有效时间 ',
     role_create_user_id bigint       not null comment '创建人id',
     role_update_user_id bigint       not null comment '修改人id',
-    role_description    varchar(127) not null default '' comment ' 角色描述 ',
-    role_tag            varchar(127) not null default '' comment '',
-    is_delete           int          not null default 0 comment '0未删除，1已删除'
+    role_description varchar(127) not null default '' comment ' 角色描述 ',
+    role_tag         varchar(127) not null default '' comment '',
+    is_delete        int          not null default 0 comment '0未删除，1已删除'
 );
 
 create table resource_role_relation
