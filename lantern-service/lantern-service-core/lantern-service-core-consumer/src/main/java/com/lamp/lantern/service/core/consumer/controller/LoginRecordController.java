@@ -1,5 +1,6 @@
 package com.lamp.lantern.service.core.consumer.controller;
 
+import com.lamp.lantern.plugins.api.annotation.UserInjection;
 import com.lamp.lantern.service.core.consumer.utils.ResultObjectEnums;
 import com.lamp.lantern.service.core.entity.LoginRecordEntity;
 import com.lamp.lantern.plugins.api.mode.LoginRecord;
@@ -10,6 +11,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -41,7 +43,7 @@ public class LoginRecordController {
 
     @ApiOperation(value = "更新退出时间")
     @PostMapping(value = "updateLoginRecordExitTimeField")
-    public ResultObjectEnums updateLoginRecordExitTimeField(LoginRecordEntity loginRecordEntity) {
+    public ResultObjectEnums updateLoginRecordExitTimeField(@RequestBody  LoginRecordEntity loginRecordEntity) {
         Integer integer = loginRecordEntityService.updateLoginRecordExitTimeField(loginRecordEntity);
         return ResultObjectEnums.SUCCESS;
     }

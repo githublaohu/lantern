@@ -18,10 +18,15 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+/**
+ * @author hahaha
+ */
 @Documented
 @Retention(RUNTIME)
 @Target(PARAMETER)
 public @interface Injection {
 
-	String name();
+	String value();
+
+	String fieldName() default "";
 }

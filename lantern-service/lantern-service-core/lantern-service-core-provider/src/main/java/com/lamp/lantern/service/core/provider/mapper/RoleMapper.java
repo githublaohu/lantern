@@ -82,6 +82,6 @@ public interface RoleMapper {
     })
     Integer endRoles(List<RoleEntity> roleEntities);
 
-    @Select(" select * from role where role_is_delete = 0 and  role_end_time > now() ")
+    @Select(" select * from role where  project_id = #{project_id}  role_is_delete = 0 and  role_end_time > now() ")
     List<Role>  selectRoles();
 }

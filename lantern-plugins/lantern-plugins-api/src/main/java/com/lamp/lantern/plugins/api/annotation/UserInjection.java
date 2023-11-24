@@ -18,9 +18,17 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+/**
+ * @author hahaha
+ */
 @Documented
 @Retention(RUNTIME)
 @Target(PARAMETER)
 public @interface UserInjection {
 
+    /**
+     * 用户表里面的字段
+     * @return
+     */
+    String value() default "";
 }

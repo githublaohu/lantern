@@ -104,9 +104,12 @@ create table resources
 create table role
 (
     role_id          bigint(11) primary key auto_increment comment ' id ',
+    system_id                   bigint       not null default 0 comment ' 系统id ',
+    product_id                  bigint       not null default 0 comment '产品id',
+    project_id                  bigint       not null default 0 comment ' 项目id ',
+    project_name                varchar(127) not null default '' comment ' 项目名称 ',
+    role_type varchar(15) not null default  '' comment  '角色类型',
     role_name        varchar(127) not null default '' comment ' 角色名 ',
-    role_create_time datetime     not null default current_timestamp comment ' 创建时间 ',
-    role_update_time datetime     not null default current_timestamp on update current_timestamp comment ' 修改时间 ',
     role_end_time    datetime     not null default current_timestamp comment ' 结束时间 ',
     role_valid_time  datetime     not null default current_timestamp comment ' 有效时间 ',
     role_description varchar(127) not null default '' comment ' 角色描述 ',
@@ -151,8 +154,9 @@ create table user_role_relation
 (
     urr_id          bigint auto_increment primary key,
     urr_type        varchar(31) not null comment '与角色关联的对象的类型',
-    urr_role_id     bigint      not null comment ' 角色id ',
-    urr_user_id     bigint      not null,
+    role_id     bigint      not null comment ' 角色id ',
+    user_type  varchar(31) not null comment '用户类型',
+    user_id     bigint      not null,
     urr_create_time datetime    not null default current_timestamp comment ' 创建时间 ',
     urr_update_time datetime    not null default current_timestamp on update current_timestamp comment ' 修改时间 ',
     urr_end_time    datetime    not null default current_timestamp comment ' 结束时间 ',

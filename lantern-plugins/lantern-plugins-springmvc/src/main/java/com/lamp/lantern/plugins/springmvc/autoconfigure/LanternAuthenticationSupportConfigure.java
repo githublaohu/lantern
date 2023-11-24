@@ -1,14 +1,12 @@
 package com.lamp.lantern.plugins.springmvc.autoconfigure;
 
-import com.lamp.lantern.plugins.api.auth.AuthenticationService;
-import com.lamp.lantern.plugins.api.auth.config.AuthenticationServiceConfig;
 import com.lamp.lantern.plugins.api.config.AuthenticationConfig;
 import com.lamp.lantern.plugins.core.authentication.AuthenticationManager;
 import com.lamp.lantern.plugins.core.environment.SpringEnvironmentContext;
 import com.lamp.lantern.plugins.core.login.HandlerService;
 import com.lamp.lantern.plugins.springmvc.support.AuthenticationInterceptor;
 import com.lamp.lantern.plugins.springmvc.support.LanternAuthenticationUserMethodArgumentResolver;
-import java.util.Objects;
+import com.lamp.lantern.plugins.springmvc.support.LanternSpringMVCBehavior;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeansException;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -35,10 +33,11 @@ public class LanternAuthenticationSupportConfigure implements ApplicationContext
     public AuthenticationManager createAuthenticationManager() throws Exception {
         AuthenticationConfig authenticationConfig = lanternProperties.getAuthenticationConfig();
         SpringEnvironmentContext environmentContext = new SpringEnvironmentContext(applicationContext);
-        return new AuthenticationManager(authenticationConfig,environmentContext);
+        return new AuthenticationManager(authenticationConfig, environmentContext);
     }
 
     /**
+     *
      * 登录校验拦截器
      */
     @Bean
@@ -49,6 +48,11 @@ public class LanternAuthenticationSupportConfigure implements ApplicationContext
     @Bean
     public LanternAuthenticationUserMethodArgumentResolver lanternAuthenticationUserMethodArgumentResolver() {
         return new LanternAuthenticationUserMethodArgumentResolver();
+    }
+
+    @Bean
+    public LanternSpringMVCBehavior lanternSpringMvcBehavior() {
+        return new LanternSpringMVCBehavior();
     }
 
     @Bean
