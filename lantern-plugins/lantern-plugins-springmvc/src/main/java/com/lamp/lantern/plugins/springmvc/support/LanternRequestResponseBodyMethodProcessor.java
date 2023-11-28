@@ -44,7 +44,7 @@ public class LanternRequestResponseBodyMethodProcessor implements HandlerMethodA
         Object object =
                 requestResponseBodyMethodProcessor.resolveArgument(parameter, mavContainer, webRequest, binderFactory);
         if (Objects.isNull(object)) {
-            return object;
+            return null;
         }
         Object value;
         if (object instanceof Optional) {
@@ -57,9 +57,11 @@ public class LanternRequestResponseBodyMethodProcessor implements HandlerMethodA
         }
         List<MapperInfo> mappingList = classMap.get(value.getClass());
         if (Objects.isNull(mappingList)) {
+            //如果该类在classMap中不存在，那么就创建一个新的mappingList
             mappingList = new ArrayList<>();
             classMap.put(value.getClass(), mappingList);
             Class<?> clazz = value.getClass();
+            //对于该类的所有父类进行遍历
             while (!Objects.equals(clazz, Object.class)) {
                 Field[] declaredFields = new Field[0];
                 if (clazz != null) {
@@ -67,6 +69,11 @@ public class LanternRequestResponseBodyMethodProcessor implements HandlerMethodA
                     clazz = clazz.getSuperclass();
                 }
                 for (Field field : declaredFields) {
+                    //判断field 是this
+                    if (Objects.equals(field.getName(), "this$0")) {
+                        continue;
+                    }
+
                     UserInjection userInjection = field.getAnnotation(UserInjection.class);
                     OrganizationInjection organizationInjection = field.getAnnotation(OrganizationInjection.class);
                     Injection injection = field.getAnnotation(Injection.class);
@@ -96,7 +103,7 @@ public class LanternRequestResponseBodyMethodProcessor implements HandlerMethodA
             return object;
         }
         for (MapperInfo mapperInfo : mappingList) {
-            Object lanternObject = 0;
+            Object lanternObject;
             if (Objects.equals("userInfo", mapperInfo.lanternObject)) {
                 lanternObject = LanternContext.getContext().getUserInfo();
             } else {
@@ -104,7 +111,7 @@ public class LanternRequestResponseBodyMethodProcessor implements HandlerMethodA
             }
             // 得到数据
             if (Objects.isNull(mapperInfo.lanternObjectField)) {
-                mapperInfo.lanternObjectField = lanternObject.getClass().getField(mapperInfo.lanternObjectFieldName);
+                mapperInfo.lanternObjectField = lanternObject.getClass().getDeclaredField(mapperInfo.lanternObjectFieldName);
                 mapperInfo.lanternObjectField.setAccessible(true);
             }
             Object valueInjection = mapperInfo.lanternObjectField.get(lanternObject);
@@ -119,6 +126,9 @@ public class LanternRequestResponseBodyMethodProcessor implements HandlerMethodA
 
         private Field lanternObjectField;
 
+        /**
+         * 目标对象在数据库表中的字段名
+         */
         private String lanternObjectFieldName;
 
         private Class<?> targetClass;

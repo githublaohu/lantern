@@ -31,9 +31,10 @@ public class LanternAuthenticationUserMethodArgumentResolver implements HandlerM
                                   @NotNull NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         if (parameter.hasParameterAnnotation(UserInjection.class)) {
             return LanternContext.getContext().getUserInfo();
-        } else if (parameter.getParameterType().isAssignableFrom(OrganizationInfo.class)
-                && parameter.hasParameterAnnotation(OrganizationInjection.class)) {
-            return null;
+        } else if (parameter.hasParameterAnnotation(OrganizationInjection.class)
+                && parameter.getParameterType().isAssignableFrom(OrganizationInfo.class)
+        ) {
+            return LanternContext.getContext().getValue("organization");
         }
         Injection injection = parameter.getParameterAnnotation(Injection.class);
         if (injection != null) {

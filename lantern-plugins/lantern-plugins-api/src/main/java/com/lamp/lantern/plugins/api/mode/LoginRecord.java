@@ -39,7 +39,7 @@ public class LoginRecord {
     /**
      * 用户退出方式
      */
-    private LocalDateTime ulExitTime;
+    private LocalDateTime ulQuitTime;
 
     /**
      * 用户登录地址

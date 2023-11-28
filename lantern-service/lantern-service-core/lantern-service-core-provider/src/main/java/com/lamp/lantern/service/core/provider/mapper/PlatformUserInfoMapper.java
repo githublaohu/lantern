@@ -8,18 +8,7 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
-/**
- * create table lantern_v2.platform_user_info
- * (
- *     pui_id          bigint auto_increment
- *         primary key,
- *     pui_user_id     bigint                                               not null,
- *     pui_open_id     bigint                                               not null,
- *     pui_type        enum ('PLATFORM', 'SECOND', 'THIRD') default 'THIRD' not null,
- *     pui_authchannel enum ('Github', 'Alipay', 'Wechat', 'Taobao', 'QQ')  not null,
- *     pui_union_id    bigint                               default 0       not null
- * );
- */
+
 @Mapper
 public interface PlatformUserInfoMapper {
     @Insert("insert into platform_user_info values (#{puiId}, #{puiUserId}, #{puiOpenId}, #{puiType}, #{puiAuthchannel}, #{puiUnionId})")
