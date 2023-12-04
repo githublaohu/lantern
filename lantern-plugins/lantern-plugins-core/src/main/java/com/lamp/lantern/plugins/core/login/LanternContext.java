@@ -57,6 +57,7 @@ public class LanternContext {
 
 
     @Setter
+    @Getter
     private Object userInfo;
 
 
@@ -91,10 +92,6 @@ public class LanternContext {
     protected void clear() {
         this.authService = null;
         this.values.clear();
-    }
-
-    public <T>T getUserInfo() {
-    	return (T)userInfo;
     }
 
 }

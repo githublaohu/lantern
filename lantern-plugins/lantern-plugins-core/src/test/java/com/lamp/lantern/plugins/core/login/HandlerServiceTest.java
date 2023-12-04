@@ -70,6 +70,7 @@ public class HandlerServiceTest {
 
 //        authChannelConfig.setClassName("com.lamp.lantern.plugins.core.login.TestService");
         authChannelConfig.setSimpleClassName("AlipayPlatformAuthService");
+        authChannelConfig.setSimpleClassName("AlipayPlatformAuthService");
         authChannelConfig.setAppId("testAppId");
         authChannelConfig.setAccessKey("testAccessKey");
         authChannelConfig.setSecretAccessKey("testSecretAccessKey");

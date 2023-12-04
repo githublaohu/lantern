@@ -11,6 +11,7 @@ import com.lamp.lantern.plugins.api.enums.LoginStatusEnum;
 import com.lamp.lantern.plugins.api.enums.SystemEnum;
 import com.lamp.lantern.plugins.api.enums.TerminalEnum;
 
+import com.lamp.lantern.plugins.api.injection.OperateInfoInjection;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -19,7 +20,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode
 @AllArgsConstructor
-public class LoginRecord {
+public class LoginRecord extends OperateInfoInjection {
 
 	/**
      * 登录记录唯一Id
@@ -39,7 +40,7 @@ public class LoginRecord {
     /**
      * 用户退出方式
      */
-    private LocalDateTime ulExitTime;
+    private LocalDateTime ulQuitTime;
 
     /**
      * 用户登录地址

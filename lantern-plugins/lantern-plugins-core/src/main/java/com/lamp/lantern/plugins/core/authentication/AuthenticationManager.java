@@ -24,6 +24,8 @@ import lombok.Getter;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.apache.dubbo.config.RegistryConfig;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.stereotype.Component;
 
 /**
  * 1. springmvc参数拦截器
@@ -32,6 +34,7 @@ import org.apache.dubbo.config.RegistryConfig;
  *
  * @author laohu
  */
+@Component
 public class AuthenticationManager {
 
     private final LanternAuthFlow lanternAuthFlow = new LanternAuthFlow();

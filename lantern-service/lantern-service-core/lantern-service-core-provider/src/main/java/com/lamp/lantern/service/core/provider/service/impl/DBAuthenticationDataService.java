@@ -7,7 +7,6 @@ import com.lamp.lantern.plugins.api.auth.config.DBAuthenticationDataConfig;
 import com.lamp.lantern.plugins.api.mode.Role;
 import com.lamp.lantern.service.core.provider.mapper.ResourcesMapper;
 import com.lamp.lantern.service.core.provider.mapper.RoleMapper;
-import com.lamp.lantern.service.core.provider.mapper.RoletypeRoleRelationMapper;
 import com.lamp.lantern.service.core.provider.mapper.UserRoleRelationMapper;
 import java.util.List;
 import java.util.Map;
@@ -21,12 +20,14 @@ import javax.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author laohu
  */
 @Slf4j
 @Service
+@Transactional
 public class DBAuthenticationDataService implements AuthenticationDataService {
 
     private final ThreadPoolExecutor threadPoolExecutor =
@@ -40,13 +41,11 @@ public class DBAuthenticationDataService implements AuthenticationDataService {
     private RoleMapper roleMapper;
 
     @Autowired
-    private RoletypeRoleRelationMapper roletypeRoleRelationMapper;
-
-    @Autowired
     private ResourcesMapper resourcesMapper;
 
     @Autowired
     private UserRoleRelationMapper userRoleRelationMapper;
+    
 
     @PostConstruct
     public void init() {

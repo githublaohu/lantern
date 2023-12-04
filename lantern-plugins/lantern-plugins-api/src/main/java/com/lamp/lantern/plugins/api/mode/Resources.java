@@ -1,5 +1,6 @@
 package com.lamp.lantern.plugins.api.mode;
 
+import com.lamp.lantern.plugins.api.injection.OperateInfoInjection;
 import io.swagger.annotations.Api;
 import lombok.Data;
 
@@ -7,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Data
 @Api(value = "ResourcesEntity", description = "资源实体类")
-public class Resources {
+public class Resources extends OperateInfoInjection {
 
     private Long resourceId;
 

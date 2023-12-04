@@ -1,0 +1,59 @@
+server:
+  port: 12330
+  servlet:
+    context-path: "/lamp/lantern/example"
+
+lantern:
+  loginConfig:
+    enable: false
+    systemName: Lantern
+    handlerConfigList:
+      - handlerName: "CreateTokenAuthHandler"
+        redisName: "CreateTokenAuthHandlerRedis"
+        configMap:
+          tokenCreateMode: UUID
+          tokenName: "lantern_token"
+          #"cookie" or "header"
+          dataPosition: "cookie"
+          cookieDomain: "lantern_cookie"
+          cookieMaxAge: 3600
+          cookiePath: "/"
+          cookieSecure: false
+          cookieHttpOnly: true
+          tokenExpire: 3600
+    authChannelConfigList:
+#      - loginType: FIRST
+#        #参考 @AuthTypeChannel注解
+#        authChannel: Lantern
+#        beanName: lanternAuthOperate
+      #Github第三方登录
+      - loginType: THIRD
+        authChannel: Github
+        #仅限lantern内部类使用SimpleClass
+        simpleClassName: GithubThirdAuthService
+        appId: 086907be34d757c8a85a
+        accessKey: testAccessKey
+        secretAccessKey: 6957fd806ae26279a7b00c32c5262c50b24c0f80
+        privateKey: testPrivateKey
+        publicKey: testPublicKey
+        redirectUri: "http://localhost:8083/lamp/lantern/service/action/account/third/redirect?authChannel=Github"
+
+#    lanternUserInfoConfig:
+#      beanName: loginUserInfoService
+
+
+  handlerRedisMap:
+    CreateTokenAuthHandlerRedis: "redis://127.0.0.1:6379/0"
+
+  authenticationConfig:
+    enable: false
+    authenticationType: USER
+
+
+
+
+
+
+
+
+

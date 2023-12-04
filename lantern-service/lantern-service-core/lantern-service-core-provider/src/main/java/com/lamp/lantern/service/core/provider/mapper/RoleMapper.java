@@ -3,13 +3,33 @@ package com.lamp.lantern.service.core.provider.mapper;
 import com.lamp.lantern.plugins.api.mode.UserInfo;
 import com.lamp.lantern.service.core.entity.RoleEntity;
 import com.lamp.lantern.plugins.api.mode.Role;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
+/**
+ *
+ (
+ role_id          bigint(11) primary key auto_increment comment ' id ',
+ role_type_id        bigint       not null comment ' 角色类型id ',
+ system_id                   bigint       not null default 0 comment ' 系统id ',
+ product_id                  bigint       not null default 0 comment '产品id',
+ project_id                  bigint       not null default 0 comment ' 项目id ',
+ project_name                varchar(127) not null default '' comment ' 项目名称 ',
+ role_type varchar(15) not null default  '' comment  '角色类型',
+ role_name        varchar(127) not null default '' comment ' 角色名 ',
+ role_create_time    datetime     not null default current_timestamp comment ' 创建时间 ',
+ role_start_time     datetime     not null default current_timestamp comment ' 开始时间 ',
+ role_update_time    datetime     not null default current_timestamp on update current_timestamp comment ' 修改时间 ',
+ role_end_time       datetime     not null default current_timestamp comment ' 结束时间 ',
+ role_valid_time     datetime     not null default current_timestamp comment ' 有效时间 ',
+ role_create_user_id bigint       not null comment '创建人id',
+ role_update_user_id bigint       not null comment '修改人id',
+ role_description varchar(127) not null default '' comment ' 角色描述 ',
+ role_tag         varchar(127) not null default '' comment '',
+ is_delete        int          not null default 0 comment '0未删除，1已删除'
+ );
+ */
 @Mapper
 public interface RoleMapper {
 
@@ -17,13 +37,23 @@ public interface RoleMapper {
             "select * from role",
             "<where>",
             "<if test = '#{roleId} != null'>role_id=#{roleId},</if>",
+            "<if test = '#{roleTypeId} != null'>role_type_id=#{roleTypeId},</if>",
+            "<if test = '#{systemId} != null'>system_id=#{systemId},</if>",
+            "<if test = '#{productId} != null'>product_id=#{productId},</if>",
+            "<if test = '#{projectId} != null'>project_id=#{projectId},</if>",
+            "<if test = '#{projectName} != null'>project_name=#{projectName},</if>",
+            "<if test = '#{roleType} != null'>role_type=#{roleType},</if>",
             "<if test = '#{roleName} != null'>role_name=#{roleName},</if>",
             "<if test = '#{roleCreateTime} != null'>role_create_time=#{roleCreateTime},</if>",
-            "<if test = '#{roleEndTime} != null'>role_end_time=#{roleEndTime},</if>",
+            "<if test = '#{roleStartTime} != null'>role_start_time=#{roleStartTime},</if>",
             "<if test = '#{roleUpdateTime} != null'>role_update_time=#{roleUpdateTime},</if>",
+            "<if test = '#{roleEndTime} != null'>role_end_time=#{roleEndTime},</if>",
             "<if test = '#{roleValidTime} != null'>role_valid_time=#{roleValidTime},</if>",
-            "<if test = '#{roleDescription} != null'>role_description=#{roleDescription},</if>",
-            "<if test = '#{roleIsDelete} != null'>role_is_delete=#{roleIsDelete},</if>",
+            "<if test = '#{roleCreateUserId} != null'>role_create_user_id=#{roleCreateUserId},</if>",
+            "<if test = '#{roleUpdateUserId} != null'>role_update_user_id=#{roleUpdateUserId},</if>",
+            "<if test = '#{roleDescription} != null'>role_descriptio contains #{roleDescription},</if>",
+            "<if test = '#{roleTag} != null'>role_tag=#{roleTag},</if>",
+            "<if test = '#{isDelete} != null'>is_delete=#{isDelete},</if>",
             "</where>",
             "</script>"
 
@@ -34,15 +64,26 @@ public interface RoleMapper {
             "update resources",
             "<set>",
             "<if test = '#{roleId} != null'>role_id=#{roleId},</if>",
+            "<if test = '#{roleTypeId} != null'>role_type_id=#{roleTypeId},</if>",
+            "<if test = '#{systemId} != null'>system_id=#{systemId},</if>",
+            "<if test = '#{productId} != null'>product_id=#{productId},</if>",
+            "<if test = '#{projectId} != null'>project_id=#{projectId},</if>",
+            "<if test = '#{projectName} != null'>project_name=#{projectName},</if>",
+            "<if test = '#{roleType} != null'>role_type=#{roleType},</if>",
             "<if test = '#{roleName} != null'>role_name=#{roleName},</if>",
+            "<if test = '#{roleStartTime} != null'>role_start_time=#{roleStartTime},</if>",
+            "<if test = '#{roleValidTime} != null'>role_valid_time=#{roleValidTime},</if>",
             "<if test = '#{roleDescription} != null'>role_description=#{roleDescription},</if>",
+            "<if test = '#{roleTag} != null'>role_tag=#{roleTag},</if>",
+            "roleUpdateUserId = #{roleUpdateUserId}",
             "</set>",
             "where role_id = #{roldId}",
             "</script>"
     })
     public Integer updateRole(Role roleEntity);
 
-    @Insert("insert into role (role_name, role_valid_time, role_description) values (#{roleName}, #{roleValidTime}, #{roleDescription})")
+    @Options(useGeneratedKeys = true, keyProperty = "roleId", keyColumn = "role_id")
+    @Insert("insert into role (role_type_id, system_id, product_id, project_id, project_name, role_type, role_name, role_start_time, role_valid_time, role_create_user_id, role_update_user_id, role_description, role_tag) values (#{roleTypeId}, #{systemId}, #{productId}, #{projectId}, #{projectName}, #{roleType}, #{roleName}, #{roleStartTime}, #{roleValidTime}, #{operatorId}, #{operatorId}, #{roleDescription}, #{roleTag})")
     public Integer insertRole(Role roleEntity);
 
     /**
@@ -53,21 +94,20 @@ public interface RoleMapper {
     @Select("SELECT CASE WHEN EXISTS (select 1 from role where role_id = #{id} and role_valid_time > now()) THEN 1 ELSE 0 END")
     public Integer checkRoleValid(Long id) ;
 
-    @Select("select * from role where role_valid_time > now()")
+    @Select("select * from role where role_valid_time > now() and ")
     public List<Role> getValidRoles();
 
-    @Update("update role set role_end_time = now(),role_valid_time = now() where role_id = #{roleId}")
+    @Update("update role set role_end_time = now(),role_valid_time = now(),update_user_id=#{operatorId} where role_id = #{roleId}")
     public Integer endRole(Role roleEntity);
 
     @Select({"select * from `role` where role_id in (",
-            "select urr_role_id from `user_role_relation` where urr_user_id = #{uiId} ",
-            "union",
-            " select trr_role_id from (roletype_role_relation join `user_roletype_relation` on trr_roletype_id = utr_roletype_id) where utr_user_id = #{uiId}) and role_is_delete = 0"}
+            "select urr_role_id from `user_role_relation` where urr_user_id = #{uiId} )",
+            "and role_is_delete = 0"}
     )
     List<Role> getAllRoleByUserId(UserInfo userInfoEntity);
 
-    @Select({"select * from `role` where role_id in (",
-    "select urr_role_id from `user_role_relation` where urr_user_id = #{uiId} and urr_valid_time > now() union select trr_role_id from (roletype_role_relation join `user_roletype_relation` on trr_roletype_id = utr_roletype_id and trr_valid_time > now() and utr_valid_time > now()) where utr_user_id = #{uiId}) and role_valid_time > now() and role_is_delete = 0"})
+    @Select({"select * from `role` inner join `user_role_relation` on role_id = urr_role_id where urr_user_id = #{uiId} and role_is_delete = 0 and role_valid_time > now()"}
+    )
     List<Role> getAllValidRoleByUserId(UserInfo userInfoEntity);
 
     @Update({

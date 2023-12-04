@@ -12,7 +12,6 @@
 package com.lamp.lantern.plugins.core.token;
 
 import lombok.Data;
-import lombok.Getter;
 
 @Data
 public class TokenConfig {

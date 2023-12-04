@@ -3,16 +3,16 @@ package com.lamp.lantern.plugins.api.mode;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+
+import com.lamp.lantern.plugins.api.injection.OperateInfoInjection;
 import lombok.Data;
 
 @Data
-public class ResourceRoleRelation implements Serializable {
+public class ResourceRoleRelation extends OperateInfoInjection implements Serializable {
 
     private Long rrrId;
 
     private Long rrrResourceId;
-
-    private Long rrrOperatorId;
 
     private Long rrrRoleId;
 
@@ -28,6 +28,6 @@ public class ResourceRoleRelation implements Serializable {
 
     private LocalDateTime rrrValidTime;
 
-    private Integer rrrIsDelete;
+    private Integer isDelete;
 
 }
