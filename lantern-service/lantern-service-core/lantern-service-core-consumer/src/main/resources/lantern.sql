@@ -129,7 +129,6 @@ create table resource_role_relation
 (
     rrr_id          bigint auto_increment primary key,
     rrr_resource_id bigint       not null comment ' 权限id ',
-    rrr_operator_id bigint       not null default 0 comment ' 操作id ',
     rrr_role_id     bigint       not null comment ' 角色id ',
     rrr_type        varchar(127) not null default '' comment ' 类型 ',
     rrr_type_id     bigint                default 0 comment ' 类型id ',
@@ -138,8 +137,8 @@ create table resource_role_relation
     rrr_create_time datetime     not null default current_timestamp comment ' 创建时间 ',
     rrr_update_time datetime     not null default current_timestamp on update current_timestamp comment ' 修改时间 ',
     rrr_start_time  datetime     not null default current_timestamp comment ' 开始时间 ',
-    create_user_id  bigint       not null comment '创建人id',
-    update_user_id  bigint       not null comment '修改人id',
+    rrr_create_user_id  bigint       not null comment '创建人id',
+    rrr_update_user_id  bigint       not null comment '修改人id',
     is_delete       int          not null default 0 comment '0未删除，1已删除'
 
 ) comment '资源与角色关系表';
@@ -172,9 +171,12 @@ create table user_role_relation
 -- 每一张表都有时间相关的5个数据：创建时间，修改时间，结束时间，开始时间，有效时间。
 -- 创建时间：数据被插入的时间，同时有创建人id
 -- 修改时间：数据被修改的时间，同时有修改人id
--- 结束时间：数据被手动结束的时间，这是有效时间不会被修改，判断数据的有效性需要同时判断结束时间和有效时间
+-- 结束时间：数据被手动结束的时间，这时有效时间不会被修改，判断数据的有效性需要同时判断结束时间和有效时间
+
 -- 开始时间：数据被计划开始有效的时间
 -- 有效时间：数据被计划结束的时间
+-- 这两点在创建数据的时候就应该设置
+
 -- 这些时间默认设置为当前时间；如果数据被修改，修改时间会更新
 
 -- 如果开始时间 = 创建时间， 说明数据没有开始使用

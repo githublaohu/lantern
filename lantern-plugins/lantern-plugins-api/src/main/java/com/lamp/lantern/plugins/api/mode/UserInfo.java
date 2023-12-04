@@ -17,6 +17,7 @@ import java.util.Date;
 
 import com.lamp.lantern.plugins.api.enums.StatusEnum;
 
+import com.lamp.lantern.plugins.api.injection.OperateInfoInjection;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -24,7 +25,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 @Data
 @ApiModel(value="用户登录对象",description="用户登录对象")
-public class UserInfo implements Serializable {
+public class UserInfo extends OperateInfoInjection implements Serializable {
     /**
      * 用户唯一Id
      */

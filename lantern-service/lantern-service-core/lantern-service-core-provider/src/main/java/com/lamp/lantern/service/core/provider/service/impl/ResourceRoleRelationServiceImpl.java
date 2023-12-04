@@ -36,8 +36,7 @@ public class ResourceRoleRelationServiceImpl implements ResourceRoleRelationServ
 
     @Override
     public Integer insertResourceRoleRelation(ResourceRoleRelationEntity resourceRoleRelationEntity) {
-        Integer result = resourceRoleRelationMapper.insertResourceRoleRelation(resourceRoleRelationEntity);
-        return result;
+        return resourceRoleRelationMapper.insertResourceRoleRelation(resourceRoleRelationEntity);
     }
 
     @Override

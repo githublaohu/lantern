@@ -11,6 +11,8 @@ import com.lamp.lantern.plugins.api.service.LanternUserInfoService;
 import com.lamp.lantern.service.core.entity.UserInfoEntity;
 import com.lamp.lantern.service.core.service.UserInfoService;
 
+import javax.annotation.PostConstruct;
+
 @Component("loginUserInfoService")
 public class LoginUserInfoServiceImpl implements LanternUserInfoService {
 
@@ -18,6 +20,11 @@ public class LoginUserInfoServiceImpl implements LanternUserInfoService {
 	private UserInfoService userInfoService;
 	@Reference
 	private PlatformUserInfoService platformUserInfoService;
+
+	@PostConstruct
+	private void test(){
+		System.out.println("LoginUserInfoServiceImpl");
+	}
 
 	@Override
 	public UserInfo registerThirdLoginUser(UserInfo userInfo, PlatformUserInfo platformUserInfo) {

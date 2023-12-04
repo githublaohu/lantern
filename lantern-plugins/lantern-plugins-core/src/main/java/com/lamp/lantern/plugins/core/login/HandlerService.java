@@ -129,7 +129,7 @@ public class HandlerService {
      * @throws Exception
      */
     public HandlerExecute createHandlerExecute(LoginConfig loginConfig, EnvironmentContext environmentContext) throws Exception {
-        log.info("create handlerExecute , loginConfig is {}", loginConfig);
+        log.info("create handlerExecute , loginConfig is {}", loginConfig.getSystemName());
         HandlerExecute handlerExecute = new HandlerExecute();
         handlerExecute.setLoginConfig(loginConfig);
         handlerExecute.setHandlerList(this.createHandler(loginConfig, environmentContext));

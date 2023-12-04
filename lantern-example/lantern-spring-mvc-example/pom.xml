@@ -12,16 +12,9 @@
     <url>http://maven.apache.org</url>
     <dependencies>
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>5.1.9.RELEASE</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-autoconfigure</artifactId>
-            <version>2.1.7.RELEASE</version>
-            <scope>compile</scope>
+            <groupId>cn.lampup</groupId>
+            <artifactId>lantern-plugins-springmvc</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>io.github.githublaohu</groupId>

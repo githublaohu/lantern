@@ -1,5 +1,6 @@
 package com.lamp.lantern.plugins.api.mode;
 
+import com.lamp.lantern.plugins.api.injection.OperateInfoInjection;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
@@ -7,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Data
 @ApiModel(value = "RoleEntity", description = "角色实体类")
-public class Role {
+public class Role extends OperateInfoInjection {
 
     private Long roleId;
 

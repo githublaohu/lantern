@@ -28,7 +28,8 @@ public class PlatformUserInfoServiceImpl implements PlatformUserInfoService {
 
     @Override
     public UserInfoEntity checkUserByTriIdAndAuthchannel(PlatformUserInfoEntity platformUserInfoEntity) {
-        return  platformUserInfoMapper.checkUserByTriIdAndAuthchannel(platformUserInfoEntity);
+//        return  platformUserInfoMapper.checkUserByTriIdAndAuthchannel(platformUserInfoEntity);
+        return null;
     }
 
 
