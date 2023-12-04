@@ -63,17 +63,17 @@ public class ResourcesServiceImpl implements ResourcesService {
     }
 
     @Override
-    public Resources selectById(ResourcesEntity resources) {
+    public Resources selectAllById(ResourcesEntity resources) {
         return resourcesMapper.selectById(resources);
     }
 
     @Override
-    public Resources selectByProjectId(ResourcesEntity resources) {
+    public Resources selectAllByProjectId(ResourcesEntity resources) {
         return resourcesMapper.selectByProjectId(resources);
     }
 
     @Override
-    public Resources selectByModuleId(ResourcesEntity resources) {
+    public Resources selectAllByModuleId(ResourcesEntity resources) {
         return resourcesMapper.selectByModuleId(resources);
     }
 

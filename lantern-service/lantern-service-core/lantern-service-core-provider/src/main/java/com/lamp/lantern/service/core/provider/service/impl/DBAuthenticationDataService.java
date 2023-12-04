@@ -78,7 +78,7 @@ public class DBAuthenticationDataService implements AuthenticationDataService {
             try {
                 // 通过 SQL 用区别全量与增量
                 CompletableFuture<List<Role>> roleAsync =
-                        CompletableFuture.supplyAsync(() -> roleMapper.selectRoles(), threadPoolExecutor);
+                        CompletableFuture.supplyAsync(() -> roleMapper.selectValidRoles(), threadPoolExecutor);
 
                 roleAsync.get();
             } catch (Exception e) {

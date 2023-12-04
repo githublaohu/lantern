@@ -175,7 +175,9 @@ public interface ResourcesMapper {
     @Select("select * from resources where is_delete = 0 and resource_update_time > #{time}")
     List<Resources> selectUpdatedResources(Resources resources);
 
-    @Select({" select * from user_role_relation as urr inner join `role` as r on urr.role_id = r.role_id inner join resource_role_relation as rrr on r.role_id = rrr.rrr_role_id inner join resources as re on rrr.rrr_resource_id = re.resource_id where re.resource_name = #{resourceName}  "})
+    @Select({" select * from user_role_relation as urr inner join `role` as r on urr.role_id = r.role_id inner join resource_role_relation as rrr on r.role_id = rrr.rrr_role_id inner join resources as re on rrr.rrr_resource_id = re.resource_id where re.resource_name = #{resourceName}  ",
+    "and urr.is_delete = 0 and r.is_delete = 0 and rrr.is_delete = 0 and re.is_delete = 0 and urr.valid_time > now() and urr.start_time < now() and urr.end_time > now() and r.valid_time > now() and r.start_time < now() and r.end_time > now() and rrr.valid_time > now() and rrr.start_time < now() and rrr.end_time > now() and re.valid_time > now() and re.start_time < now() and re.end_time > now()"
+    })
     Resources authentication(AuthenticationData authenticationData);
 
     @Select({"select * from resources "})

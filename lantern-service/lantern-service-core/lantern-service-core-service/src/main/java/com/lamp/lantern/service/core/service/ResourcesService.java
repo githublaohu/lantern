@@ -11,11 +11,11 @@ import java.util.List;
 public interface ResourcesService {
   public List<Resources> selectByForm(ResourcesEntity resources);
 
-  public Resources selectById(ResourcesEntity resources);
+  public Resources selectAllById(ResourcesEntity resources);
 
-  public Resources selectByProjectId(ResourcesEntity  resources);
+  public Resources selectAllByProjectId(ResourcesEntity  resources);
 
-  public Resources selectByModuleId(ResourcesEntity resources);
+  public Resources selectAllByModuleId(ResourcesEntity resources);
 
   public Integer insertResource(ResourcesEntity resources);
 

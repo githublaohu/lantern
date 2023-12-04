@@ -91,29 +91,31 @@ public interface RoleMapper {
      * @param id
      * @return
      */
-    @Select("SELECT CASE WHEN EXISTS (select 1 from role where role_id = #{id} and role_valid_time > now()) THEN 1 ELSE 0 END")
+    @Select("SELECT CASE WHEN EXISTS (select 1 from role where role_id = #{id} and "+r_is_valid+") THEN 1 ELSE 0 END")
     public Integer checkRoleValid(Long id) ;
 
-    @Select("select * from role where role_valid_time > now() and ")
+    @Select("select * from role where "+r_is_valid)
     public List<Role> getValidRoles();
 
-    @Update("update role set role_end_time = now(),role_valid_time = now(),update_user_id=#{operatorId} where role_id = #{roleId}")
+    @Update("update role set role_end_time = now(),role_update_user_id=#{operatorId} where role_id = #{roleId}")
     public Integer endRole(Role roleEntity);
 
     @Select({"select * from `role` where role_id in (",
-            "select urr_role_id from `user_role_relation` where urr_user_id = #{uiId} )",
-            "and role_is_delete = 0"}
+            "select role_id from `user_role_relation` where user_id = #{uiId} and",
+            urr_is_valid,")",
+            "and",
+            r_is_valid,}
     )
     List<Role> getAllRoleByUserId(UserInfo userInfoEntity);
 
-    @Select({"select * from `role` inner join `user_role_relation` on role_id = urr_role_id where urr_user_id = #{uiId} and role_is_delete = 0 and role_valid_time > now()"}
+    @Select({"select * from `role` as r inner join `user_role_relation` as urr on r.role_id = urr.role_id where",
+    r_is_valid,"and",urr_is_valid,"and urr.user_id = #{uiId}"}
     )
     List<Role> getAllValidRoleByUserId(UserInfo userInfoEntity);
 
     @Update({
             "<script>",
-            "update role set role_valid_time = now() ",
-            "role_end_time = now() ",
+            "update role set role_end_time = now() ",
             "where role_id in ",
             "<foreach collection='roleEntities' item='item' index='index' open='(' separator=',' close=')'>",
             "#{item.roleId}",
@@ -122,6 +124,9 @@ public interface RoleMapper {
     })
     Integer endRoles(List<RoleEntity> roleEntities);
 
-    @Select(" select * from role where  project_id = #{project_id}  role_is_delete = 0 and  role_end_time > now() ")
-    List<Role>  selectRoles();
+    @Select(" select * from role where"+r_is_valid)
+    List<Role> selectValidRoles();
+
+    String r_is_valid = "role_start_time < now() and role_valid_time > now() and role_end_time > now() and role_is_delete = 0";
+    String urr_is_valid = "urr_start_time < now() and urr_valid_time > now() and urr_end_time > now() and urr_is_delete = 0";
 }

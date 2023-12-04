@@ -5,6 +5,9 @@ import com.lamp.lantern.plugins.api.mode.ResourceRoleRelation;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
+
+
+
 @Mapper
 public interface ResourceRoleRelationMapper {
 
@@ -47,7 +50,7 @@ public interface ResourceRoleRelationMapper {
             "</script>"})
     List<ResourceRoleRelation> queryResourceRoleRelation(ResourceRoleRelation resourceRoleRelationEntity);
 
-    @Select("select * from resource_role_relation where rrr_start_time < now() and rrr_valid_time > now() and rrr_end_time > now() and is_delete = 0")
+    @Select("select * from resource_role_relation where"+is_valid)
     //使用Start,Valid,End判断是否有效
     List<ResourceRoleRelation> getValidResourceRoleRelation();
 
@@ -64,4 +67,7 @@ public interface ResourceRoleRelationMapper {
             "</script>"
     })
     Integer endResourceRoleRelations(List<ResourceRoleRelationEntity> resourceRoleRelationEntities);
+
+    //TODO: 本来设想使用virtual column放到数据库里，但是idea好像不支持，先试用字符串表示，用那个`@Sql`也好。
+    String is_valid = "rrr_start_time < now() and rrr_valid_time > now() and rrr_end_time > now() and is_delete = 0";
 }
