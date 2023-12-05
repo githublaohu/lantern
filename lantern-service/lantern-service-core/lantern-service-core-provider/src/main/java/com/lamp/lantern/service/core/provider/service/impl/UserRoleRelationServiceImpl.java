@@ -36,7 +36,7 @@ public class UserRoleRelationServiceImpl implements UserRoleRelationService {
 
     @Override
     public Integer insertUserRoleRelation(UserRoleRelationEntity userRoleRelationEntity) {
-        return userRoleRelationMapper.insert(userRoleRelationEntity);
+        return userRoleRelationMapper.insertUserRoleRelation(userRoleRelationEntity);
     }
 
     @Override

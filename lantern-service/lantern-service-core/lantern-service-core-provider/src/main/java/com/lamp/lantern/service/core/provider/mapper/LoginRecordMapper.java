@@ -12,7 +12,17 @@ public interface LoginRecordMapper {
 
     @Options(useGeneratedKeys = true, keyProperty = "loginRecordEntity.ulId", keyColumn = "ul_id")
     @Insert({"insert into user_login_record (system_id, ui_id, tri_id, product_id, ul_login_time, ul_login_address, ul_login_ip, ul_login_device_type, ul_login_device, ul_login_device_model, ul_login_system, ul_login_system_model, ul_session_id, ul_login_way, ul_login_way_platform, ul_login_terminal, ul_login_terminal_model, ul_quit_way, ul_quit_ip, ul_quit_time, ul_quit_address, ul_login_status, ul_login_fail_reason ) values (#{loginRecordEntity.systemId}, #{loginRecordEntity.uiId}, #{loginRecordEntity.triId}, #{loginRecordEntity.productId}, #{loginRecordEntity.ulLoginTime}, #{loginRecordEntity.ulLoginAddress}, #{loginRecordEntity.ulLoginIp}, #{loginRecordEntity.ulLoginDeviceType}, #{loginRecordEntity.ulLoginDevice}, #{loginRecordEntity.ulLoginDeviceModel}, #{loginRecordEntity.ulLoginSystem}, #{loginRecordEntity.ulLoginSystemModel}, #{loginRecordEntity.ulSessionId}, #{loginRecordEntity.ulLoginWay}, #{loginRecordEntity.ulLoginWayPlatform}, #{loginRecordEntity.ulLoginTerminal}, #{loginRecordEntity.ulLoginTerminalModel}, #{loginRecordEntity.ulQuitWay}, #{loginRecordEntity.ulQuitIp}, #{loginRecordEntity.ulQuitTime}, #{loginRecordEntity.ulQuitAddress}, #{loginRecordEntity.ulLoginStatus}, #{loginRecordEntity.ulLoginFailReason})"})
-    public Integer insertLoginRecord(LoginRecord loginRecordEntity);
+    Integer insertLoginRecord(LoginRecord loginRecordEntity);
+
+    @Options(useGeneratedKeys = true, keyProperty = "loginRecordEntity.ulId", keyColumn = "ul_id")
+    @Insert({"<script>",
+             "insert into user_login_record (system_id, ui_id, tri_id, product_id, ul_login_time, ul_login_address, ul_login_ip, ul_login_device_type, ul_login_device, ul_login_device_model, ul_login_system, ul_login_system_model, ul_session_id, ul_login_way, ul_login_way_platform, ul_login_terminal, ul_login_terminal_model, ul_quit_way, ul_quit_ip, ul_quit_time, ul_quit_address, ul_login_status, ul_login_fail_reason ) values ",
+                "<foreach collection='loginRecordEntities' item='loginRecordEntity' index='index' separator=',' open='(' close=')'>",
+                    "(#{loginRecordEntity.systemId}, #{loginRecordEntity.uiId}, #{loginRecordEntity.triId}, #{loginRecordEntity.productId}, #{loginRecordEntity.ulLoginTime}, #{loginRecordEntity.ulLoginAddress}, #{loginRecordEntity.ulLoginIp}, #{loginRecordEntity.ulLoginDeviceType}, #{loginRecordEntity.ulLoginDevice}, #{loginRecordEntity.ulLoginDeviceModel}, #{loginRecordEntity.ulLoginSystem}, #{loginRecordEntity.ulLoginSystemModel}, #{loginRecordEntity.ulSessionId}, #{loginRecordEntity.ulLoginWay}, #{loginRecordEntity.ulLoginWayPlatform}, #{loginRecordEntity.ulLoginTerminal}, #{loginRecordEntity.ulLoginTerminalModel}, #{loginRecordEntity.ulQuitWay}, #{loginRecordEntity.ulQuitIp}, #{loginRecordEntity.ulQuitTime}, #{loginRecordEntity.ulQuitAddress}, #{loginRecordEntity.ulLoginStatus}, #{loginRecordEntity.ulLoginFailReason})",
+                "</foreach>",
+            "</script>"
+    })
+    List<Integer> insertLoginRecords(List<LoginRecord> loginRecordEntities);
 
     @Results(
             id = "loginRecordMap",

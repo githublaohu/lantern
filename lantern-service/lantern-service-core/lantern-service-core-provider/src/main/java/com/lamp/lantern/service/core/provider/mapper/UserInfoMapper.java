@@ -84,65 +84,77 @@ public interface UserInfoMapper {
         "<if test='#{uiStatus} != null'>#{uiStatus},</if>",
         "<if test='#{uiToken} != null'>#{uiToken},</if>",
         "<if test='#{allowLogin} != null'>#{allowLogin},</if>",
-        "#{uiSalt}, #{uiSaltPassword},now(),#{operatorId},now(),#{operatorId}"})
+        "#{uiSalt}, #{uiSaltPassword},now(),#{operatorId},now(),#{operatorId}",
+        "</script>"
+    })
         //TODO:有问题, 不能检测到null
-        public Integer registerUserInfoEntity(UserInfo userInfoEntity);
+         Integer registerUserInfoEntity(UserInfo userInfoEntity);
 
     @Results(
             id = "userMap",
             value = {
-                    @Result(column = "ui_id", property = "uiId"), @Result(column = "ui_name", property = "uiName"), @Result(column = "ui_id_card", property = "uiIdCard"),
-                    @Result(column = "ui_phone", property = "uiPhone"), @Result(column = "ui_email", property = "uiEmail"), @Result(column = "ui_head_portrait", property = "uiHeadPortrait"),
-                    @Result(column = "ui_lack_flag", property = "uiLackFlag"), @Result(column = "ui_sex", property = "uiSex"), @Result(column = "ui_age", property = "uiAge"), @Result(column = "ui_birth", property = "uiBirth"),
-                    @Result(column = "ui_address", property = "uiAddress"), @Result(column = "ui_password", property = "uiPassword"), @Result(column = "ui_salt", property = "uiSalt"), @Result(column = "ui_salt_password", property = "uiSaltPassword"), @Result(column = "ui_token", property = "uiToken"),
-                    @Result(column = "ui_login_address", property = "uiLoginAddress"), @Result(column = "ui_login_time", property = "uiLoginTime"), @Result(column = "ui_exit_time", property = "uiExitTime"), @Result(column = "ui_first_login", property = "uiFirstLogin"),
-                    @Result(column = "ui_status", property = "uiStatus"), @Result(column = "allow_login", property = "allowLogin")
+                    @Result(column = "ui_id", property = "uiId"),
+                    @Result(column = "system_id", property = "systemId"),
+                    @Result(column = "ui_name", property = "uiName"),
+                    @Result(column = "ui_nickname", property = "uiNickname"),
+                    @Result(column = "ui_id_card", property = "uiIdCard"),
+                    @Result(column = "ui_phone", property = "uiPhone"),
+                    @Result(column = "ui_email", property = "uiEmail"),
+                    @Result(column = "ui_head_portrait", property = "uiHeadPortrait"),
+                    @Result(column = "ui_sex", property = "uiSex"),
+                    @Result(column = "ui_birth", property = "uiBirth"),
+                    @Result(column = "ui_address", property = "uiAddress"),
+                    @Result(column = "ui_login_address", property = "uiLoginAddress"),
+                    @Result(column = "ui_login_time", property = "uiLoginTime"),
+                    @Result(column = "ui_exit_time", property = "uiExitTime"),
+                    @Result(column = "ui_first_login", property = "uiFirstLogin"),
+
             }
     )
     @Select({SELECT_SQL,
             "ui_name = #{uiName} and is_delete = 0"
     })
-    public UserInfoEntity checkUserExistByUserName(UserInfo userInfoEntity);
+     UserInfoEntity checkUserExistByUserName(UserInfo userInfoEntity);
 
     @ResultMap("userMap")
     @Select({SELECT_SQL,
             "ui_email = #{uiEmail} and is_delete = 0"
 
     })
-    public UserInfoEntity checkUserExistByEmail(UserInfo userInfoEntity);
+     UserInfoEntity checkUserExistByEmail(UserInfo userInfoEntity);
 
     @ResultMap("userMap")
     @Select({SELECT_SQL,
             "ui_phone = #{uiPhone} and is_delete = 0"
     })
-    public UserInfoEntity checkUserExistByPhone(UserInfo userInfoEntity);
+     UserInfoEntity checkUserExistByPhone(UserInfo userInfoEntity);
     
     @ResultMap("userMap")
     @Select("select * from `user_info` where ui_name = 'jaycase'")
-    public UserInfoEntity testQuery();
+     UserInfoEntity testQuery();
 
     @ResultMap("userMap")
     @Select({SELECT_SQL,
             "ui_id = #{uiId} and is_delete = 0"
     })
-    public UserInfoEntity checkUserByUserId(UserInfo userInfoEntity);
+     UserInfoEntity checkUserByUserId(UserInfo userInfoEntity);
 
     @ResultMap("userMap")
     @Select({SELECT_SQL,
             "ui_name = #{uiName} or ui_phone = #{uiPhone} or ui_email = #{uiEmail} and is_delete = 0"
     })
-    public UserInfoEntity checkUserByUserIdOrPhoneOrEmail(UserInfo userInfoEntity);
+     UserInfoEntity checkUserByUserIdOrPhoneOrEmail(UserInfo userInfoEntity);
 
     @Update({UPDATE_SQL,
             "allow_login = #{allowLogin} where ui_id = #{uiId}"
     })
-    public Integer updateUserAllowLoginField(UserInfo userInfoEntity);
+     Integer updateUserAllowLoginField(UserInfo userInfoEntity);
 
     @ResultMap("userMap")
     @Select({SELECT_SQL,
         "ui_id_card = #{uiIdCard} and is_delete = 0"
     })
-    public UserInfoEntity checkUserExistByIdcard(UserInfo userInfoEntity);
+     UserInfoEntity checkUserExistByIdcard(UserInfo userInfoEntity);
 
     @Update("update user_info set is_delete = 1 where ui_id = #{uiId}")
     Integer deleteUser(UserInfoEntity userInfoEntity);
