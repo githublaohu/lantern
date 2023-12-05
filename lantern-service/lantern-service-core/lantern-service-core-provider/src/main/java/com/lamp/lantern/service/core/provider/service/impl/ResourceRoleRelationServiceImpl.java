@@ -40,12 +40,6 @@ public class ResourceRoleRelationServiceImpl implements ResourceRoleRelationServ
     }
 
     @Override
-    public Integer insertResourceRoleRelations(List<ResourceRoleRelationEntity> resourceRoleRelationEntities) {
-        resourceRoleRelationEntities.forEach(this::insertResourceRoleRelation);
-        return 1;
-    }
-
-    @Override
     public Integer updateResourceRoleRelation(ResourceRoleRelationEntity resourceRoleRelationEntity) {
         Integer result = resourceRoleRelationMapper.updateResourceRoleRelation(resourceRoleRelationEntity);
         return result;
@@ -110,8 +104,7 @@ public class ResourceRoleRelationServiceImpl implements ResourceRoleRelationServ
 
     @Override
     public List<ResourceRoleRelation> getValidResourceRoleRelation() {
-        List<ResourceRoleRelation> resourceRoleRelationEntities = resourceRoleRelationMapper.getValidResourceRoleRelation();
-        return resourceRoleRelationEntities.stream().map(resourceRoleRelation -> (ResourceRoleRelationEntity) resourceRoleRelation).collect(java.util.stream.Collectors.toList());
+        return  resourceRoleRelationMapper.getValidResourceRoleRelation();
     }
 
 

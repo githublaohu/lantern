@@ -28,6 +28,12 @@ public class ResourceRoleRelation extends OperateInfoInjection implements Serial
 
     private LocalDateTime rrrValidTime;
 
+    private LocalDateTime rrrStartTime;
+
+    private Long rrrCreateUserId;
+
+    private Long rrrUpdateUserId;
+
     private Integer isDelete;
 
 }

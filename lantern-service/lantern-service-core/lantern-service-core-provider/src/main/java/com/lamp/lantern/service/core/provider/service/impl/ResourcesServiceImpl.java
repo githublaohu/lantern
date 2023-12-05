@@ -108,10 +108,4 @@ public class ResourcesServiceImpl implements ResourcesService {
         return resourcesMapper.selectValidResourcesByRoleId(roleEntity);
     }
 
-    @Override
-    public List<Resources> selectResourcesByUserId(UserInfoEntity userInfoEntity) {
-        List<Role> roleEntities = roleMapper.getAllValidRoleByUserId(userInfoEntity);
-        return resourcesMapper.selectValidResourcesByRoleIds(roleEntities);
-    }
-
 }

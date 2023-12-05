@@ -6,7 +6,6 @@ import com.lamp.lantern.plugins.api.mode.UserInfo;
 import com.lamp.lantern.plugins.core.authentication.AuthenticationManager;
 import com.lamp.lantern.plugins.core.login.LanternContext;
 import com.lamp.lantern.plugins.springmvc.support.AuthenticationInterceptor;
-import org.apache.catalina.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.Assert;
@@ -25,7 +24,7 @@ public class AuthenticationInterceptorTest {
     public void init(){
         Mockito.doAnswer(invocationOnMock -> {
             UserInfo userInfo = new UserInfo();
-            userInfo.setToken("123");
+            userInfo.setUiToken("123");
             AuthenticationServiceResult authenticationServiceResult = new AuthenticationServiceResult().setSuccess(true);
             authenticationServiceResult.setUserInfo(userInfo);
             return authenticationServiceResult;

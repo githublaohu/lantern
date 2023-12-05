@@ -23,8 +23,8 @@ public class UserRoleRelationServiceImpl implements UserRoleRelationService {
 //    @PostConstruct
 //    void test(){
 //        UserRoleRelationEntity userRoleRelationEntity = new UserRoleRelationEntity();
-//        userRoleRelationEntity.setUrrUserId(1l);
-//        userRoleRelationEntity.setUrrRoleId(1l);
+//        userRoleRelationEntity.setUserId(1l);
+//        userRoleRelationEntity.setRoleId(1l);
 //        userRoleRelationEntity.setUrrValidTime(LocalDateTime.now());
 //        this.insertUserRoleRelation(userRoleRelationEntity);
 //
@@ -36,7 +36,7 @@ public class UserRoleRelationServiceImpl implements UserRoleRelationService {
 
     @Override
     public Integer insertUserRoleRelation(UserRoleRelationEntity userRoleRelationEntity) {
-        return userRoleRelationMapper.insert(userRoleRelationEntity);
+        return userRoleRelationMapper.insertUserRoleRelation(userRoleRelationEntity);
     }
 
     @Override

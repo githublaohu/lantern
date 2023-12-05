@@ -8,26 +8,26 @@ import com.lamp.lantern.plugins.api.mode.Resources;
 
 import java.util.List;
 
-public interface ResourcesService {
-  public List<Resources> selectByForm(ResourcesEntity resources);
+ public interface ResourcesService {
+   List<Resources> selectByForm(ResourcesEntity resources);
 
-  public Resources selectAllById(ResourcesEntity resources);
+   Resources selectAllById(ResourcesEntity resources);
 
-  public Resources selectAllByProjectId(ResourcesEntity  resources);
+   Resources selectAllByProjectId(ResourcesEntity  resources);
 
-  public Resources selectAllByModuleId(ResourcesEntity resources);
+   Resources selectAllByModuleId(ResourcesEntity resources);
 
-  public Integer insertResource(ResourcesEntity resources);
+   Integer insertResource(ResourcesEntity resources);
 
-  public Integer insertResources(List<ResourcesEntity> resources);
+   Integer insertResources(List<ResourcesEntity> resources);
 
-  public Integer updateByForm(ResourcesEntity resources);
+   Integer updateByForm(ResourcesEntity resources);
 
-  public Integer deleteResource(ResourcesEntity resources);
+   Integer deleteResource(ResourcesEntity resources);
 
-  public Integer deleteResources(List<ResourcesEntity> resources);
+   Integer deleteResources(List<ResourcesEntity> resources);
 
-  public List<Resources> selectResourcesByRoleId(RoleEntity roleEntity);
+   List<Resources> selectResourcesByRoleId(RoleEntity roleEntity);
 
-  public List<Resources> selectResourcesByUserId(UserInfoEntity userInfoEntity);
+//   List<Resources> selectResourcesByUserId(UserInfoEntity userInfoEntity);
 }

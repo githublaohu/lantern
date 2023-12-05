@@ -34,13 +34,13 @@ public class HandlerServiceTest {
         userInfo.setUiId(1L);
         userInfo.setUiName("testUserName");
         userInfo.setUiNickname("testNickName");
-        userInfo.setUiIdcard("testIdCard");
+        userInfo.setUiIdCard("testIdCard");
         userInfo.setUiPhone("testPhone");
         userInfo.setUiEmail("testEmail");
         userInfo.setUiHeadPortrait("testHeadPortrait");
         userInfo.setUiLackFlag(1);
         userInfo.setUiSex("testSex");
-        userInfo.setAllowLogin(StatusEnum.ACTIVE);
+        userInfo.setUiAllowLogin(StatusEnum.ACTIVE);
 
     }
 

@@ -12,6 +12,7 @@ public interface UserRoleRelationMapper {
 
     @Options(useGeneratedKeys = true, keyProperty = "urrId", keyColumn = "urr_id")
     @Insert("insert into `user_role_relation` (urr_type,role_id,user_id, urr_start_time,urr_valid_time,urr_create_user_id,urr_update_user_id) values (#{urrType},#{roleId},#{userId},#{urrStartTime},#{urrValidTime},#{operatorId},#{operatorId})")
+    Integer insertUserRoleRelation(UserRoleRelation userRoleRelationEntity);
 
     @Update("update user_role_relation set urr_end_time = now() where urr_id = #{urrId}")
    Integer endUserRoleRelation(UserRoleRelation userRoleRelationEntity);

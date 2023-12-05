@@ -1,6 +1,5 @@
 package com.lamp.lantern.service.core.provider.service.impl;
 
-import com.lamp.lantern.plugins.api.enums.StatusEnum;
 import com.lamp.lantern.plugins.api.mode.UserInfo;
 import com.lamp.lantern.service.core.entity.UserInfoEntity;
 import com.lamp.lantern.service.core.provider.mapper.UserInfoMapper;
@@ -9,8 +8,6 @@ import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -67,7 +64,7 @@ public class UserInfoServiceImpl implements UserInfoService {
 
     @Override
     public UserInfo queryUserByUserName(UserInfoEntity userInfoEntity){
-        return userInfoEntityMapper.queryUserByUserName(userInfoEntity);
+        return userInfoEntityMapper.checkUserExistByUserName(userInfoEntity);
     }
 
     @Override
@@ -76,8 +73,8 @@ public class UserInfoServiceImpl implements UserInfoService {
     }
 
     @Override
-    public Integer queryUserById() {
-        return userInfoEntityMapper.quertUserById();
+    public UserInfo queryUserById(UserInfoEntity userInfoEntity) {
+        return userInfoEntityMapper.checkUserByUserId(userInfoEntity);
     }
 
     @Override

@@ -13,6 +13,7 @@ import com.lamp.lantern.service.core.service.LoginRecordService;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 import org.apache.dubbo.config.annotation.Service;
@@ -56,11 +57,9 @@ public class LoginRecordServiceImpl implements LoginRecordService {
     }
 
     @Override
-    public Integer insertLoginRecords(List<LoginRecordEntity> loginRecordEntities) {
-        loginRecordEntities.forEach(loginRecordEntity -> {
-            loginRecordEntityMapper.insertLoginRecord(loginRecordEntity);
-        });
-        return 1;
+    public List<Integer> insertLoginRecords(List<LoginRecordEntity> loginRecordEntities) {
+        List<LoginRecord> loginRecords = loginRecordEntities.stream().map(loginRecordEntity -> (LoginRecord) loginRecordEntity).collect(Collectors.toList());
+        return loginRecordEntityMapper.insertLoginRecords(loginRecords);
     }
 
     @Override

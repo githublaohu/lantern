@@ -94,7 +94,7 @@ create or replace table role_type
     role_type_id          bigint auto_increment
     primary key,
     role_type_description varchar(127) default '' not null,
-    role_type_is_delete   int          default 0  not null,
+    is_delete   int          default 0  not null,
     role_type_name        varchar(127) default '' not null
 );
 
@@ -123,6 +123,7 @@ create or replace table user_info
     ui_create_user_id bigint                                                         not null comment '创建人id',
     ui_update_time    datetime                           default current_timestamp() not null on update current_timestamp() comment ' 修改时间 ',
     ui_update_user_id bigint                                                         not null comment '修改人id',
+    ui_allow_login varchar(8) default 'ACTIVE' not null comment '用户是否允许登录，ACTIVE,INACTIVE',
     is_delete         int                                default 0                   not null comment '0未删除，1已删除'
 );
 

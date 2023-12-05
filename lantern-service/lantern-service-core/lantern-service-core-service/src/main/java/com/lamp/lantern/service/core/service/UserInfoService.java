@@ -29,7 +29,7 @@ public interface UserInfoService {
 
     public UserInfo testQuery();
 
-    public Integer queryUserById();
+    public UserInfo queryUserById(UserInfoEntity userInfoEntity);
 
     public Integer deleteUser(UserInfoEntity userInfoEntity);
     public Integer deleteUsers(List<UserInfoEntity> userInfoEntities);

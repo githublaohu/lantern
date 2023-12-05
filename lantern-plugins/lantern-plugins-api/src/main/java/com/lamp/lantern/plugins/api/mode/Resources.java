@@ -12,17 +12,19 @@ public class Resources extends OperateInfoInjection {
 
     private Long resourceId;
 
-    private Long resourceSystemId;
+    private Long systemId;
 
-    private Long resourceProjectId;
+    private Long projectId;
 
-    private String resourceProjectName;
+    private String projectName;
 
-    private Long resourceModuleId;
+    private Long moduleId;
 
-    private String resourceModuleName;
+    private String moduleName;
 
     private String resourceType;
+
+    private String resourceVersion;
 
     private String resourceName;
 
@@ -34,7 +36,15 @@ public class Resources extends OperateInfoInjection {
 
     private LocalDateTime resourceValidTime;
 
-    private Integer resourceIsDelete;
+    private LocalDateTime resourceStartTime;
+
+    private Long resourceCreateUserId;
+
+    private Long resourceUpdateUserId;
+
+    private String resourceDescription;
+
+    private String resourceTag;
 
     private String resourceOperator;
 
@@ -42,6 +52,6 @@ public class Resources extends OperateInfoInjection {
 
     private Long resourceParentResourceId;
 
-    private String resourceDescription;
+    private Integer isDelete;
 
 }

@@ -13,7 +13,7 @@ package com.lamp.lantern.plugins.api.mode;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import com.lamp.lantern.plugins.api.enums.StatusEnum;
 
@@ -21,7 +21,6 @@ import com.lamp.lantern.plugins.api.injection.OperateInfoInjection;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
 
 @Data
 @ApiModel(value="用户登录对象",description="用户登录对象")
@@ -31,6 +30,8 @@ public class UserInfo extends OperateInfoInjection implements Serializable {
      */
     @ApiModelProperty(value = "用户唯一ID")
     private Long uiId;
+
+    private Long systemId;
 
     /**
      * 用户名
@@ -45,7 +46,7 @@ public class UserInfo extends OperateInfoInjection implements Serializable {
     /**
      * 用户唯一标识符
      */
-    private String uiIdcard;
+    private String uiIdCard;
 
     /**
      * 用户手机号
@@ -61,11 +62,6 @@ public class UserInfo extends OperateInfoInjection implements Serializable {
      * 用户图像
      */
     private String uiHeadPortrait;
-
-    /**
-     * 用户字段缺失标志位
-     */
-    private Integer uiLackFlag;
 
     /**
      * 用户性别
@@ -111,23 +107,27 @@ public class UserInfo extends OperateInfoInjection implements Serializable {
 
     /**
      * 用户状态
+     * 1:第一次登录
+     * 2:认证中
      */
-    private StatusEnum uiStatus;
+    private Long uiStatus;
+
+    private String uiToken;
+
+    private LocalDateTime uiCreateTime;
+
+    private Long uiCreateUserId;
+
+    private LocalDateTime uiUpdateTime;
+
+    private Long uiUpdateUserId;
 
     /**
      * 用户是否允许登录 （黑白名单功能）
      */
-    private StatusEnum allowLogin;
+    private StatusEnum uiAllowLogin;
 
-    /**
-     * 用户是否为第一次登录
-     */
-
-    private boolean uiFirstLogin;
-
-    private Integer uiIsDelete;
-
-    private String token;
+    private Integer isDelete;
 
     private String uiPassword;
 

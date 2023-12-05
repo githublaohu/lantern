@@ -12,6 +12,18 @@ public class Role extends OperateInfoInjection {
 
     private Long roleId;
 
+    private Long roleTypeId;
+
+    private Long systemId;
+
+    private Long productId;
+
+    private Long projectId;
+
+    private String projectName;
+
+    private String roleType;
+
     private String roleName;
 
     private LocalDateTime roleCreateTime;
@@ -22,9 +34,17 @@ public class Role extends OperateInfoInjection {
 
     private LocalDateTime roleValidTime;
 
+    private LocalDateTime roleStartTime;
+
+    private Long roleCreateUserId;
+
+    private Long roleUpdateUserId;
+
     private String roleDescription;
 
-    private Integer roleIsDelete;
+    private String roleTag;
+
+    private Integer isDelete;
 
 
 }

@@ -10,7 +10,7 @@ public interface LoginRecordService {
 
     public Integer insertLoginRecord(LoginRecordEntity loginRecordEntity);
 
-    public Integer insertLoginRecords(List<LoginRecordEntity> loginRecordEntities);
+    public List<Integer> insertLoginRecords(List<LoginRecordEntity> loginRecordEntities);
 
     public List<LoginRecord> checkLoginRecordByUserId(UserInfoEntity userInfoEntity);
 
