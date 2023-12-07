@@ -10,33 +10,33 @@ public interface UserInfoService {
 
     public UserInfoEntity registerUserInfoEntity(UserInfoEntity userInfoEntity);
 
-    public UserInfo checkUserExistByUserName(UserInfoEntity userInfoEntity);
+    public UserInfoEntity checkUserExistByUserName(UserInfoEntity userInfoEntity);
 
-    public UserInfo checkUserExistByEmail(UserInfoEntity userInfoEntity);
+    public UserInfoEntity checkUserExistByEmail(UserInfoEntity userInfoEntity);
 
-    public UserInfo checkUserExistByPhone(UserInfoEntity userInfoEntity);
+    public UserInfoEntity checkUserExistByPhone(UserInfoEntity userInfoEntity);
 
-    public UserInfo queryUserByUserName(UserInfoEntity userInfoEntity);
+    public UserInfoEntity queryUserByUserName(UserInfoEntity userInfoEntity);
 
-    public UserInfo checkUserByUserId(UserInfoEntity userInfoEntity);
+    public UserInfoEntity checkUserByUserId(UserInfoEntity userInfoEntity);
 
 
-    public UserInfo checkUserByUserIdOrPhoneOrEmail(UserInfoEntity userInfoEntity);
+    public UserInfoEntity checkUserByUserIdOrPhoneOrEmail(UserInfoEntity userInfoEntity);
 
-    public UserInfo checkUserExistByIdcard(UserInfoEntity userInfoEntity);
+    public UserInfoEntity checkUserExistByIdcard(UserInfoEntity userInfoEntity);
 
     public Integer updateUserAllowLoginField(UserInfoEntity userInfoEntity);
 
-    public UserInfo testQuery();
+    public UserInfoEntity testQuery();
 
-    public UserInfo queryUserById(UserInfoEntity userInfoEntity);
+    public UserInfoEntity queryUserById(UserInfoEntity userInfoEntity);
 
     public Integer deleteUser(UserInfoEntity userInfoEntity);
     public Integer deleteUsers(List<UserInfoEntity> userInfoEntities);
 
-    public List<UserInfo> getAllUserInfos();
+    public List<UserInfoEntity> getAllUserInfos();
 
-    public List<UserInfo> getUpdatedUserInfos(LocalDateTime time);
+    public List<UserInfoEntity> getUpdatedUserInfos(LocalDateTime time);
 
-    public UserInfo registerThirdLoginUser(UserInfoEntity userInfo);
+    public UserInfoEntity registerThirdLoginUser(UserInfoEntity userInfo);
 }

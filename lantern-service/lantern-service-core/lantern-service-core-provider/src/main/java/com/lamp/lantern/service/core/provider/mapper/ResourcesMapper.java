@@ -8,88 +8,61 @@ import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
-//
-//create table resources
-//(
-//    resource_id                 bigint primary key auto_increment comment ' id ',
-//    system_id                   bigint       not null default 0 comment ' 系统id ',
-//    product_id                  bigint       not null default 0 comment '产品id',
-//    project_id                  bigint       not null default 0 comment ' 项目id ',
-//    project_name                varchar(127) not null default '' comment ' 项目名称 ',
-//    module_id                   bigint       not null default 0 comment ' 模块id ',
-//    module_name                 varchar(127) not null default '' comment ' 模块名称 ',
-//    resource_type               varchar(127) not null default '' comment ' 资源类型 ',
-//    resource_version            varchar(31)  not null default '' comment '资源版本号',
-//    resource_name               varchar(127) not null default '' comment ' 资源名 ',
-//    resource_create_time        datetime     not null default current_timestamp comment ' 创建时间 ',
-//    resource_start_time         datetime     not null default current_timestamp comment '权限开始时间',
-//    resource_valid_time         datetime     not null default current_timestamp comment ' 有效时间 ',
-//    resource_end_time           datetime     not null default current_timestamp comment '权限结束时间，自动与手动触发',
-//    resource_update_time        datetime     not null default current_timestamp on update current_timestamp comment ' 修改时间 ',
-//    resource_create_user_id     bigint       not null comment '创建人id',
-//    resource_update_user_id     bigint       not null comment '修改人id',
-//    resource_description        varchar(255) not null default '' comment '资源描述',
-//    resource_tag                varchar(255) not null default '' comment '',
-//    resource_operator           varchar(127) not null default '' comment ' 操作 ',
-//    resource_conditions         varchar(127) not null default '' comment ' 条件，视图触发条件为主 ',
-//    resource_parent_resource_id bigint       not null default 0 comment ' 父权限id ',
-//    is_delete                   int          not null default 0 comment '0未删除，1已删除'
-//);
 @Mapper
 public interface ResourcesMapper {
 
     @Select({"<script>",
             "select * from resources",
             "<where>",
-            "<if test = '#{resourceId} != null'>resource_id=#{resourceId},</if>",
-            "<if test = '#{systemId} != null'>system_id=#{systemId},</if>",
-            "<if test = '#{projectId} != null'>resource_project_id=#{projectId},</if>",
-            "<if test = '#{projectName} != null'>project_id=#{projectName},</if>",
-            "<if test = '#{moduleId} != null'>module_id=#{moduleId},</if>",
-            "<if test = '#{moduleName} != null'>module_name=#{moduleName},</if>",
-            "<if test = '#{resourceType} != null'>resource_type=#{resourceType},</if>",
-            "<if test = '#{resourceVersion} != null'>resource_version=#{resourceVersion},</if>",
-            "<if test = '#{resourceName} != null'>resource_name=#{resourceName},</if>",
-            "<if test = '#{resourceCreateTime} != null'>resource_create_time=#{resourceCreateTime},</if>",
-            "<if test = '#{resourceStartTime} != null'>resource_start_time=#{resourcestartTime},</if>",
-            "<if test = '#{resourceValidTime} != null'>resource_valid_time=#{resourceValidTime},</if>",
-            "<if test = '#{resourceEndTime} != null'>resource_end_time=#{resourceEndTime},</if>",
-            "<if test = '#{resourceUpdateTime} != null'>resource_update_time=#{resourceUpdateTime},</if>",
-            "<if test = '#{resourceCreateUserId} != null'>resource_create_user_id=#{resourceCreateUserId},</if>",
-            "<if test = '#{resourceUpdateUserId} != null'>resource_update_user_id=#{resourceUpdateUserId},</if>",
-            "<if test = '#{resourceDescription} != null'>resource_description=#{resourceDescription},</if>",
-            "<if test = '#{resourceTag} != null'>resource_tag=#{resourceTag},</if>",
-            "<if test = '#{resourceOperator} != null'>resource_operator=#{resourceOperator},</if>",
-            "<if test = '#{resourceConditions} != null'>resource_conditions=#{resourceConditions},</if>",
-            "<if test = '#{resourceParentResourceId} != null'>resource_parent_resource_id=#{resourceParentResourceId},</if>",
-            "<if test = '#{isDelete} != null'>is_delete=#{isDelete},</if>",
+            "<if test = 'resourceId != null'>resource_id=#{resourceId},</if>",
+            "<if test = 'systemId != null'>system_id=#{systemId},</if>",
+            "<if test = 'projectId != null'>resource_project_id=#{projectId},</if>",
+            "<if test = 'projectName != null'>project_id=#{projectName},</if>",
+            "<if test = 'moduleId != null'>module_id=#{moduleId},</if>",
+            "<if test = 'moduleName != null'>module_name=#{moduleName},</if>",
+            "<if test = 'resourceType != null'>resource_type=#{resourceType},</if>",
+            "<if test = 'resourceVersion != null'>resource_version=#{resourceVersion},</if>",
+            "<if test = 'resourceName != null'>resource_name=#{resourceName},</if>",
+            "<if test = 'resourceCreateTime != null'>resource_create_time=#{resourceCreateTime},</if>",
+            "<if test = 'startTime != null'>start_time=#{startTime},</if>",
+            "<if test = 'validTime != null'>valid_time=#{validTime},</if>",
+            "<if test = 'endTime != null'>end_time=#{endTime},</if>",
+            "<if test = 'updateTime != null'>resource_update_time=#{updateTime},</if>",
+            "<if test = 'createUserId != null'>create_user_id=#{createUserId},</if>",
+            "<if test = 'updateUserId != null'>update_user_id=#{updateUserId},</if>",
+            "<if test = 'resourceDescription != null'>resource_description=#{resourceDescription},</if>",
+            "<if test = 'resourceTag != null'>resource_tag=#{resourceTag},</if>",
+            "<if test = 'resourceOperate != null'>resource_operate=#{resourceOperate},</if>",
+            "<if test = 'resourceConditions != null'>resource_conditions=#{resourceConditions},</if>",
+            "<if test = 'resourceParentResourceId != null'>resource_parent_resource_id=#{resourceParentResourceId},</if>",
+            "<if test = 'isDelete != null'>is_delete=#{isDelete},</if>",
             "</where>",
             "</script>"
 
     })
-    public List<Resources> selectByForm(Resources resources);
+    public List<ResourcesEntity> selectByForm(Resources resources);
 
     @Update({"<script>",
             "update resources",
             "<set>",
-            "<if test = '#{systemId} != null'>system_id=#{systemId},</if>",
-            "<if test = '#{projectId} != null'>resource_project_id=#{projectId},</if>",
-            "<if test = '#{projectName} != null'>project_id=#{projectName},</if>",
-            "<if test = '#{moduleId} != null'>module_id=#{moduleId},</if>",
-            "<if test = '#{moduleName} != null'>module_name=#{moduleName},</if>",
-            "<if test = '#{resourceType} != null'>resource_type=#{resourceType},</if>",
-            "<if test = '#{resourceVersion} != null'>resource_version=#{resourceVersion},</if>",
-            "<if test = '#{resourceName} != null'>resource_name=#{resourceName},</if>",
-            "<if test = '#{resourceStartTime} != null'>resource_start_time=#{resourcestartTime},</if>",
-            "<if test = '#{resourceValidTime} != null'>resource_valid_time=#{resourceValidTime},</if>",
-            "<if test = '#{resourceEndTime} != null'>resource_end_time=#{resourceEndTime},</if>",
-            "<if test = '#{resourceDescription} != null'>resource_description=#{resourceDescription},</if>",
-            "<if test = '#{resourceTag} != null'>resource_tag=#{resourceTag},</if>",
-            "<if test = '#{resourceOperator} != null'>resource_operator=#{resourceOperator},</if>",
-            "<if test = '#{resourceConditions} != null'>resource_conditions=#{resourceConditions},</if>",
-            "<if test = '#{resourceParentResourceId} != null'>resource_parent_resource_id=#{resourceParentResourceId},</if>",
-            "<if test = '#{isDelete} != null'>is_delete=#{isDelete},</if>",
-            "resource_update_user_id=#{operatorId},",
+            "<if test = 'systemId != null'>system_id=#{systemId},</if>",
+            "<if test = 'projectId != null'>resource_project_id=#{projectId},</if>",
+            "<if test = 'projectName != null'>project_id=#{projectName},</if>",
+            "<if test = 'moduleId != null'>module_id=#{moduleId},</if>",
+            "<if test = 'moduleName != null'>module_name=#{moduleName},</if>",
+            "<if test = 'resourceType != null'>resource_type=#{resourceType},</if>",
+            "<if test = 'resourceVersion != null'>resource_version=#{resourceVersion},</if>",
+            "<if test = 'resourceName != null'>resource_name=#{resourceName},</if>",
+            "<if test = 'startTime != null'>start_time=#{startTime},</if>",
+            "<if test = 'validTime != null'>valid_time=#{validTime},</if>",
+            "<if test = 'endTime != null'>end_time=#{endTime},</if>",
+            "<if test = 'resourceDescription != null'>resource_description=#{resourceDescription},</if>",
+            "<if test = 'resourceTag != null'>resource_tag=#{resourceTag},</if>",
+            "<if test = 'resourceOperate != null'>resource_operate=#{resourceOperate},</if>",
+            "<if test = 'resourceConditions != null'>resource_conditions=#{resourceConditions},</if>",
+            "<if test = 'resourceParentResourceId != null'>resource_parent_resource_id=#{resourceParentResourceId},</if>",
+            "<if test = 'isDelete != null'>is_delete=#{isDelete},</if>",
+            "update_user_id=#{operatorId},",
             "</set>",
             "where resource_id = #{resourceId}",
             "</script>"
@@ -97,10 +70,48 @@ public interface ResourcesMapper {
     public Integer updateByForm(Resources resources);
 
     @Options(useGeneratedKeys = true, keyProperty = "resourceId", keyColumn = "resource_id")
-    @Insert("insert into resources(system_id,product_id,project_id,project_name,module_id,module_name,resource_type,resource_version,resource_name,resource_start_time,resource_valid_time,resource_create_user_id,resource_update_user_id,resource_description,resource_tag,resource_operator,resource_conditions,resource_parent_resource_id) values (#{systemId},#{productId},#{projectId},#{projectName},#{moduleId},#{moduleName},#{resourceType},#{resourceVersion},#{resourceName},#{resourceStartTime},#{resourceValidTime},#{operatorId},#{operatorId},#{resourceDescription},#{resourceTag},#{resourceOperator},#{resourceConditions},#{resourceParentResourceId})")
+    @Insert({
+            "<script>",
+            "insert into resources(",
+            "start_time,valid_time,",
+            "<if test = 'systemId != null'>system_id,</if>",
+            "<if test = 'productId != null'>product_id,</if>",
+            "<if test = 'projectId != null'>project_id,</if>",
+            "<if test = 'projectName != null'>project_name,</if>",
+            "<if test = 'moduleId != null'>module_id,</if>",
+            "<if test = 'moduleName != null'>module_name,</if>",
+            "<if test = 'resourceType != null'>resource_type,</if>",
+            "<if test = 'resourceVersion != null'>resource_version,</if>",
+            "<if test = 'resourceName != null'>resource_name,</if>",
+            "<if test = 'resourceDescription != null'>resource_description,</if>",
+            "<if test = 'resourceTag != null'>resource_tag,</if>",
+            "<if test = 'resourceOperate != null'>resource_operate,</if>",
+            "<if test = 'resourceConditions != null'>resource_conditions,</if>",
+            "<if test = 'resourceParentResourceId != null'>resource_parent_resource_id,</if>",
+            "create_user_id,update_user_id",
+            ") values (",
+            "#{startTime},#{validTime},",
+            "<if test = 'systemId != null'>#{systemId},</if>",
+            "<if test = 'productId != null'>#{productId},</if>",
+            "<if test = 'projectId != null'>#{projectId},</if>",
+            "<if test = 'projectName != null'>#{projectName},</if>",
+            "<if test = 'moduleId != null'>#{moduleId},</if>",
+            "<if test = 'moduleName != null'>#{moduleName},</if>",
+            "<if test = 'resourceType != null'>#{resourceType},</if>",
+            "<if test = 'resourceVersion != null'>#{resourceVersion},</if>",
+            "<if test = 'resourceName != null'>#{resourceName},</if>",
+            "<if test = 'resourceDescription != null'>#{resourceDescription},</if>",
+            "<if test = 'resourceTag != null'>#{resourceTag},</if>",
+            "<if test = 'resourceOperate != null'>#{resourceOperate},</if>",
+            "<if test = 'resourceConditions != null'>#{resourceConditions},</if>",
+            "<if test = 'resourceParentResourceId != null'>#{resourceParentResourceId},</if>",
+            "#{operatorId},#{operatorId}",
+            ")",
+            "</script>"
+    })
     public Integer insert(Resources resources);
 
-    @Update("update resources set is_delete = 1,resource_update_user_id=#{operatorId} where resource_id = #{resourceId}")
+    @Update("update resources set is_delete = 1,update_user_id=#{operatorId} where resource_id = #{resourceId}")
     Integer deleteResourceById(Resources resources);
 
     @Select({
@@ -112,16 +123,16 @@ public interface ResourcesMapper {
             "AND rrr.rrr_start_time < NOW()",
             "AND rrr.rrr_end_time > NOW()",
             "AND resources.is_delete = 0",
-            "AND resources.resource_start_time < NOW()",
-            "AND resources.resource_valid_time > NOW()",
-            "AND resources.resource_end_time > NOW()",
+            "AND resources.start_time < NOW()",
+            "AND resources.valid_time > NOW()",
+            "AND resources.end_time > NOW()",
             "AND role.role_is_delete = 0",
             "AND role.role_start_time < NOW()",
             "AND role.role_valid_time > NOW()",
             "AND role.role_end_time > NOW()",
             "AND role.role_id = #{roleId}"
     })
-    List<Resources> selectValidResourcesByRoleId(Role roleEntity);
+    List<ResourcesEntity> selectValidResourcesByRoleId(Role roleEntity);
 
 
     @Select({
@@ -134,35 +145,35 @@ public interface ResourcesMapper {
             "AND rrr.rrr_start_time <![CDATA[<]]> NOW()",
             "AND rrr.rrr_end_time <![CDATA[>]]> NOW()",
             "AND resources.is_delete = 0",
-            "AND resources.resource_start_time <![CDATA[<]]> NOW()",
-            "AND resources.resource_valid_time <![CDATA[>]]> NOW()",
-            "AND resources.resource_end_time <![CDATA[>]]> NOW()",
+            "AND resources.start_time <![CDATA[<]]> NOW()",
+            "AND resources.valid_time <![CDATA[>]]> NOW()",
+            "AND resources.end_time <![CDATA[>]]> NOW()",
             "AND role.role_is_delete = 0",
             "AND role.role_start_time <![CDATA[<]]> NOW()",
             "AND role.role_valid_time <![CDATA[>]]> NOW()",
             "AND role.role_end_time <![CDATA[>]]> NOW()",
             "AND resource_role_relation.rrr_role_id IN (",
-            "<foreach collection='roleEntityList' item='item' index='index' open='(' separator=',' close=')'>",
-            "#{item.rrrRoleId}",
+            "<foreach collection='list' item='item' index='index' open='(' separator=',' close=')'>",
+            "#{item.roleId}",
             "</foreach>",
             "</script>"
     })
     List<Resources> selectValidResourcesByRoleIds(List<Role> roleEntityList);
 
     @Select("select * from resources where resource_id = #{resourceId} and is_delete = 0 LIMIT 1")
-    Resources selectById(Resources resources);
+    ResourcesEntity selectById(Resources resources);
 
     @Select("select * from resources where project_id = #{projectId} and is_delete = 0")
-    Resources selectByProjectId(Resources resources);
+    ResourcesEntity selectByProjectId(Resources resources);
 
     @Select("select * from resources where module_id = #{moduleId} and is_delete = 0")
-    Resources selectByModuleId(Resources resources);
+    ResourcesEntity selectByModuleId(Resources resources);
 
     @Update({
             "<script>",
             "update resources set is_delete = 1 ",
             "where resource_id in ",
-            "<foreach collection='resources' item='item' index='index' open='(' separator=',' close=')'>",
+            "<foreach collection='list' item='item' index='index' open='(' separator=',' close=')'>",
             "#{item.resourceId}",
             "</foreach>",
             "</script>"

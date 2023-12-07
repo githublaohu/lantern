@@ -2,9 +2,6 @@ package com.lamp.lantern.service.core.provider.service.impl;
 
 import com.lamp.lantern.service.core.entity.ResourcesEntity;
 import com.lamp.lantern.service.core.entity.RoleEntity;
-import com.lamp.lantern.plugins.api.mode.Resources;
-import com.lamp.lantern.plugins.api.mode.Role;
-import com.lamp.lantern.service.core.entity.UserInfoEntity;
 import com.lamp.lantern.service.core.provider.mapper.ResourcesMapper;
 import com.lamp.lantern.service.core.provider.mapper.RoleMapper;
 import com.lamp.lantern.service.core.service.ResourcesService;
@@ -13,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -25,61 +24,70 @@ public class ResourcesServiceImpl implements ResourcesService {
     @Autowired
     private RoleMapper roleMapper;
 
-//    @PostConstruct
-//    public void test() {
-//        Resources resourcesEntity = new Resources();
-//        resourcesEntity.setResourceId(1l);
-//        resourcesEntity.setResourceSystemId(1l);
-//        resourcesEntity.setResourceProjectId(1l);
-//        resourcesEntity.setResourceProjectName("test");
-//        resourcesEntity.setResourceModuleId(1l);
-//        resourcesEntity.setResourceModuleName("test");
-//        resourcesEntity.setResourceType("test");
-//        resourcesEntity.setResourceName("test");
-//        resourcesEntity.setResourceOperator("test");
-//        resourcesEntity.setResourceConditions("test");
-//        resourcesEntity.setResourceValidTime(LocalDateTime.now());
-//        resourcesEntity.setResourceParentResourceId(1l);
-//        resourcesEntity.setResourceDescription("test");
-////        this.insert(resourcesEntity);
-//        resourcesEntity.setResourceName("test2");
-//        resourcesEntity.setResourceModuleName("test2");
-//        resourcesEntity.setResourceType("test2");
-////        this.update(resourcesEntity);
-////        ResourcesEntity resourcesEntity1 = new ResourcesEntity();
-////        resourcesEntity1.setResourceId(1l);
-////        log.debug("selectById:{}", this.selectById(1l));
-////        RoleEntity roleEntity = new RoleEntity();
-////        roleEntity.setRoleId(1l);
-////        List<ResourcesEntity> resourcesEntities = this.selectResourcesByRoleId(roleEntity);
+    @PostConstruct
+    public void test() {
+        ResourcesEntity resourcesEntity = new ResourcesEntity();
+        resourcesEntity.setResourceId(1l);
+        resourcesEntity.setSystemId(1l);
+        resourcesEntity.setProjectId(1l);
+        resourcesEntity.setProjectName("test");
+        resourcesEntity.setModuleId(1l);
+        resourcesEntity.setModuleName("test");
+        resourcesEntity.setResourceType("test");
+        resourcesEntity.setResourceName("test");
+        resourcesEntity.setResourceOperate("test");
+        resourcesEntity.setResourceConditions("test");
+        resourcesEntity.setValidTime(LocalDateTime.now());
+        resourcesEntity.setResourceParentResourceId(1l);
+        resourcesEntity.setResourceDescription("test");
+//        this.insert(resourcesEntity);
+        resourcesEntity.setResourceName("test2");
+        resourcesEntity.setModuleName("test2");
+        resourcesEntity.setResourceType("test2");
+        resourcesEntity.setProductId(1L);
+        resourcesEntity.setOperatorId(1L);
+        resourcesEntity.setValidTime(LocalDateTime.now());
+        resourcesEntity.setStartTime(LocalDateTime.now());
+        resourcesEntity.setResourceVersion("1L");
+        this.insertResource(resourcesEntity);
+
+//        this.update(resourcesEntity);
+//        ResourcesEntity resourcesEntity1 = new ResourcesEntity();
+//        resourcesEntity1.setResourceId(1l);
+//        log.debug("selectById:{}", this.selectById(1l));
+//        RoleEntity roleEntity = new RoleEntity();
+//        roleEntity.setRoleId(1l);
+//        List<ResourcesEntity> resourcesEntities = this.selectResourcesByRoleId(roleEntity);
 //        UserInfoEntity userInfoEntity = new UserInfoEntity();
 //        userInfoEntity.setUiId(1l);
-//        List<Resources> res = this.selectResourcesByUserId(userInfoEntity);
-//    }
+//        List<Resources> res = this.selectResourceId(userInfoEntity);
+//        System.out.println(res);
+    }
 
     @Override
-    public List<Resources> selectByForm(ResourcesEntity resources) {
+    public List<ResourcesEntity> selectByForm(ResourcesEntity resources) {
         return resourcesMapper.selectByForm(resources);
     }
 
     @Override
-    public Resources selectAllById(ResourcesEntity resources) {
+    public ResourcesEntity selectAllById(ResourcesEntity resources) {
         return resourcesMapper.selectById(resources);
     }
 
     @Override
-    public Resources selectAllByProjectId(ResourcesEntity resources) {
+    public ResourcesEntity selectAllByProjectId(ResourcesEntity resources) {
         return resourcesMapper.selectByProjectId(resources);
     }
 
     @Override
-    public Resources selectAllByModuleId(ResourcesEntity resources) {
+    public ResourcesEntity selectAllByModuleId(ResourcesEntity resources) {
         return resourcesMapper.selectByModuleId(resources);
     }
 
     @Override
     public Integer insertResource(ResourcesEntity resources) {
-        return resourcesMapper.insert(resources);
+        resourcesMapper.insert(resources);
+        return resources.getResourceId().intValue();
     }
 
     @Override
@@ -104,8 +112,9 @@ public class ResourcesServiceImpl implements ResourcesService {
     }
 
     @Override
-    public List<Resources> selectResourcesByRoleId(RoleEntity roleEntity) {
+    public List<ResourcesEntity> selectResourcesByRoleId(RoleEntity roleEntity) {
         return resourcesMapper.selectValidResourcesByRoleId(roleEntity);
     }
+
 
 }

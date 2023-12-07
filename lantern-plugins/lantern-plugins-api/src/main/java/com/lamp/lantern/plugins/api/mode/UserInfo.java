@@ -97,12 +97,12 @@ public class UserInfo extends OperateInfoInjection implements Serializable {
     /**
      * 用户最近登录时间
      */
-    private LocalDate uiLoginTime;
+    private LocalDateTime uiLoginTime;
 
     /**
      * 用户最近退出时间
      */
-    private LocalDate uiExitTime;
+    private LocalDateTime uiExitTime;
 
 
     /**
@@ -114,13 +114,13 @@ public class UserInfo extends OperateInfoInjection implements Serializable {
 
     private String uiToken;
 
-    private LocalDateTime uiCreateTime;
-
-    private Long uiCreateUserId;
-
-    private LocalDateTime uiUpdateTime;
-
-    private Long uiUpdateUserId;
+//    private LocalDateTime uiCreateTime;
+//
+//    private Long uiCreateUserId;
+//
+//    private LocalDateTime uiUpdateTime;
+//
+//    private Long uiUpdateUserId;
 
     /**
      * 用户是否允许登录 （黑白名单功能）

@@ -1,5 +1,6 @@
 package com.lamp.lantern.service.core.provider.service.impl;
 
+import com.lamp.lantern.plugins.api.config.LoginType;
 import com.lamp.lantern.plugins.api.mode.UserInfo;
 import com.lamp.lantern.service.core.entity.PlatformUserInfoEntity;
 import com.lamp.lantern.service.core.entity.UserInfoEntity;
@@ -10,9 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
+
 @Service
 @Transactional
 public class PlatformUserInfoServiceImpl implements PlatformUserInfoService {
+
 
     @Autowired
     private PlatformUserInfoMapper platformUserInfoMapper;

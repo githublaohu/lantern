@@ -54,7 +54,7 @@ public class GithubThirdAuthService extends AbstractThirdAuthService {
         userInfo.setUiName(jsonObject.getString("login"));
         PlatformUserInfo platformUserInfo =  new PlatformUserInfo();
         platformUserInfo.setPuiOpenId(jsonObject.getString("id"));
-        platformUserInfo.setPuiType(LoginType.THIRD);
+        platformUserInfo.setPuiType(LoginType.THIRD.getType());
         platformUserInfo.setPuiAuthChannel("Github");
         platformUserInfo.setPuiUnionId("0");
 

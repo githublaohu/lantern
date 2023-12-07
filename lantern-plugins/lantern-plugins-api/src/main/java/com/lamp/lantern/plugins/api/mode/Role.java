@@ -26,20 +26,6 @@ public class Role extends OperateInfoInjection {
 
     private String roleName;
 
-    private LocalDateTime roleCreateTime;
-
-    private LocalDateTime roleUpdateTime;
-
-    private LocalDateTime roleEndTime;
-
-    private LocalDateTime roleValidTime;
-
-    private LocalDateTime roleStartTime;
-
-    private Long roleCreateUserId;
-
-    private Long roleUpdateUserId;
-
     private String roleDescription;
 
     private String roleTag;

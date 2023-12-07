@@ -20,7 +20,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode
 @AllArgsConstructor
-public class LoginRecord extends OperateInfoInjection {
+public class LoginRecord{
 
 	/**
      * 登录记录唯一Id
@@ -59,25 +59,25 @@ public class LoginRecord extends OperateInfoInjection {
 
     private String ulSessionId;
 
-    private String ulLoginWay;
+ private String ulLoginWay;
 
-    private String ulLoginWayPlatform;
+ private String ulLoginWayPlatform;
 
-    private String ulLoginTerminal;
+ private String ulLoginTerminal;
 
-    private String ulLoginTerminalModel;
+ private String ulLoginTerminalModel;
 
-    private String ulQuitWay;
+ private String ulQuitWay;
 
-    private String ulQuitIp;
+ private String ulQuitIp;
 
-    private LocalDateTime ulQuitTime;
+ private LocalDateTime ulQuitTime;
 
-    private String ulQuitAddress;
+ private String ulQuitAddress;
 
-    private String ulLoginStatus;
+ private String ulLoginStatus;
 
-    private String ulLoginFailReason;
+ private String ulLoginFailReason;
 
     public LoginRecord() {
 

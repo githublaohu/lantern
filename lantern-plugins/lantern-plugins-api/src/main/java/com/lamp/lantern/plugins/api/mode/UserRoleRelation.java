@@ -18,20 +18,6 @@ public class UserRoleRelation extends OperateInfoInjection {
 
     private Long userId;
 
-    private LocalDateTime urrCreateTime;
-
-    private LocalDateTime urrUpdateTime;
-
-    private LocalDateTime urrEndTime;
-
-    private LocalDateTime urrValidTime;
-
-    private LocalDateTime urrStartTime;
-
-    private Long urrCreateUserId;
-
-    private Long urrUpdateUserId;
-
     private Integer isDelete;
 
 }

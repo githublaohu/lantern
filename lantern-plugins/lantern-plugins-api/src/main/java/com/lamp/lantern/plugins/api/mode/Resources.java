@@ -14,6 +14,8 @@ public class Resources extends OperateInfoInjection {
 
     private Long systemId;
 
+    private Long productId;
+
     private Long projectId;
 
     private String projectName;
@@ -28,25 +30,11 @@ public class Resources extends OperateInfoInjection {
 
     private String resourceName;
 
-    private LocalDateTime resourceCreateTime;
-
-    private LocalDateTime resourceUpdateTime;
-
-    private LocalDateTime resourceEndTime;
-
-    private LocalDateTime resourceValidTime;
-
-    private LocalDateTime resourceStartTime;
-
-    private Long resourceCreateUserId;
-
-    private Long resourceUpdateUserId;
-
     private String resourceDescription;
 
     private String resourceTag;
 
-    private String resourceOperator;
+    private String resourceOperate;
 
     private String resourceConditions;
 

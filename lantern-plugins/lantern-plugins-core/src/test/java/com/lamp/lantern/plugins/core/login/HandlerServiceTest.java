@@ -38,7 +38,6 @@ public class HandlerServiceTest {
         userInfo.setUiPhone("testPhone");
         userInfo.setUiEmail("testEmail");
         userInfo.setUiHeadPortrait("testHeadPortrait");
-        userInfo.setUiLackFlag(1);
         userInfo.setUiSex("testSex");
         userInfo.setUiAllowLogin(StatusEnum.ACTIVE);
 

@@ -49,6 +49,8 @@ public class LanternAuthenticationSupportConfigure implements ApplicationContext
     @ConditionalOnProperty(prefix = "server", name = { "port" })
     @ConditionalOnClass(name = "org.springframework.boot.autoconfigure.web.ServerProperties")
     public AuthenticationInterceptor loginRequiredInterceptor(AuthenticationManager authenticationManager) {
+        //找SpringVersion
+//        Class.forName("")
         return new AuthenticationInterceptor(authenticationManager);
     }
 

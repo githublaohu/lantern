@@ -30,10 +30,10 @@ import java.util.List;
  *     ui_exit_time      datetime                           default current_timestamp() not null comment '用户最近退出时间，，应该在登录记录表里面',
  *     ui_status         bigint                             default 0                   not null comment '用户状态。1 第一次登录。2：认证中',
  *     ui_token          varchar(128)                       default ''                  not null comment '用于简单系统，简单系统建立所有',
- *     ui_create_time    datetime                           default current_timestamp() not null comment ' 创建时间 ',
- *     ui_create_user_id bigint                                                         not null comment '创建人id',
- *     ui_update_time    datetime                           default current_timestamp() not null on update current_timestamp() comment ' 修改时间 ',
- *     ui_update_user_id bigint                                                         not null comment '修改人id',
+ *     create_time    datetime                           default current_timestamp() not null comment ' 创建时间 ',
+ *     create_user_id bigint                                                         not null comment '创建人id',
+ *     update_time    datetime                           default current_timestamp() not null on update current_timestamp() comment ' 修改时间 ',
+ *     update_user_id bigint                                                         not null comment '修改人id',
  *     is_delete         int                                default 0                   not null comment '0未删除，1已删除'
  * );
  */
@@ -50,45 +50,42 @@ public interface UserInfoMapper {
 
     @Options(useGeneratedKeys = true, keyProperty = "uiId", keyColumn = "ui_id")
     @Insert({
-        "<script>",
-        "insert into user_info",
-        "(ui_name, ",
-        "<if test='#{systemId} != null'>system_id,</if>",
-        "<if test='#{uiNickname} != null'>ui_nickname,</if>",
-        "<if test='#{uiIdCard} != null'>ui_id_card,</if>",
-        "<if test='#{uiPhone} != null'>ui_phone,</if>",
-        "<if test='#{uiEmail} != null'>ui_email,</if>",
-        "<if test='#{uiHeadPortrait} != null'>ui_head_portrait,</if>",
-        "<if test='#{uiSex} != null'>ui_sex,</if>",
-        "<if test='#{uiBirth} != null'>ui_birth,</if>",
-        "<if test='#{uiAddress} != null'>ui_address,</if>",
-        "<if test='#{uiLoginAddress} != null'>ui_login_address,</if>",
-        "<if test='#{uiFirstLogin} != null'>ui_first_login,</if>",
-        "<if test='#{uiStatus} != null'>ui_status,</if>",
-        "<if test='#{uiToken} != null'>ui_token,</if>",
-        "<if test='#{allowLogin} != null'>allow_login,</if>",
-        "ui_salt, ui_salt_password,ui_create_time,ui_create_user_id,ui_update_time,ui_update_user_id",
-        ") values (",
-        "#{uiName},",
-        "<if test='#{systemId} != null'>#{systemId},</if>",
-        "<if test='#{uiNickname} != null'>#{uiNickname},</if>",
-        "<if test='#{uiIdCard} != null'>#{uiIdCard},</if>",
-        "<if test='#{uiPhone} != null'>#{uiPhone},</if>",
-        "<if test='#{uiEmail} != null'>#{uiEmail},</if>",
-        "<if test='#{uiHeadPortrait} != null'>#{uiHeadPortrait},</if>",
-        "<if test='#{uiSex} != null'>#{uiSex},</if>",
-        "<if test='#{uiBirth} != null'>#{uiBirth},</if>",
-        "<if test='#{uiAddress} != null'>#{uiAddress},</if>",
-        "<if test='#{uiLoginAddress} != null'>#{uiLoginAddress},</if>",
-        "<if test='#{uiFirstLogin} != null'>#{uiFirstLogin},</if>",
-        "<if test='#{uiStatus} != null'>#{uiStatus},</if>",
-        "<if test='#{uiToken} != null'>#{uiToken},</if>",
-        "<if test='#{allowLogin} != null'>#{allowLogin},</if>",
-        "#{uiSalt}, #{uiSaltPassword},now(),#{operatorId},now(),#{operatorId}",
-        "</script>"
+            "<script>",
+            "insert into user_info",
+            "(ui_name, ",
+            "<if test='systemId != null'>system_id,</if>",
+            "<if test='uiNickname != null'>ui_nickname,</if>",
+            "<if test='uiIdCard != null'>ui_id_card,</if>",
+            "<if test='uiPhone != null'>ui_phone,</if>",
+            "<if test='uiEmail != null'>ui_email,</if>",
+            "<if test='uiHeadPortrait != null'>ui_head_portrait,</if>",
+            "<if test='uiSex != null'>ui_sex,</if>",
+            "<if test='uiBirth != null'>ui_birth,</if>",
+            "<if test='uiAddress != null'>ui_address,</if>",
+            "<if test='uiLoginAddress != null'>ui_login_address,</if>",
+            "<if test='uiStatus != null'>ui_status,</if>",
+            "<if test='uiToken != null'>ui_token,</if>",
+            "<if test='uiAllowLogin != null'>ui_allow_login,</if>",
+            "ui_salt, ui_salt_password,create_time,create_user_id,update_time,update_user_id",
+            ") values (",
+            "#{uiName},",
+            "<if test='systemId != null'>#{systemId},</if>",
+            "<if test='uiNickname != null'>#{uiNickname},</if>",
+            "<if test='uiIdCard != null'>#{uiIdCard},</if>",
+            "<if test='uiPhone != null'>#{uiPhone},</if>",
+            "<if test='uiEmail != null'>#{uiEmail},</if>",
+            "<if test='uiHeadPortrait != null'>#{uiHeadPortrait},</if>",
+            "<if test='uiSex != null'>#{uiSex},</if>",
+            "<if test='uiBirth != null'>#{uiBirth},</if>",
+            "<if test='uiAddress != null'>#{uiAddress},</if>",
+            "<if test='uiLoginAddress != null'>#{uiLoginAddress},</if>",
+            "<if test='uiStatus != null'>#{uiStatus},</if>",
+            "<if test='uiToken != null'>#{uiToken},</if>",
+            "<if test='uiAllowLogin != null'>#{uiAllowLogin},</if>",
+            "#{uiSalt}, #{uiSaltPassword},now(),#{operatorId},now(),#{operatorId})",
+            "</script>"
     })
-        //TODO:有问题, 不能检测到null
-         Integer registerUserInfoEntity(UserInfo userInfoEntity);
+    Integer registerUserInfoEntity(UserInfoEntity userInfoEntity);
 
     @Results(
             id = "userMap",
@@ -112,7 +109,7 @@ public interface UserInfoMapper {
             }
     )
     @Select({SELECT_SQL,
-            "ui_name = #{uiName} and is_delete = 0"
+            "ui_name = #{uiName} and is_delete = 0 LIMIT 1"
     })
      UserInfoEntity checkUserExistByUserName(UserInfo userInfoEntity);
 
@@ -163,7 +160,7 @@ public interface UserInfoMapper {
             "<script>",
             "update user_info set is_delete = 1 ",
             "where ui_id in ",
-            "<foreach collection='userInfoEntities' item='item' index='index' open='(' separator=',' close=')'>",
+            "<foreach collection='list' item='item' index='index' open='(' separator=',' close=')'>",
             "#{item.uiId}",
             "</foreach>",
             "</script>"
@@ -171,15 +168,15 @@ public interface UserInfoMapper {
     Integer deleteUsers(List<UserInfoEntity> userInfoEntities);
 
     @Select("select * from user_info where is_delete = 0")
-    List<UserInfo> getAllUserInfos();
+    List<UserInfoEntity> getAllUserInfos();
 
     @ResultMap("userMap")
     @Options(useGeneratedKeys = true, keyProperty = "uiId", keyColumn = "ui_id")
-    @Insert("insert into user_info (ui_name) values (#{uiName})")
+    @Insert("insert into user_info (ui_name,system_id, create_user_id, update_user_id, ui_id_card ) values (#{uiName},#{systemId},#{operatorId},#{operatorId},#{uiIdCard})")
     Integer registerThirdLoginUser(UserInfoEntity userInfo);
 
-    @Select("select * from user_info where ui_update_time > #{time}")
-    List<UserInfo> getUpdatedUserInfos(LocalDateTime time);
+    @Select("select * from user_info where update_time > #{time}")
+    List<UserInfoEntity> getUpdatedUserInfos(LocalDateTime time);
 
     @Select("select * from user_info where ui_token = #{token} LIMIT 1")
     UserInfo selectUserInfoByToken(String token);

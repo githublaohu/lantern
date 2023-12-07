@@ -1,6 +1,5 @@
 package com.lamp.lantern.plugins.api.mode;
 
-import com.lamp.lantern.plugins.api.config.LoginType;
 import com.lamp.lantern.plugins.api.injection.OperateInfoInjection;
 import lombok.Data;
 
@@ -26,7 +25,7 @@ public class PlatformUserInfo extends OperateInfoInjection implements java.io.Se
     /**
      * LoginType(Enum)
      */
-    private LoginType puiType;
+    private String puiType;
 
     /**
      * Github, Alipay Wechat Taobao QQ
@@ -38,13 +37,13 @@ public class PlatformUserInfo extends OperateInfoInjection implements java.io.Se
      */
     private Integer puiStatus;
 
-    private LocalDateTime puiCreateTime;
+    private LocalDateTime createTime;
 
-    private Long puiCreateUserId;
+    private Long createUserId;
 
-    private LocalDateTime puiUpdateTime;
+    private LocalDateTime updateTime;
 
-    private Long puiUpdateUserId;
+    private Long updateUserId;
 
     private Integer isDelete;
 

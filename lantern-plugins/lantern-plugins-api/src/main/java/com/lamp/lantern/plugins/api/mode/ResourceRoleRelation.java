@@ -12,27 +12,13 @@ public class ResourceRoleRelation extends OperateInfoInjection implements Serial
 
     private Long rrrId;
 
-    private Long rrrResourceId;
+    private Long resourceId;
 
-    private Long rrrRoleId;
+    private Long roleId;
 
     private String rrrType;
 
     private Long rrrTypeId;
-
-    private LocalDateTime rrrCreateTime;
-
-    private LocalDateTime rrrUpdateTime;
-
-    private LocalDateTime rrrEndTime;
-
-    private LocalDateTime rrrValidTime;
-
-    private LocalDateTime rrrStartTime;
-
-    private Long rrrCreateUserId;
-
-    private Long rrrUpdateUserId;
 
     private Integer isDelete;
 
