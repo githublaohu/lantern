@@ -17,7 +17,6 @@ import com.lamp.decoration.core.result.ResultObject;
 import com.lamp.lantern.plugins.api.enums.StatusEnum;
 import com.lamp.lantern.plugins.api.mode.UserInfo;
 import com.lamp.lantern.plugins.core.login.AbstractAuthHandler;
-import com.lamp.lantern.plugins.core.login.AuthHandler;
 
 /**
  * 黑白名单Handler
@@ -33,7 +32,7 @@ public class WhiteListAuthHandler extends AbstractAuthHandler<WhiteListConfig>{
 	public ResultObject<String> authBefore(UserInfo userInfo) {
 		Boolean isAuth = false;
 		if (Objects.equals(config.getWhiteListSourceType(), "entity")) {
-			isAuth = userInfo.getAllowLogin() == StatusEnum.ACTIVE;
+			isAuth = userInfo.getUiAllowLogin() == StatusEnum.ACTIVE;
 		} else {
 			String value = connection.sync().hget("", userInfo.getUiId().toString());
 			if (config.getWhiteListType()== WhiteListConfig.WhiteListType.WHITE) {

@@ -55,17 +55,17 @@ public class ResourcesController {
     @ApiOperation(value = "按照项目id查询资源")
     @RequestMapping(value = "selectResourcesByProjectId")
     public Resources selectResourcesByProjectId(@RequestBody ResourcesEntity resourcesEntity) {
-        return resourcesService.selectByProjectId(resourcesEntity);
+        return resourcesService.selectAllByProjectId(resourcesEntity);
     }
     @ApiOperation(value = "按照模块id查询资源")
     @RequestMapping(value = "selectResourcesByModuleId")
     public Resources selectResourcesByModuleId(@RequestBody ResourcesEntity resourcesEntity) {
-        return resourcesService.selectByModuleId(resourcesEntity);
+        return resourcesService.selectAllByModuleId(resourcesEntity);
     }
     @ApiOperation(value = "按照资源id查询资源")
     @RequestMapping(value = "selectResourcesById")
     public Resources selectResourcesById(@RequestBody ResourcesEntity resourcesEntity) {
-        return resourcesService.selectById(resourcesEntity);
+        return resourcesService.selectAllById(resourcesEntity);
     }
     @ApiOperation(value = "按照资源表单查询资源")
     @RequestMapping(value = "selectResourcesByForm")

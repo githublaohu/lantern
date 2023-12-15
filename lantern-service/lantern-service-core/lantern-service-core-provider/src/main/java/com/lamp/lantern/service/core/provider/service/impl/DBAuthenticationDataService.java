@@ -4,7 +4,7 @@ import com.lamp.lantern.plugins.api.auth.AuthenticationData;
 import com.lamp.lantern.plugins.api.auth.AuthenticationDataService;
 import com.lamp.lantern.plugins.api.auth.LanternAuthCachePool;
 import com.lamp.lantern.plugins.api.auth.config.DBAuthenticationDataConfig;
-import com.lamp.lantern.plugins.api.mode.Role;
+import com.lamp.lantern.service.core.entity.RoleEntity;
 import com.lamp.lantern.service.core.provider.mapper.ResourcesMapper;
 import com.lamp.lantern.service.core.provider.mapper.RoleMapper;
 import com.lamp.lantern.service.core.provider.mapper.UserRoleRelationMapper;
@@ -77,8 +77,8 @@ public class DBAuthenticationDataService implements AuthenticationDataService {
         public LanternAuthCachePool getLanternAuthCachePool(AuthenticationData authenticationData) {
             try {
                 // 通过 SQL 用区别全量与增量
-                CompletableFuture<List<Role>> roleAsync =
-                        CompletableFuture.supplyAsync(() -> roleMapper.selectRoles(), threadPoolExecutor);
+                CompletableFuture<List<RoleEntity>> roleAsync =
+                        CompletableFuture.supplyAsync(() -> roleMapper.selectValidRoles(), threadPoolExecutor);
 
                 roleAsync.get();
             } catch (Exception e) {

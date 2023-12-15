@@ -26,7 +26,6 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.websocket.Session;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -119,7 +118,7 @@ public class HandlerExecute {
 
         //二维码已确认，进入登录逻辑
         UserInfo userInfo = new UserInfo();
-        userInfo.setToken(authService.getUserToken(code));
+        userInfo.setUiToken(authService.getUserToken(code));
         return execute(userInfo, LoginType.QRCODE, "Web");
     }
 

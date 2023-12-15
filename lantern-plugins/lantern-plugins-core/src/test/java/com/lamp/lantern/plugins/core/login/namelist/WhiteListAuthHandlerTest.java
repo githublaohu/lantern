@@ -31,11 +31,11 @@ public class WhiteListAuthHandlerTest {
     public void entityTest(){
         whiteListAuthHandler.setConfig(whiteListConfig1);
         UserInfo userInfo = new UserInfo();
-        userInfo.setAllowLogin(StatusEnum.ACTIVE);
+        userInfo.setUiAllowLogin(StatusEnum.ACTIVE);
         ResultObject<String> result = whiteListAuthHandler.authBefore(userInfo);
         Assert.assertNull(result);
 
-        userInfo.setAllowLogin(StatusEnum.INACTIVE);
+        userInfo.setUiAllowLogin(StatusEnum.INACTIVE);
         result = whiteListAuthHandler.authBefore(userInfo);
         Assert.assertNotNull(result);
     }
@@ -45,7 +45,7 @@ public class WhiteListAuthHandlerTest {
         whiteListAuthHandler.setConfig(whiteListConfig2);
         UserInfo userInfo = new UserInfo();
         userInfo.setUiId(1L);
-        userInfo.setAllowLogin(StatusEnum.ACTIVE);
+        userInfo.setUiAllowLogin(StatusEnum.ACTIVE);
 
         StatefulRedisConnection connection = Mockito.mock(StatefulRedisConnection.class);
         Mockito.when(connection.sync()).thenReturn(Mockito.mock(io.lettuce.core.api.sync.RedisCommands.class));

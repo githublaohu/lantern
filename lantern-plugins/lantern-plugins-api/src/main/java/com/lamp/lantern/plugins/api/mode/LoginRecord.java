@@ -20,81 +20,67 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode
 @AllArgsConstructor
-public class LoginRecord extends OperateInfoInjection {
+public class LoginRecord{
 
 	/**
      * 登录记录唯一Id
      */
-    private long ulId;
+    private Long ulId;
+
+    private Long systemId;
 
     /**
      * 用户唯一Id
      */
-    private long uiId;
+    private Long uiId;
+
+    private Long triId;
+
+    private String productId;
 
     /**
      * 用户登录时间
      */
     private LocalDateTime ulLoginTime;
 
-    /**
-     * 用户退出方式
-     */
-    private LocalDateTime ulQuitTime;
-
-    /**
-     * 用户登录地址
-     */
     private String ulLoginAddress;
 
-    /**
-     * 用户登录Id
-     */
     private String ulLoginIp;
 
-    /**
-     * 用户登录设备
-     */
-    private DeviceEnum ulLoginDevice;
+    private String ulLoginDeviceType;
 
-    /**
-     * 用户登录设备型号
-     */
+    private String ulLoginDevice;
+
     private String ulLoginDeviceModel;
 
-    /**
-     * 用户登录系统
-     */
-    private SystemEnum ulLoginSystem;
+    private String ulLoginSystem;
 
-    /**
-     * 用户登录方式
-     */
-    private LoginPatternEnum ulLoginWay;
-
-    /**
-     * 用户登录终端
-     */
-    private TerminalEnum ulLoginTerminal;
-
-    /**
-     * 用户退出方式
-     */
-    private ExitWayEnum ulQuitWay;
-
-    /**
-     * 用户第三方Id
-     */
-    private Integer triId;
-
-    /**
-     * 用户登录状态
-     */
-    private LoginStatusEnum ulLoginStatus;
+    private String ulLoginSystemModel;
 
     private String ulSessionId;
+
+ private String ulLoginWay;
+
+ private String ulLoginWayPlatform;
+
+ private String ulLoginTerminal;
+
+ private String ulLoginTerminalModel;
+
+ private String ulQuitWay;
+
+ private String ulQuitIp;
+
+ private LocalDateTime ulQuitTime;
+
+ private String ulQuitAddress;
+
+ private String ulLoginStatus;
+
+ private String ulLoginFailReason;
 
     public LoginRecord() {
 
     }
+
 }

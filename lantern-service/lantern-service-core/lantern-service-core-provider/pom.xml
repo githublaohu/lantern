@@ -30,6 +30,14 @@
             <artifactId>dubbo-provider</artifactId>
             <version>0.1.4</version>
             <type>pom</type>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.alibaba</groupId>
+                    <artifactId>
+                        druid
+                    </artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>io.github.githublaohu</groupId>
@@ -48,6 +56,11 @@
                     <artifactId>sharding-jdbc-core</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid</artifactId>
+            <version>1.1.21</version>
         </dependency>
         <!-- Nacos -->
         <dependency>
@@ -92,7 +105,19 @@
         <scope>compile</scope>
       </dependency>
 
-
+        <dependency>
+            <groupId>io.github.githublaohu</groupId>
+            <artifactId>test-mock-dependent</artifactId>
+            <version>0.1.4</version>
+            <type>pom</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <version>2.1.7.RELEASE</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 

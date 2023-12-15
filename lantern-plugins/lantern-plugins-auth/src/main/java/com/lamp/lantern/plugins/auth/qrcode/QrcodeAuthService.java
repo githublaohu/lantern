@@ -39,7 +39,7 @@ public class QrcodeAuthService extends AbstractAuthService {
         AuthResultObject authResultObject = AuthResultObject.create();
         //Redis结构在CreateTokenAuthHandler中
         //systemName-HANDLER_SYSTEM_NAME-sessionID -> JSON:{"User-Agent","IP","UserID","UserInfo","Status"}
-        String key = systemName + "-" + handlerName + "-" + userInfo.getToken();
+        String key = systemName + "-" + handlerName + "-" + userInfo.getUiToken();
         String result = tokenRedisConnection.sync().get(key);
         if (Objects.isNull(result)) {
             authResultObject.setErrorMessage("手机端登录已失效");

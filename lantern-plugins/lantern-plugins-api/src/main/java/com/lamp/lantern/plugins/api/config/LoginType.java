@@ -1,14 +1,23 @@
 package com.lamp.lantern.plugins.api.config;
 
+import lombok.Getter;
+
 public enum LoginType {
 
-    PLATFORM,
+    PLATFORM("PLATFORM"),
 
-    SECOND,
+    SECOND("SECOND"),
 
-    THIRD,
+    THIRD("THIRD"),
 
-    FIRST,
+    FIRST("FIRST"),
 
-    QRCODE;
+    QRCODE("QRCODE");
+
+    @Getter
+    private String type;
+
+    private LoginType(String type) {
+        this.type = type;
+    }
 }

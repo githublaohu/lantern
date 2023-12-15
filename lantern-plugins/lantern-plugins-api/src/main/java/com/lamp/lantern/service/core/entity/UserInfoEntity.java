@@ -18,5 +18,11 @@ public class UserInfoEntity extends UserInfo implements Serializable {
 	 */
 	private static final long serialVersionUID = -1081806036041678567L;
 
+	public UserInfoEntity(Long userId){
+		this.setUiId(userId);
+	}
 
+	public UserInfoEntity(){
+
+	}
 }

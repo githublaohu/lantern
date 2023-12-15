@@ -8,8 +8,6 @@ import java.util.List;
 
 public interface ResourceRoleRelationService {
     public Integer insertResourceRoleRelation(ResourceRoleRelationEntity resourceRoleRelationEntity);
-
-    public Integer insertResourceRoleRelations(List<ResourceRoleRelationEntity> resourceRoleRelationEntities);
     public Integer updateResourceRoleRelation(ResourceRoleRelationEntity resourceRoleRelationEntity);
     public Integer endResourceRoleRelation(ResourceRoleRelationEntity resourceRoleRelationEntity);
 

@@ -20,30 +20,14 @@ public class UserRoleRelationServiceImpl implements UserRoleRelationService {
 
     @Autowired
     private UserRoleRelationMapper userRoleRelationMapper;
-//    @PostConstruct
-//    void test(){
-//        UserRoleRelationEntity userRoleRelationEntity = new UserRoleRelationEntity();
-//        userRoleRelationEntity.setUrrUserId(1l);
-//        userRoleRelationEntity.setUrrRoleId(1l);
-//        userRoleRelationEntity.setUrrValidTime(LocalDateTime.now());
-//        this.insertUserRoleRelation(userRoleRelationEntity);
-//
-//        UserInfoEntity userInfoEntity = new UserInfoEntity();
-//        userInfoEntity.setUiId(1l);
-//
-//
-//    }
+
 
     @Override
     public Integer insertUserRoleRelation(UserRoleRelationEntity userRoleRelationEntity) {
-        return userRoleRelationMapper.insert(userRoleRelationEntity);
+        userRoleRelationMapper.insertUserRoleRelation(userRoleRelationEntity);
+        return userRoleRelationEntity.getUrrId().intValue();
     }
 
-    @Override
-    public Integer insertUserRoleRelations(List<UserRoleRelationEntity> userRoleRelationEntities){
-        userRoleRelationEntities.forEach(this::insertUserRoleRelation);
-        return 1;
-    }
 
     @Override
     public Integer endUserRoleRelation(UserRoleRelationEntity userRoleRelationEntity) {
@@ -58,6 +42,11 @@ public class UserRoleRelationServiceImpl implements UserRoleRelationService {
     @Override
     public Integer updateUserRoleRelation(UserRoleRelationEntity userRoleRelationEntity) {
         return userRoleRelationMapper.updateUserRoleRelation(userRoleRelationEntity);
+    }
+
+    @Override
+    public Integer deleteUserRoleRelation(UserRoleRelationEntity userRoleRelationEntity) {
+        return userRoleRelationMapper.deleteUserRoleRelation(userRoleRelationEntity);
     }
 
 

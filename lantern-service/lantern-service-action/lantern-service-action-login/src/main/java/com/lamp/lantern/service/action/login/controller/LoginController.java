@@ -15,7 +15,6 @@ import com.lamp.lantern.service.core.entity.UserInfoEntity;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.web.bind.annotation.*;
@@ -144,7 +143,7 @@ public class LoginController implements ApplicationContextAware {
     @ApiOperation(value = "第三方登录重定向")
     public ResultObject<String> oauthLogin(@RequestParam String code, @RequestParam String authChannel) {
         UserInfo userInfoEntity = new UserInfoEntity();
-        userInfoEntity.setToken(code);
+        userInfoEntity.setUiToken(code);
 
         HandlerExecute handlerExecute = handlerService.getHandlerExecute(loginConfig.getSystemName());
         ResultObject<String> result = handlerExecute.execute(userInfoEntity, LoginType.THIRD, authChannel);

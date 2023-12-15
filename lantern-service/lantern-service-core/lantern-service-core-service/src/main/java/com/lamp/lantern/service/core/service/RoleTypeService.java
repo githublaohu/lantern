@@ -5,11 +5,9 @@ import com.lamp.lantern.service.core.entity.RoleTypeEntity;
 import java.util.List;
 
 public interface RoleTypeService {
-    public Integer insertRoleType(RoleTypeEntity roletypeEntity);
+    public Integer insertRoleType(RoleTypeEntity roleTypeEntity);
 
-    public Integer insertRoleTypes(List<RoleTypeEntity> roletypeEntities);
+    public Integer deleteRoleType(RoleTypeEntity roleTypeEntity);
 
-    public Integer deleteRoleType(RoleTypeEntity roletypeEntity);
-
-    public Integer deleteRoleTypes(List<RoleTypeEntity> roletypeEntities);
+    public Integer deleteRoleTypes(List<RoleTypeEntity> roleTypeEntities);
 }
