@@ -21,28 +21,6 @@ public class UserInfoServiceImpl implements UserInfoService {
     @Autowired(required = true)
     private UserInfoMapper userInfoEntityMapper;
 
-//    @PostConstruct
-//    void test() {
-//        UserInfoEntity userInfoEntity = new UserInfoEntity();
-//        userInfoEntity.setUiName("admin");
-//        userInfoEntity.setUiIdcard("123456789");
-//        userInfoEntity.setUiSalt("123456");
-//        userInfoEntity.setUiNickname("admin");
-//        userInfoEntity.setUiBirth(LocalDate.now());
-//        userInfoEntity.setUiSaltPassword("123456");
-//        userInfoEntity.setUiStatus(StatusEnum.ACTIVE);
-//        userInfoEntity.setAllowLogin(StatusEnum.ACTIVE);
-//        userInfoEntity.setUiEmail("23123123");
-//        userInfoEntity.setUiAddress("123123");
-//        userInfoEntity.setUiPhone("123123");
-//        userInfoEntity.setUiLoginAddress("123123");
-//        userInfoEntity.setUiLackFlag(0);
-//        userInfoEntity.setUiFirstLogin(true);
-//        String a = userInfoEntity.getUiPhone();
-//        boolean b = userInfoEntity.getUiPhone() == null;
-//        this.registerUserInfoEntity(userInfoEntity);
-//    }
-
 
     @Override
     public UserInfoEntity registerUserInfoEntity(UserInfoEntity userInfoEntity){
@@ -51,33 +29,33 @@ public class UserInfoServiceImpl implements UserInfoService {
     }
 
     @Override
-    public UserInfo checkUserExistByUserName(UserInfoEntity userInfoEntity){
+    public UserInfoEntity checkUserExistByUserName(UserInfoEntity userInfoEntity){
         return userInfoEntityMapper.checkUserExistByUserName(userInfoEntity);
     }
 
     @Override
-    public UserInfo checkUserExistByEmail(UserInfoEntity userInfoEntity){
+    public UserInfoEntity checkUserExistByEmail(UserInfoEntity userInfoEntity){
         return userInfoEntityMapper.checkUserExistByEmail(userInfoEntity);
     }
 
     @Override
-    public UserInfo checkUserExistByPhone(UserInfoEntity userInfoEntity){
+    public UserInfoEntity checkUserExistByPhone(UserInfoEntity userInfoEntity){
         return userInfoEntityMapper.checkUserExistByPhone(userInfoEntity);
     }
 
     @Override
-    public UserInfo queryUserByUserName(UserInfoEntity userInfoEntity){
-        return userInfoEntityMapper.queryUserByUserName(userInfoEntity);
+    public UserInfoEntity queryUserByUserName(UserInfoEntity userInfoEntity){
+        return userInfoEntityMapper.checkUserExistByUserName(userInfoEntity);
     }
 
     @Override
-    public UserInfo testQuery() {
+    public UserInfoEntity testQuery() {
         return userInfoEntityMapper.testQuery();
     }
 
     @Override
-    public Integer queryUserById() {
-        return userInfoEntityMapper.quertUserById();
+    public UserInfoEntity queryUserById(UserInfoEntity userInfoEntity) {
+        return userInfoEntityMapper.checkUserByUserId(userInfoEntity);
     }
 
     @Override
@@ -91,30 +69,30 @@ public class UserInfoServiceImpl implements UserInfoService {
     }
 
     @Override
-    public List<UserInfo> getAllUserInfos() {
+    public List<UserInfoEntity> getAllUserInfos() {
         return userInfoEntityMapper.getAllUserInfos();
     }
 
     @Override
-    public List<UserInfo> getUpdatedUserInfos(LocalDateTime time){
+    public List<UserInfoEntity> getUpdatedUserInfos(LocalDateTime time){
         return userInfoEntityMapper.getUpdatedUserInfos(time);
     }
 
     @Override
-    public UserInfo registerThirdLoginUser(UserInfoEntity userInfo) {
+    public UserInfoEntity registerThirdLoginUser(UserInfoEntity userInfo) {
         userInfoEntityMapper.registerThirdLoginUser(userInfo);
         return userInfo;
     }
 
 
     @Override
-    public UserInfo checkUserByUserId(UserInfoEntity userInfoEntity) {
+    public UserInfoEntity checkUserByUserId(UserInfoEntity userInfoEntity) {
         return userInfoEntityMapper.checkUserByUserId(userInfoEntity);
     }
 
 
     @Override
-    public UserInfo checkUserByUserIdOrPhoneOrEmail(UserInfoEntity userInfoEntity){
+    public UserInfoEntity checkUserByUserIdOrPhoneOrEmail(UserInfoEntity userInfoEntity){
         return userInfoEntityMapper.checkUserByUserIdOrPhoneOrEmail(userInfoEntity);
     }
 
@@ -124,7 +102,7 @@ public class UserInfoServiceImpl implements UserInfoService {
     }
 
     @Override
-    public UserInfo checkUserExistByIdcard(UserInfoEntity userInfoEntity){
+    public UserInfoEntity checkUserExistByIdcard(UserInfoEntity userInfoEntity){
         return userInfoEntityMapper.checkUserExistByIdcard(userInfoEntity);
     }
 }

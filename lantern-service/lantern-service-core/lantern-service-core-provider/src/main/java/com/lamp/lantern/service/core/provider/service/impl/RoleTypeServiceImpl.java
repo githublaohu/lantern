@@ -12,31 +12,21 @@ import java.util.List;
 public class RoleTypeServiceImpl implements RoleTypeService {
     @Autowired
     private RoleTypeMapper roletypeMapper;
-//    @PostConstruct
-//    public void test(){
-//        RoleTypeEntity roletypeEntity = new RoleTypeEntity();
-//        roletypeEntity.setRoleTypeName("admin");
-//        this.insertRoleType(roletypeEntity);
-//    }
+
     @Override
-    public Integer insertRoleType(RoleTypeEntity roletypeEntity) {
-        return roletypeMapper.insertRoleType(roletypeEntity);
+    public Integer insertRoleType(RoleTypeEntity roleTypeEntity) {
+        roletypeMapper.insertRoleType(roleTypeEntity);
+        return roleTypeEntity.getRoleTypeId().intValue();
     }
 
     @Override
-    public Integer insertRoleTypes(List<RoleTypeEntity> roletypeEntities) {
-        roletypeEntities.forEach(this::insertRoleType);
-        return 1;
+    public Integer deleteRoleType(RoleTypeEntity roleTypeEntity) {
+        return roletypeMapper.deleteRoleType(roleTypeEntity);
     }
 
     @Override
-    public Integer deleteRoleType(RoleTypeEntity roletypeEntity) {
-        return roletypeMapper.deleteRoleType(roletypeEntity);
-    }
-
-    @Override
-    public Integer deleteRoleTypes(List<RoleTypeEntity> roletypeEntities) {
-        return roletypeMapper.deleteRoleTypes(roletypeEntities);
+    public Integer deleteRoleTypes(List<RoleTypeEntity> roleTypeEntities) {
+        return roletypeMapper.deleteRoleTypes(roleTypeEntities);
     }
 
 }

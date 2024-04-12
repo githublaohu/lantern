@@ -28,7 +28,7 @@ public class GithubThirdAuthService extends AbstractThirdAuthService {
 //        ReturnObject res = oAuthLightInterface.getGithubAccessToken(userInfo.getToken(), config.getAppId(), config.getSecretAccessKey());
 //        return null;
         String url = "https://github.com/login/oauth/access_token?code={0}&client_id={1}&client_secret={2}";
-        url = MessageFormat.format(url, userInfo.getToken(), config.getAppId(), config.getSecretAccessKey());
+        url = MessageFormat.format(url, userInfo.getUiToken(), config.getAppId(), config.getSecretAccessKey());
         String token = PostHelper.Post(url,"POST",new HashMap<>());
         if (token.contains("error")) {
             log.error("github auth error: {}", token);
@@ -36,7 +36,7 @@ public class GithubThirdAuthService extends AbstractThirdAuthService {
         }
         token = token.substring(token.indexOf("=")+1,token.indexOf("&"));
         AuthResultObject authResultObject = AuthResultObject.create();
-        userInfo.setToken(token);
+        userInfo.setUiToken(token);
         authResultObject.setUserInfo(userInfo);
         return authResultObject;
     }
@@ -44,7 +44,7 @@ public class GithubThirdAuthService extends AbstractThirdAuthService {
     @Override
     public AuthResultObject getUserInfo(UserInfo userInfo) {
         AuthResultObject authResultObject = AuthResultObject.create();
-        String token = "Bearer "+ userInfo.getToken();
+        String token = "Bearer "+ userInfo.getUiToken();
         //get user info
         String url = "https://api.github.com/user";
         String res = PostHelper.Post(url,"GET",new HashMap<String,String>(){{
@@ -53,10 +53,10 @@ public class GithubThirdAuthService extends AbstractThirdAuthService {
         JSONObject jsonObject = JSONObject.parseObject(res);
         userInfo.setUiName(jsonObject.getString("login"));
         PlatformUserInfo platformUserInfo =  new PlatformUserInfo();
-        platformUserInfo.setPuiOpenId(jsonObject.getLong("id"));
-        platformUserInfo.setPuiType(LoginType.THIRD);
-        platformUserInfo.setPuiAuthchannel("Github");
-        platformUserInfo.setPuiUnionId(0l);
+        platformUserInfo.setPuiOpenId(jsonObject.getString("id"));
+        platformUserInfo.setPuiType(LoginType.THIRD.getType());
+        platformUserInfo.setPuiAuthChannel("Github");
+        platformUserInfo.setPuiUnionId("0");
 
         authResultObject.setPlatformUserInfo(platformUserInfo);
         authResultObject.setUserInfo(userInfo);

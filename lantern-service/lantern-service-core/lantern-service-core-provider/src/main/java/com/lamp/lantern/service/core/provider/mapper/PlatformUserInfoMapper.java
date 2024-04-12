@@ -12,14 +12,42 @@ import org.apache.ibatis.annotations.Select;
 
 @Mapper
 public interface PlatformUserInfoMapper {
-    @Options(useGeneratedKeys = true, keyProperty = "platformUserInfo.puiId", keyColumn = "pui_id")
-    @Insert("insert into platform_user_info (system_id, user_id, corporation_id, app_id, pui_open_id, pui_union_id, pui_type, pui_auth_channel,pui_create_user_id) values (#{platformUserInfo.systemId}, #{platformUserInfo.userId}, #{platformUserInfo.corporationId}, #{platformUserInfo.appId}, #{platformUserInfo.puiOpenId}, #{platformUserInfo.puiUnionId}, #{platformUserInfo.puiType}, #{platformUserInfo.puiAuthchannel}, #{platformUserInfo.operatorId})")
-    public Integer insertPlatformUserInfo(PlatformUserInfo platformUserInfo);
+    @Options(useGeneratedKeys = true, keyProperty = "puiId", keyColumn = "pui_id")
+    @Insert({
+            "<script>",
+            "insert into platform_user_info (",
+            "system_id, ",
+            "<if test='userId != null'>user_id,</if>",
+            "<if test='corporationId != null'>corporation_id,</if>",
+            "<if test='appId != null'>app_id,</if>",
+            "<if test='puiOpenId != null'>pui_open_id,</if>",
+            "<if test='puiUnionId != null'>pui_union_id,</if>",
+            "<if test='puiType != null'>pui_type,</if>",
+            "<if test='puiAuthChannel != null'>pui_auth_channel,</if>",
+            "create_user_id,update_user_id",
+            ") values (",
+            "#{systemId},",
+            "<if test='userId != null'>#{userId},</if>",
+            "<if test='corporationId != null'>#{corporationId},</if>",
+            "<if test='appId != null'>#{appId},</if>",
+            "<if test='puiOpenId != null'>#{puiOpenId},</if>",
+            "<if test='puiUnionId != null'>#{puiUnionId},</if>",
+            "<if test='puiType != null'>#{puiType},</if>",
+            "<if test='puiAuthChannel != null'>#{puiAuthChannel},</if>",
+            "#{operatorId},#{operatorId}",
+            ")",
+            "</script>"
+    })
+    Integer insertPlatformUserInfo(PlatformUserInfo platformUserInfo);
 
 
-    @Select("select * from platform_user_info where user_id=#{platformUserInfoEntity.userId} and pui_open_id=#{platformUserInfoEntity.puiOpenId} and pui_type='THIRD' LIMIT 1")
-    UserInfo checkPlatformUserByUserIdAndTriId( PlatformUserInfoEntity platformUserInfoEntity);
+    @Select("select * from platform_user_info where user_id=#{platformUserInfoEntity.userId} and pui_open_id=#{platformUserInfoEntity.puiOpenId} and pui_type='THIRD' and " +is_valid+" LIMIT 1")
+    UserInfo checkPlatformUserByUserIdAndTriId(PlatformUserInfoEntity platformUserInfoEntity);
 
-//    @Select("select * from user_info where ui_id = (select pui_user_id from platform_user_info where pui_open_id = #{puiOpenId} and pui_authchannel = #{puiAuthchannel} LIMIT 1)")
-//    UserInfoEntity checkUserByTriIdAndAuthchannel(PlatformUserInfoEntity platformUserInfoEntity);
+    @Select("select * from platform_user_info where pui_open_id=#{platformUserInfoEntity.puiOpenId} and pui_auth_channel=#{platformUserInfoEntity.puiAuthChannel} and pui_type='THIRD' and "+is_valid+" LIMIT 1")
+    UserInfoEntity checkUserByTriIdAndAuthchannel(PlatformUserInfoEntity platformUserInfoEntity);
+
+    String is_valid = "pui_valid_time > now() and pui_start_time < now() and is_delete = 0";
 }
+
+

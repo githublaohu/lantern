@@ -21,28 +21,23 @@ public class ResourceRoleRelationServiceImpl implements ResourceRoleRelationServ
     @Autowired
     private ResourceRoleRelationMapper resourceRoleRelationMapper;
 
-//    @PostConstruct
-//    public void init() {
-//        ResourceRoleRelationEntity resourceRoleRelationEntity = new ResourceRoleRelationEntity();
-//        resourceRoleRelationEntity.setRrrResourceId(1l);
-//        resourceRoleRelationEntity.setRrrRoleId(1l);
-//        resourceRoleRelationEntity.setRrrOperatorId(1l);
-//        resourceRoleRelationEntity.setRrrType("test");
-//        resourceRoleRelationEntity.setRrrTypeId(1l);
-//        resourceRoleRelationEntity.setRrrValidTime(LocalDateTime.now());
-//        int a = this.insertResourceRoleRelation(resourceRoleRelationEntity);
-//        log.info("insertResourceRoleRelation:{}", a);
-//    }
+    @PostConstruct
+    public void init() {
+        ResourceRoleRelationEntity resourceRoleRelationEntity = new ResourceRoleRelationEntity();
+        resourceRoleRelationEntity.setResourceId(1l);
+        resourceRoleRelationEntity.setRoleId(1l);
+        resourceRoleRelationEntity.setOperatorId(1l);
+        resourceRoleRelationEntity.setRrrType("test");
+        resourceRoleRelationEntity.setRrrTypeId(1l);
+        resourceRoleRelationEntity.setValidTime(LocalDateTime.now());
+        resourceRoleRelationEntity.setStartTime(LocalDateTime.now());
+        int a = this.insertResourceRoleRelation(resourceRoleRelationEntity);
+        log.info("insertResourceRoleRelation:{}", a);
+    }
 
     @Override
     public Integer insertResourceRoleRelation(ResourceRoleRelationEntity resourceRoleRelationEntity) {
         return resourceRoleRelationMapper.insertResourceRoleRelation(resourceRoleRelationEntity);
-    }
-
-    @Override
-    public Integer insertResourceRoleRelations(List<ResourceRoleRelationEntity> resourceRoleRelationEntities) {
-        resourceRoleRelationEntities.forEach(this::insertResourceRoleRelation);
-        return 1;
     }
 
     @Override
@@ -53,8 +48,8 @@ public class ResourceRoleRelationServiceImpl implements ResourceRoleRelationServ
 
     @Override
     public Integer endResourceRoleRelation(ResourceRoleRelationEntity resourceRoleRelationEntity) {
-        resourceRoleRelationEntity.setRrrEndTime(LocalDateTime.now());
-        resourceRoleRelationEntity.setRrrValidTime(LocalDateTime.now());
+        resourceRoleRelationEntity.setEndTime(LocalDateTime.now());
+        resourceRoleRelationEntity.setValidTime(LocalDateTime.now());
         Integer result = resourceRoleRelationMapper.updateResourceRoleRelation(resourceRoleRelationEntity);
         return result;
     }
@@ -102,7 +97,7 @@ public class ResourceRoleRelationServiceImpl implements ResourceRoleRelationServ
             return 1;
         }
         ResourceRoleRelation resourceRoleRelationEntity2 = resourceRoleRelationEntities.get(0);
-        if (resourceRoleRelationEntity2.getRrrValidTime().isBefore(LocalDateTime.now()) && resourceRoleRelationEntity2.getRrrEndTime().isAfter(LocalDateTime.now())) {
+        if (resourceRoleRelationEntity2.getValidTime().isBefore(LocalDateTime.now()) && resourceRoleRelationEntity2.getEndTime().isAfter(LocalDateTime.now())) {
             return 0;
         }
         return 1;
@@ -110,8 +105,7 @@ public class ResourceRoleRelationServiceImpl implements ResourceRoleRelationServ
 
     @Override
     public List<ResourceRoleRelation> getValidResourceRoleRelation() {
-        List<ResourceRoleRelation> resourceRoleRelationEntities = resourceRoleRelationMapper.getValidResourceRoleRelation();
-        return resourceRoleRelationEntities.stream().map(resourceRoleRelation -> (ResourceRoleRelationEntity) resourceRoleRelation).collect(java.util.stream.Collectors.toList());
+        return  resourceRoleRelationMapper.getValidResourceRoleRelation();
     }
 
 

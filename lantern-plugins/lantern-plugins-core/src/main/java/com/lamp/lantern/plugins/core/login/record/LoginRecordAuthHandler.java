@@ -52,7 +52,7 @@ public class LoginRecordAuthHandler extends AbstractAuthHandler<Object> {
 
 		loginRecordEntity.setUlLoginIp(ip);
 
-		loginRecordEntity.setUlLoginStatus(type);
+		loginRecordEntity.setUlLoginStatus(type.getStatus());
 
 
 		loginRecordService.insertLoginRecord(loginRecordEntity);

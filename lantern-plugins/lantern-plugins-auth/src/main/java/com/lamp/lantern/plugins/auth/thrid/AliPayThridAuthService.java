@@ -38,7 +38,7 @@ public class AliPayThridAuthService extends AbstractAuthService {
 		AuthResultObject authResultObject = AuthResultObject.create();
 		try {
 			AlipaySystemOauthTokenRequest request = new AlipaySystemOauthTokenRequest();
-			request.setCode(userInfo.getToken());
+			request.setCode(userInfo.getUiToken());
 			request.setGrantType("authorization_code");
 			AlipaySystemOauthTokenResponse oauthTokenResponse = alipayClient.execute(request);
 			if (oauthTokenResponse.isSuccess()) {
@@ -58,7 +58,7 @@ public class AliPayThridAuthService extends AbstractAuthService {
 		AuthResultObject authResultObject = AuthResultObject.create();
 		AlipayUserInfoShareRequest request = new AlipayUserInfoShareRequest();
 		try {
-			AlipayUserInfoShareResponse response = alipayClient.execute(request, userInfo.getToken());
+			AlipayUserInfoShareResponse response = alipayClient.execute(request, userInfo.getUiToken());
 			if (response.isSuccess()) {
 				UserInfo userInfoEntity = new UserInfo();
 			} else {
