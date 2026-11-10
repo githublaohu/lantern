@@ -29,4 +29,7 @@ public class AuthenticationConfig {
 
     private AuthenticationServiceConfig authenticationServiceConfig;
 
+    /** Name of the local bean providing authentication and policy lookup through Dubbo injvm. */
+    private String dubboLocalServiceName;
+
 }

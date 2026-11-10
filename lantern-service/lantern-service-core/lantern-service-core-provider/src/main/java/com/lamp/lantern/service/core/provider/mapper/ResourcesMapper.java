@@ -186,10 +186,38 @@ public interface ResourcesMapper {
     @Select("select * from resources where is_delete = 0 and resource_update_time > #{time}")
     List<Resources> selectUpdatedResources(Resources resources);
 
-    @Select({" select * from user_role_relation as urr inner join `role` as r on urr.role_id = r.role_id inner join resource_role_relation as rrr on r.role_id = rrr.rrr_role_id inner join resources as re on rrr.rrr_resource_id = re.resource_id where re.resource_name = #{resourceName}  ",
-    "and urr.is_delete = 0 and r.is_delete = 0 and rrr.is_delete = 0 and re.is_delete = 0 and urr.valid_time > now() and urr.start_time < now() and urr.end_time > now() and r.valid_time > now() and r.start_time < now() and r.end_time > now() and rrr.valid_time > now() and rrr.start_time < now() and rrr.end_time > now() and re.valid_time > now() and re.start_time < now() and re.end_time > now()"
+    String ACTIVE_RESOURCE = "re.is_delete = 0 AND re.start_time < NOW() AND re.valid_time > NOW() AND re.end_time > NOW()";
+
+    @Select({
+        "SELECT re.resource_id AS resourceId, re.resource_conditions AS resourceConditions",
+        "FROM resources re",
+        "WHERE re.system_id = #{systemId} AND re.resource_type = 'HTTP'",
+        "AND BINARY re.resource_operate = #{method} AND BINARY re.resource_name = #{route}",
+        "AND", ACTIVE_RESOURCE, "LIMIT 2"
     })
-    Resources authentication(AuthenticationData authenticationData);
+    List<Resources> findActiveHttpPolicies(@Param("systemId") Long systemId, @Param("method") String method, @Param("route") String route);
+
+    @Select({
+        "<script>",
+        "SELECT EXISTS (SELECT 1",
+        "FROM user_role_relation urr",
+        "JOIN `role` r ON r.role_id = urr.role_id",
+        "JOIN resource_role_relation rrr ON rrr.role_id = r.role_id",
+        "JOIN resources re ON re.resource_id = rrr.resource_id AND re.system_id = r.system_id",
+        "WHERE urr.user_id = #{userId}",
+        "<if test='systemId != null'>AND re.system_id = #{systemId}</if>",
+        "<choose>",
+        "<when test='resourceId != null'>AND re.resource_id = #{resourceId}</when>",
+        "<otherwise>AND BINARY re.resource_name = #{resource}</otherwise>",
+        "</choose>",
+        "AND <![CDATA[", ACTIVE_RESOURCE, "]]>",
+        "AND <![CDATA[", RoleMapper.r_is_valid, "]]>",
+        "AND <![CDATA[", RoleMapper.urr_is_valid, "]]>",
+        "AND rrr.is_delete = 0 AND rrr.start_time &lt; NOW() AND rrr.valid_time &gt; NOW() AND rrr.end_time &gt; NOW()",
+        ")",
+        "</script>"
+    })
+    boolean hasResourcePermission(AuthenticationData authenticationData);
 
     @Select({"select * from resources "})
     List<Resources> selectResources();

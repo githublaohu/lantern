@@ -180,4 +180,10 @@ public interface UserInfoMapper {
 
     @Select("select * from user_info where ui_token = #{token} LIMIT 1")
     UserInfo selectUserInfoByToken(String token);
+
+    @Select({
+        "SELECT * FROM user_info WHERE system_id = #{systemId} AND BINARY ui_token = #{token}",
+        "AND ui_allow_login = 'ACTIVE' AND is_delete = 0 LIMIT 2"
+    })
+    List<UserInfo> selectActiveUsersByToken(@Param("systemId") Long systemId, @Param("token") String token);
 }

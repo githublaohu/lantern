@@ -59,7 +59,6 @@ public class LanternRequestResponseBodyMethodProcessor implements HandlerMethodA
         if (Objects.isNull(mappingList)) {
             //如果该类在classMap中不存在，那么就创建一个新的mappingList
             mappingList = new ArrayList<>();
-            classMap.put(value.getClass(), mappingList);
             Class<?> clazz = value.getClass();
             //对于该类的所有父类进行遍历
             while (!Objects.equals(clazz, Object.class)) {
@@ -77,6 +76,9 @@ public class LanternRequestResponseBodyMethodProcessor implements HandlerMethodA
                     UserInjection userInjection = field.getAnnotation(UserInjection.class);
                     OrganizationInjection organizationInjection = field.getAnnotation(OrganizationInjection.class);
                     Injection injection = field.getAnnotation(Injection.class);
+                    if (userInjection == null && organizationInjection == null && injection == null) {
+                        continue;
+                    }
                     MapperInfo mapperInfo = new MapperInfo();
                     String valueInjection = null;
                     if (Objects.nonNull(userInjection)) {
@@ -98,6 +100,7 @@ public class LanternRequestResponseBodyMethodProcessor implements HandlerMethodA
                     mappingList.add(mapperInfo);
                 }
             }
+            classMap.put(value.getClass(), mappingList);
         }
         if (mappingList.isEmpty()) {
             return object;

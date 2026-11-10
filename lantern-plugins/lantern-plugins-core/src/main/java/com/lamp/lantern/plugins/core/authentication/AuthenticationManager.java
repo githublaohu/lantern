@@ -2,6 +2,9 @@ package com.lamp.lantern.plugins.core.authentication;
 
 import com.lamp.lantern.plugins.api.auth.AuthenticationData;
 import com.lamp.lantern.plugins.api.auth.AuthenticationDataService;
+import com.lamp.lantern.plugins.api.auth.AuthenticationPolicy;
+import com.lamp.lantern.plugins.api.auth.AuthenticationPolicy.Mode;
+import com.lamp.lantern.plugins.api.auth.AuthenticationPolicyService;
 import com.lamp.lantern.plugins.api.auth.AuthenticationService;
 import com.lamp.lantern.plugins.api.auth.AuthenticationServiceResult;
 import com.lamp.lantern.plugins.api.auth.AuthenticationType;
@@ -10,6 +13,7 @@ import com.lamp.lantern.plugins.api.auth.config.AuthenticationDataConfig;
 import com.lamp.lantern.plugins.api.auth.config.AuthenticationServiceConfig;
 import com.lamp.lantern.plugins.api.auth.config.DubboAuthenticationConfig;
 import com.lamp.lantern.plugins.api.config.AuthenticationConfig;
+import com.lamp.lantern.plugins.api.config.AuthenticationFlowConfig;
 import com.lamp.lantern.plugins.core.authentication.service.CacheAuthenticationService;
 import com.lamp.lantern.plugins.core.authentication.service.DubboAuthenticationService;
 import com.lamp.lantern.plugins.core.authentication.service.LocalAuthenticationService;
@@ -24,8 +28,10 @@ import lombok.Getter;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.apache.dubbo.config.RegistryConfig;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 /**
  * 1. springmvc参数拦截器
@@ -35,12 +41,14 @@ import org.springframework.stereotype.Component;
  * @author laohu
  */
 @Component
-public class AuthenticationManager {
+public class AuthenticationManager implements AutoCloseable {
 
-    private final LanternAuthFlow lanternAuthFlow = new LanternAuthFlow();
+    private final LanternAuthFlow lanternAuthFlow;
     private final AuthenticationConfig authenticationConfig;
     private final EnvironmentContext environmentContext;
-    private final AuthenticationDataService authenticationDataService;
+    private final AuthenticationPolicyService policyService;
+    private final Long systemId;
+    private final InjvmAuthenticationServices injvmAuthenticationServices;
     private LocalAuthenticationService localAuthenticationService;
 
     @Getter
@@ -50,34 +58,75 @@ public class AuthenticationManager {
 
     public AuthenticationManager(AuthenticationConfig authenticationConfig, EnvironmentContext environmentContext)
             throws Exception {
+        Assert.notNull(authenticationConfig, "Lantern authenticationConfig is required");
         this.environmentContext = environmentContext;
         this.authenticationConfig = authenticationConfig;
-        this.authenticationDataService = this.createAuthenticationDataService();
-        this.initAuthenticationService();
+        AuthenticationFlowConfig flowConfig = authenticationConfig.getAuthenticationFlowConfig();
+        Assert.notNull(flowConfig, "Lantern authenticationFlowConfig is required");
+        Assert.isTrue("header".equals(flowConfig.getTokenSpot()) || "cookie".equals(flowConfig.getTokenSpot()),
+                "Lantern tokenSpot must be header or cookie");
+        Assert.hasText(flowConfig.getTokenName(), "Lantern tokenName is required");
+        this.lanternAuthFlow = new LanternAuthFlow(flowConfig);
+        String dubboLocalServiceName = authenticationConfig.getDubboLocalServiceName();
+        boolean useInjvm = StringUtils.hasText(dubboLocalServiceName);
+        if (useInjvm || StringUtils.hasText(flowConfig.getPolicyServiceName())) {
+            Assert.hasText(flowConfig.getSystemId(), "Lantern systemId is required with a policy service");
+            this.systemId = Long.valueOf(flowConfig.getSystemId());
+            Assert.isTrue(systemId > 0, "Lantern systemId must be positive");
+            Assert.isTrue(CollectionUtils.isEmpty(flowConfig.getNotAuthentication())
+                    && CollectionUtils.isEmpty(flowConfig.getUserAuthentication()),
+                    "Lantern database policies and YAML path rules cannot be enabled together");
+        } else {
+            Assert.notNull(authenticationConfig.getAuthenticationType(), "Lantern authenticationType is required without a policy service");
+            this.systemId = null;
+        }
+        if (useInjvm) {
+            Assert.isTrue(!StringUtils.hasText(flowConfig.getPolicyServiceName())
+                    && authenticationConfig.getDefaultAuthenticationService() == null
+                    && authenticationConfig.getAuthenticationServiceConfig() == null
+                    && authenticationConfig.getUserInfoAuthenticationServiceConfig() == null,
+                    "Lantern dubboLocalServiceName cannot be combined with other authentication or policy services");
+            Object implementation = environmentContext.getBean(dubboLocalServiceName);
+            Assert.isInstanceOf(AuthenticationService.class, implementation, "Lantern Dubbo local bean must implement AuthenticationService");
+            Assert.isInstanceOf(AuthenticationPolicyService.class, implementation, "Lantern Dubbo local bean must implement AuthenticationPolicyService");
+            this.injvmAuthenticationServices = new InjvmAuthenticationServices(
+                    (AuthenticationService) implementation, (AuthenticationPolicyService) implementation);
+            this.authenticationService = injvmAuthenticationServices.getAuthenticationService();
+            this.policyService = injvmAuthenticationServices.getPolicyService();
+        } else {
+            this.injvmAuthenticationServices = null;
+            this.policyService = systemId == null ? null
+                    : (AuthenticationPolicyService) environmentContext.getBean(flowConfig.getPolicyServiceName());
+            this.initAuthenticationService();
+            if (this.localAuthenticationService != null) {
+                this.startCacheSync();
+            }
+        }
     }
 
 
     private void initAuthenticationService() throws Exception {
-        ProxyAuthenticationService proxyAuthenticationService = new ProxyAuthenticationService();
-        if (Objects.nonNull(this.authenticationConfig.getDefaultAuthenticationService().getAuthenticationService())) {
-            this.authenticationService =
-                    this.createAuthenticationService(authenticationConfig.getDefaultAuthenticationService());
-            proxyAuthenticationService.setAuthenticationService(authenticationService);
-            proxyAuthenticationService.setUserInfoService(authenticationService);
-        } else {
-            AuthenticationService authenticationService =
-                    this.createAuthenticationService(this.authenticationConfig.getAuthenticationServiceConfig());
-            proxyAuthenticationService.setAuthenticationService(authenticationService);
-            proxyAuthenticationService.setUserInfoService(
-                    Objects.nonNull(authenticationService) ? authenticationService : this.createAuthenticationService(
-                            this.authenticationConfig.getUserInfoAuthenticationServiceConfig()));
+        AuthenticationService defaultService = this.createAuthenticationService(authenticationConfig.getDefaultAuthenticationService());
+        AuthenticationService permissionService = defaultService;
+        AuthenticationService identityService = defaultService;
+        if (defaultService == null) {
+            permissionService = this.createAuthenticationService(authenticationConfig.getAuthenticationServiceConfig());
+            identityService = authenticationConfig.getUserInfoAuthenticationServiceConfig() == null
+                    ? permissionService : this.createAuthenticationService(authenticationConfig.getUserInfoAuthenticationServiceConfig());
         }
-        this.authenticationService = proxyAuthenticationService;
-
+        Assert.notNull(identityService, "Lantern identity service is required");
+        if (policyService != null || authenticationConfig.getAuthenticationType() == AuthenticationType.RESOURCE) {
+            Assert.notNull(permissionService, "Lantern resource authorization service is required");
+        }
+        ProxyAuthenticationService proxy = new ProxyAuthenticationService();
+        proxy.setAuthenticationService(permissionService);
+        proxy.setUserInfoService(identityService);
+        this.authenticationService = proxy;
     }
 
     private AuthenticationDataService createAuthenticationDataService() throws Exception {
         AuthenticationDataConfig authenticationDataConfig = this.authenticationConfig.getAuthenticationDataConfig();
+        Assert.notNull(authenticationDataConfig, "Lantern local cache requires authenticationDataConfig");
         AuthenticationDataService authenticationDataService = null;
         if (Objects.nonNull(authenticationDataConfig.getAuthenticationDataService())) {
             authenticationDataService = authenticationDataConfig.getAuthenticationDataService();
@@ -101,20 +150,23 @@ public class AuthenticationManager {
             authenticationDataService = referenceConfig.get();
         }
 
-        scheduledThreadPoolExecutor = new ScheduledThreadPoolExecutor(1);
-        AuthenticationData authenticationData = new AuthenticationData();
-
-        scheduledThreadPoolExecutor.schedule(() -> {
-            LanternAuthCachePool lanternAuthCachePool =
-                    this.authenticationDataService.getLanternAuthCachePool(authenticationData);
-            localAuthenticationService.setLanternAuthCachePool(lanternAuthCachePool);
-        }, authenticationDataConfig.getDataSyncInterval(), TimeUnit.MICROSECONDS);
-
-        if (Objects.isNull(authenticationDataService)) {
-            throw new RuntimeException("");
-        }
-
+        Assert.notNull(authenticationDataService, "Lantern cache data service is required");
         return authenticationDataService;
+    }
+
+    private void startCacheSync() throws Exception {
+        AuthenticationDataService dataService = this.createAuthenticationDataService();
+        Long interval = authenticationConfig.getAuthenticationDataConfig().getDataSyncInterval();
+        Assert.isTrue(interval != null && interval > 0, "Lantern cache dataSyncInterval must be positive");
+        scheduledThreadPoolExecutor = new ScheduledThreadPoolExecutor(1);
+        scheduledThreadPoolExecutor.schedule(() -> {
+            AuthenticationData data = new AuthenticationData();
+            data.setTime(0L);
+            LanternAuthCachePool cachePool = dataService.getLanternAuthCachePool(data);
+            if (cachePool != null) {
+                localAuthenticationService.setLanternAuthCachePool(cachePool);
+            }
+        }, interval, TimeUnit.MICROSECONDS);
     }
 
     private AuthenticationService createAuthenticationService(AuthenticationServiceConfig authenticationServiceConfig)
@@ -148,10 +200,17 @@ public class AuthenticationManager {
 
 
     public AuthenticationServiceResult authentication(HttpServletRequest request, HttpServletResponse response) {
+        return this.authentication(request, response, policyService == null ? lanternAuthFlow.getResource(request) : null);
+    }
 
-        String resource = lanternAuthFlow.getResource(request);
-
-        if (lanternAuthFlow.notAuthentication(resource)) {
+    public AuthenticationServiceResult authentication(HttpServletRequest request, HttpServletResponse response, String route) {
+        AuthenticationPolicy policy = this.findPolicy(request.getMethod(), route);
+        if (policy == null) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            return new AuthenticationServiceResult().setSuccess(false);
+        }
+        Mode mode = Objects.requireNonNull(policy.getMode(), "Lantern policy mode is required");
+        if (mode == Mode.PUBLIC) {
             return new AuthenticationServiceResult().setSuccess(true);
         }
 
@@ -160,19 +219,55 @@ public class AuthenticationManager {
             lanternAuthFlow.failed(response);
             return new AuthenticationServiceResult().setSuccess(false);
         }
-        AuthenticationData authenticationData = new AuthenticationData();
-        if (Objects.equals(authenticationConfig.getAuthenticationType(), AuthenticationType.USER)) {
-            return authenticationService.getUserInfo(authenticationData);
-        }
-        //AuthenticationType.RESOURCE
-        AuthenticationServiceResult authenticationServiceResult =
-                authenticationService.authentication(authenticationData);
-
-        if (!authenticationServiceResult.isSuccess()) {
+        AuthenticationData data = new AuthenticationData();
+        data.setToken(token);
+        data.setSystemId(systemId);
+        data.setResource(route);
+        data.setResourceId(policy.getResourceId());
+        AuthenticationServiceResult identity = authenticationService.getUserInfo(data);
+        if (!identity.isSuccess() || identity.getUserInfo() == null || identity.getUserInfo().getUiId() == null
+                || (systemId != null && !systemId.equals(identity.getUserInfo().getSystemId()))) {
             lanternAuthFlow.failed(response);
+            return new AuthenticationServiceResult().setSuccess(false);
         }
-        return authenticationServiceResult;
+        if (mode == Mode.USER) {
+            return identity;
+        }
+
+        data.setUserId(identity.getUserInfo().getUiId());
+        data.setUserInfo(identity.getUserInfo());
+        AuthenticationServiceResult result = authenticationService.authentication(data);
+        if (!result.isSuccess()) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        } else {
+            result.setUserInfo(identity.getUserInfo());
+        }
+        return result;
     }
 
+    private AuthenticationPolicy findPolicy(String method, String route) {
+        if (policyService != null) {
+            return StringUtils.hasText(route) ? policyService.findPolicy(systemId, method, route) : null;
+        }
+        boolean publicPath = lanternAuthFlow.notAuthentication(route);
+        boolean userPath = lanternAuthFlow.userAuthentication(route);
+        if (publicPath && userPath) {
+            throw new IllegalStateException("Conflicting Lantern YAML path rules");
+        }
+        if (publicPath) {
+            return new AuthenticationPolicy(null, Mode.PUBLIC);
+        }
+        Mode mode = userPath || authenticationConfig.getAuthenticationType() == AuthenticationType.USER ? Mode.USER : Mode.ROLE;
+        return new AuthenticationPolicy(null, mode);
+    }
 
+    @Override
+    public void close() {
+        if (injvmAuthenticationServices != null) {
+            injvmAuthenticationServices.close();
+        }
+        if (scheduledThreadPoolExecutor != null) {
+            scheduledThreadPoolExecutor.shutdownNow();
+        }
+    }
 }

@@ -17,6 +17,12 @@
 	</properties>
 	<dependencies>
 		<dependency>
+			<groupId>org.apache.dubbo</groupId>
+			<artifactId>dubbo</artifactId>
+			<version>3.2.16</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>lantern-plugins-api</artifactId>
 			<version>${project.version}</version>
@@ -78,6 +84,10 @@
 			<version>0.1.4</version>
 			<type>pom</type>
 			<exclusions>
+				<exclusion>
+					<groupId>org.apache.dubbo</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
 				<exclusion>
 					<groupId>com.fasterxml.jackson.core</groupId>
 					<artifactId>jackson-databind</artifactId>

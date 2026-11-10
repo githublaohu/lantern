@@ -28,6 +28,6 @@ public class ProxyAuthenticationService implements AuthenticationService {
 
     @Override
     public AuthenticationServiceResult authentication(AuthenticationData authData) {
-        return userInfoService.authentication(authData);
+        return authenticationService.authentication(authData);
     }
 }
