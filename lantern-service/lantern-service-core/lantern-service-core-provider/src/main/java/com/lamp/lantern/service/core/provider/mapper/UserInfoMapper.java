@@ -180,4 +180,34 @@ public interface UserInfoMapper {
 
     @Select("select * from user_info where ui_token = #{token} LIMIT 1")
     UserInfo selectUserInfoByToken(String token);
+
+    @Select({
+        "<script>",
+        "SELECT ui_id AS uiId, system_id AS systemId, ui_name AS uiName, ui_nickname AS uiNickname,",
+        "ui_id_card AS uiIdCard, ui_phone AS uiPhone, ui_email AS uiEmail, ui_head_portrait AS uiHeadPortrait,",
+        "ui_sex AS uiSex, ui_birth AS uiBirth, ui_address AS uiAddress, ui_login_address AS uiLoginAddress,",
+        "ui_login_time AS uiLoginTime, ui_exit_time AS uiExitTime, ui_status AS uiStatus,",
+        "ui_allow_login AS uiAllowLogin, is_delete AS isDelete, ui_token AS uiToken FROM user_info",
+        "WHERE ui_allow_login = 'ACTIVE' AND is_delete = 0",
+        "AND (BINARY ui_token = #{token} OR EXISTS (SELECT 1 FROM user_login_record lr",
+        "WHERE lr.ui_id = user_info.ui_id AND lr.system_id = user_info.system_id",
+        "AND BINARY lr.ul_session_id = #{token} AND lr.ul_login_status = 'SUCCESS' AND lr.ul_quit_time > NOW()))",
+        "<if test='systemId != null'>AND system_id = #{systemId}</if>",
+        "LIMIT 2",
+        "</script>"
+    })
+    @Options(useCache = false, flushCache = Options.FlushCachePolicy.TRUE)
+    List<UserInfo> selectActiveUsersByToken(@Param("systemId") Long systemId, @Param("token") String token);
+
+    @Select({
+        "SELECT ui_id AS uiId, system_id AS systemId, ui_name AS uiName,",
+        "ui_salt AS uiSalt, ui_salt_password AS uiSaltPassword FROM user_info",
+        "WHERE system_id = #{systemId} AND BINARY ui_name = #{name}",
+        "AND ui_allow_login = 'ACTIVE' AND is_delete = 0 LIMIT 2"
+    })
+    @Options(useCache = false, flushCache = Options.FlushCachePolicy.TRUE)
+    List<UserInfo> findLoginUsers(@Param("systemId") Long systemId, @Param("name") String name);
+
+    @Update("UPDATE user_info SET ui_token = '' WHERE system_id = #{systemId} AND BINARY ui_token = #{token}")
+    int revokeLegacyToken(@Param("systemId") Long systemId, @Param("token") String token);
 }

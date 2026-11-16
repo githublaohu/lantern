@@ -6,10 +6,8 @@ import com.lamp.lantern.plugins.api.config.AuthenticationConfig;
 import com.lamp.lantern.plugins.core.login.config.LoginConfig;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
 
 @Data
-@Component
 @ConfigurationProperties(prefix = "lantern")
 public class LanternProperties {
 	/**

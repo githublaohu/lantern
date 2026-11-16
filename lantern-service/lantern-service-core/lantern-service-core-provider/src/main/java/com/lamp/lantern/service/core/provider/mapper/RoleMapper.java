@@ -148,8 +148,8 @@ public  interface RoleMapper {
     @Select(" select * from role as r where"+r_is_valid)
     List<RoleEntity> selectValidRoles();
 
-    String r_is_valid = "r.start_time < now() and r.valid_time > now() and (r.end_time = r.create_time or r.end_time > now()) and r.is_delete = 0";
-    String urr_is_valid = "urr.start_time < now() and urr.valid_time > now() and (urr .end_time = urr.create_time or urr.end_time > now()) and urr.is_delete = 0";
+    String r_is_valid = "r.start_time <= now() and r.valid_time > now() and (r.end_time = r.create_time or r.end_time > now()) and r.is_delete = 0";
+    String urr_is_valid = "urr.start_time <= now() and urr.valid_time > now() and (urr.end_time = urr.create_time or urr.end_time > now()) and urr.is_delete = 0";
 
     @Select("select * from role where role_id = #{roleId} and is_delete = 0")
     RoleEntity queryByRoleId(RoleEntity roleEntity);

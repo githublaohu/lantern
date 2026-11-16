@@ -3,6 +3,9 @@ package com.lamp.lantern.service.action.login;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import com.lamp.lantern.plugins.core.login.LanternAuthOperate;
+import com.lamp.lantern.plugins.api.service.LanternUserInfoService;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
@@ -10,6 +13,11 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @SpringBootApplication
 @EnableSwagger2
 public class LanternServiceActionLoginApplication {
+
+    @Bean("lanternAuthOperate")
+    public LanternAuthOperate lanternAuthOperate(LanternUserInfoService users) {
+        return new LanternAuthOperate(users::checkUserByUserId);
+    }
 
     public static void main(String[] args) {
         try{

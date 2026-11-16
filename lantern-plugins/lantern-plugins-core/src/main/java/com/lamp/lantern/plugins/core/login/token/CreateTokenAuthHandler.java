@@ -13,6 +13,8 @@ import io.lettuce.core.SetArgs;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Objects;
+import org.springframework.http.HttpHeaders;
+import org.springframework.util.Assert;
 
 public class CreateTokenAuthHandler extends AbstractAuthHandler<TokenAndSessionConfig> {
 
@@ -41,6 +43,28 @@ public class CreateTokenAuthHandler extends AbstractAuthHandler<TokenAndSessionC
     public void doAuthAfter(UserInfo userInfo) {
         TokenConstructData tokenConstructData = new TokenConstructData();
         String token = tokenCreateService.createToken(tokenConstructData);
+        Assert.hasText(token, "Lantern token generator returned an empty token");
+        saveToken(userInfo, token);
+        userInfo.setUiToken(token);
+        LanternContext.getContext().setToken(token);
+        HttpServletResponse response = LanternContext.getContext().getResponse();
+        response.setHeader(HttpHeaders.CACHE_CONTROL, "no-store");
+        if (Objects.equals("cookie", super.config.getDataPosition())) {
+            Cookie cookie = new Cookie(tokenConfig.getTokenName(), token);
+            cookie.setDomain(config.getCookieDomain());
+            cookie.setPath(config.getCookiePath());
+            cookie.setMaxAge(config.getCookieMaxAge());
+            cookie.setSecure(config.isCookieSecure());
+            cookie.setHttpOnly(true);
+            response.addCookie(cookie);
+        } else {
+            response.setHeader(tokenConfig.getTokenName(),
+                    HttpHeaders.AUTHORIZATION.equalsIgnoreCase(tokenConfig.getTokenName()) ? "Bearer " + token : token);
+        }
+    }
+
+    /** Storage hook: the existing handler still owns token generation and response delivery. */
+    protected void saveToken(UserInfo userInfo, String token) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("User-Agent", LanternContext.getContext().getRequest().getHeader("User-Agent"));
         jsonObject.put("UserID", userInfo.getUiId().toString() );
@@ -51,18 +75,6 @@ public class CreateTokenAuthHandler extends AbstractAuthHandler<TokenAndSessionC
         jsonObject.put("Status", "Normal");
         SetArgs setArgs = SetArgs.Builder.ex(config.getTokenExpire());
         connection.sync().set(SystemName + "-" + getHandlerName() + "-" + token, jsonObject.toJSONString(), setArgs);
-        LanternContext.getContext().setToken(token);
-        HttpServletResponse response = LanternContext.getContext().getResponse();
-        if (Objects.equals("cookie", super.config.getDataPosition())) {
-            Cookie cookie = new Cookie(tokenConfig.getTokenName(), token);
-            cookie.setDomain(config.getCookieDomain());
-            cookie.setMaxAge(config.getCookieMaxAge());
-            cookie.setSecure(config.isCookieSecure());
-            cookie.setHttpOnly(true);
-            response.addCookie(cookie);
-        } else {
-            response.addHeader(tokenConfig.getTokenName(), token);
-        }
     }
 }
 /*

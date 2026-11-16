@@ -1,4 +1,7 @@
 # lantern
+
+[Dubbo injvm + 数据库实时 RBAC 接入、数据示例与测试](docs/rbac-local-database.md)
+
 # 要支持 电子的异步
 # 认证，鉴权，两个不同的动作
 # 

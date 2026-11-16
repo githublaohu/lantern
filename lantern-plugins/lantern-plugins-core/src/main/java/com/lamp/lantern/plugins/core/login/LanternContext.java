@@ -37,6 +37,10 @@ public class LanternContext {
         return LOGIN_CONTEXT_LOCAL.get();
     }
 
+    public static void removeContext() {
+        LOGIN_CONTEXT_LOCAL.remove();
+    }
+
     private final Map<String, Object> values = new HashMap<String, Object>();
 
     @Getter

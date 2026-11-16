@@ -1,5 +1,6 @@
 package com.lamp.lantern.plugins.api.config;
 
+import java.util.List;
 import java.util.Set;
 import lombok.Data;
 
@@ -13,6 +14,10 @@ public class AuthenticationFlowConfig {
     private String systemId;
 
     private String systemName;
+
+    private List<String> includePaths;
+
+    private String policyServiceName;
 
     private Set<String> notAuthentication;
 

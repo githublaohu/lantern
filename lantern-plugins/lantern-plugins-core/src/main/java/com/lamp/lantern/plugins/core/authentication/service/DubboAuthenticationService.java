@@ -1,7 +1,6 @@
 package com.lamp.lantern.plugins.core.authentication.service;
 
 import com.lamp.lantern.plugins.api.auth.AuthenticationData;
-import com.lamp.lantern.plugins.api.auth.AuthenticationRpcService;
 import com.lamp.lantern.plugins.api.auth.AuthenticationService;
 import com.lamp.lantern.plugins.api.auth.AuthenticationServiceResult;
 import com.lamp.lantern.plugins.api.auth.config.DubboAuthenticationConfig;
@@ -16,14 +15,14 @@ import java.util.Objects;
  */
 public class DubboAuthenticationService implements AuthenticationService {
 
-    private AuthenticationRpcService authenticationRpcService;
+    private AuthenticationService authenticationRpcService;
 
     public DubboAuthenticationService(DubboAuthenticationConfig config) {
         init(config);
     }
 
     void init(DubboAuthenticationConfig config) {
-        ReferenceConfig<AuthenticationRpcService> referenceConfig = new ReferenceConfig<AuthenticationRpcService>();
+        ReferenceConfig<AuthenticationService> referenceConfig = new ReferenceConfig<AuthenticationService>();
         referenceConfig.setApplication(new ApplicationConfig(config.getApplicationName()));
         if (Objects.nonNull(config.getUrl())) {
             referenceConfig.setUrl(config.getUrl());

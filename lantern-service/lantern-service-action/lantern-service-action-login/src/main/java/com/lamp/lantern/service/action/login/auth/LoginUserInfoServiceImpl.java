@@ -29,15 +29,15 @@ public class LoginUserInfoServiceImpl implements LanternUserInfoService {
 	@Override
 	public UserInfo registerThirdLoginUser(UserInfo userInfo, PlatformUserInfo platformUserInfo) {
 		userInfo = userInfoService.registerThirdLoginUser((UserInfoEntity) userInfo);
-		platformUserInfo.setPuiUserId(userInfo.getUiId());
+		platformUserInfo.setUserId(userInfo.getUiId());
 
 		//没找到转换失败的原因
 		PlatformUserInfoEntity platformUserInfoEntity = new PlatformUserInfoEntity();
-		platformUserInfoEntity.setPuiAuthchannel(platformUserInfo.getPuiAuthchannel());
+		platformUserInfoEntity.setPuiAuthChannel(platformUserInfo.getPuiAuthChannel());
 		platformUserInfoEntity.setPuiType(platformUserInfo.getPuiType());
 		platformUserInfoEntity.setPuiUnionId(platformUserInfo.getPuiUnionId());
 		platformUserInfoEntity.setPuiOpenId(platformUserInfo.getPuiOpenId());
-		platformUserInfoEntity.setPuiUserId(userInfo.getUiId());
+		platformUserInfoEntity.setUserId(userInfo.getUiId());
 		platformUserInfoService.registerPlatformUserInfo(platformUserInfoEntity);
 		return userInfo;
 	}
@@ -50,8 +50,8 @@ public class LoginUserInfoServiceImpl implements LanternUserInfoService {
 	@Override
 	public UserInfo checkUserByUserIdAndTriId(UserInfo userInfo, PlatformUserInfo platformUserInfo) {
 		PlatformUserInfoEntity platformUserInfoEntity = new PlatformUserInfoEntity();
-		platformUserInfoEntity.setPuiUserId(userInfo.getUiId());
-platformUserInfoEntity.setPuiOpenId(platformUserInfo.getPuiOpenId());
+		platformUserInfoEntity.setUserId(userInfo.getUiId());
+		platformUserInfoEntity.setPuiOpenId(platformUserInfo.getPuiOpenId());
 
 		return platformUserInfoService.checkUserByUserIdAndTriId(platformUserInfoEntity);
 	}
@@ -59,7 +59,7 @@ platformUserInfoEntity.setPuiOpenId(platformUserInfo.getPuiOpenId());
 	@Override
 	public UserInfo checkUserByTriIdAndAuthchannel(PlatformUserInfo platformUserInfo) {
 		PlatformUserInfoEntity platformUserInfoEntity = new PlatformUserInfoEntity();
-		platformUserInfoEntity.setPuiAuthchannel(platformUserInfo.getPuiAuthchannel());
+		platformUserInfoEntity.setPuiAuthChannel(platformUserInfo.getPuiAuthChannel());
 		platformUserInfoEntity.setPuiOpenId(platformUserInfo.getPuiOpenId());
 		return platformUserInfoService.checkUserByTriIdAndAuthchannel(platformUserInfoEntity);
 	}

@@ -13,6 +13,8 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.core.MethodParameter;
+import org.springframework.util.Assert;
+import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -59,7 +61,6 @@ public class LanternRequestResponseBodyMethodProcessor implements HandlerMethodA
         if (Objects.isNull(mappingList)) {
             //如果该类在classMap中不存在，那么就创建一个新的mappingList
             mappingList = new ArrayList<>();
-            classMap.put(value.getClass(), mappingList);
             Class<?> clazz = value.getClass();
             //对于该类的所有父类进行遍历
             while (!Objects.equals(clazz, Object.class)) {
@@ -77,6 +78,9 @@ public class LanternRequestResponseBodyMethodProcessor implements HandlerMethodA
                     UserInjection userInjection = field.getAnnotation(UserInjection.class);
                     OrganizationInjection organizationInjection = field.getAnnotation(OrganizationInjection.class);
                     Injection injection = field.getAnnotation(Injection.class);
+                    if (userInjection == null && organizationInjection == null && injection == null) {
+                        continue;
+                    }
                     MapperInfo mapperInfo = new MapperInfo();
                     String valueInjection = null;
                     if (Objects.nonNull(userInjection)) {
@@ -90,7 +94,7 @@ public class LanternRequestResponseBodyMethodProcessor implements HandlerMethodA
                         valueInjection = injection.fieldName();
                     }
                     if (Objects.isNull(valueInjection) || Objects.equals(valueInjection, "")) {
-                        throw new RuntimeException("");
+                        throw new IllegalArgumentException("Lantern injection field name is required: " + field.getName());
                     }
                     field.setAccessible(true);
                     mapperInfo.targetField = field;
@@ -98,6 +102,7 @@ public class LanternRequestResponseBodyMethodProcessor implements HandlerMethodA
                     mappingList.add(mapperInfo);
                 }
             }
+            classMap.put(value.getClass(), mappingList);
         }
         if (mappingList.isEmpty()) {
             return object;
@@ -109,12 +114,17 @@ public class LanternRequestResponseBodyMethodProcessor implements HandlerMethodA
             } else {
                 lanternObject = LanternContext.getContext().getValue(mapperInfo.lanternObject);
             }
-            // 得到数据
-            if (Objects.isNull(mapperInfo.lanternObjectField)) {
-                mapperInfo.lanternObjectField = lanternObject.getClass().getDeclaredField(mapperInfo.lanternObjectFieldName);
-                mapperInfo.lanternObjectField.setAccessible(true);
+            // Public and unprotected requests have no identity: never retain a client-supplied user id.
+            if (lanternObject == null) {
+                Assert.state(!mapperInfo.targetField.getType().isPrimitive(),
+                        "Lantern anonymous injection requires a nullable target field");
+                mapperInfo.targetField.set(value, null);
+                continue;
             }
-            Object valueInjection = mapperInfo.lanternObjectField.get(lanternObject);
+            Field sourceField = ReflectionUtils.findField(lanternObject.getClass(), mapperInfo.lanternObjectFieldName);
+            Assert.notNull(sourceField, "Unknown Lantern injection field: " + mapperInfo.lanternObjectFieldName);
+            ReflectionUtils.makeAccessible(sourceField);
+            Object valueInjection = sourceField.get(lanternObject);
             mapperInfo.targetField.set(value, valueInjection);
         }
         return object;
@@ -124,14 +134,10 @@ public class LanternRequestResponseBodyMethodProcessor implements HandlerMethodA
 
         private String lanternObject;
 
-        private Field lanternObjectField;
-
         /**
          * 目标对象在数据库表中的字段名
          */
         private String lanternObjectFieldName;
-
-        private Class<?> targetClass;
 
         private Field targetField;
 

@@ -1,0 +1,6 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.lamp.lantern.service.core.provider.bootstrap.LanternDatabaseDefaultsAutoConfiguration,\
+com.lamp.lantern.service.core.provider.bootstrap.LanternDatabaseAutoConfiguration
+
+org.springframework.boot.autoconfigure.AutoConfigurationImportFilter=\
+com.lamp.lantern.service.core.provider.bootstrap.LanternRedisAutoConfigurationFilter

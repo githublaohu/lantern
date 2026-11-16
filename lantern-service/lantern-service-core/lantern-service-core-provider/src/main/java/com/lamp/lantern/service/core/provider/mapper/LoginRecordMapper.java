@@ -12,6 +12,21 @@ import java.util.List;
 @Mapper
 public interface LoginRecordMapper {
 
+    @Insert({
+        "INSERT INTO user_login_record (system_id, ui_id, ul_session_id, ul_login_status, ul_quit_time)",
+        "SELECT system_id, ui_id, #{token}, 'SUCCESS', TIMESTAMPADD(SECOND, #{expireSeconds}, NOW())",
+        "FROM user_info WHERE system_id = #{systemId} AND ui_id = #{userId}",
+        "AND ui_allow_login = 'ACTIVE' AND is_delete = 0"
+    })
+    int saveSession(@Param("systemId") Long systemId, @Param("userId") Long userId,
+            @Param("token") String token, @Param("expireSeconds") int expireSeconds);
+
+    @Update({
+        "UPDATE user_login_record SET ul_quit_time = NOW(), ul_quit_way = 'USER'",
+        "WHERE system_id = #{systemId} AND BINARY ul_session_id = #{token} AND ul_quit_time > NOW()"
+    })
+    int revokeSession(@Param("systemId") Long systemId, @Param("token") String token);
+
     @Options(useGeneratedKeys = true, keyProperty = "ulId", keyColumn = "ul_id")
     @Insert({
             "<script>",

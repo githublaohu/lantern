@@ -4,20 +4,30 @@ import com.lamp.lantern.plugins.api.config.AuthenticationConfig;
 import com.lamp.lantern.plugins.core.authentication.AuthenticationManager;
 import com.lamp.lantern.plugins.core.environment.SpringEnvironmentContext;
 import com.lamp.lantern.plugins.core.login.HandlerService;
+import com.lamp.lantern.plugins.core.login.HandlerExecute;
+import com.lamp.lantern.plugins.springmvc.support.LanternDatabaseLoginController;
 import com.lamp.lantern.plugins.springmvc.support.AuthenticationInterceptor;
 import com.lamp.lantern.plugins.springmvc.support.LanternAuthenticationUserMethodArgumentResolver;
 import com.lamp.lantern.plugins.springmvc.support.LanternSpringMVCBehavior;
+import java.util.List;
+import java.util.function.Consumer;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.util.Assert;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistration;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * 1.
@@ -42,41 +52,80 @@ public class LanternAuthenticationSupportConfigure implements ApplicationContext
         return new AuthenticationManager(authenticationConfig, environmentContext);
     }
 
-    /**
-     * 登录校验拦截器
-     */
-    @Bean
-    @ConditionalOnProperty(prefix = "server", name = { "port" })
-    @ConditionalOnClass(name = "org.springframework.boot.autoconfigure.web.ServerProperties")
-    public AuthenticationInterceptor loginRequiredInterceptor(AuthenticationManager authenticationManager) {
-        //找SpringVersion
-//        Class.forName("")
-        return new AuthenticationInterceptor(authenticationManager);
+    @Configuration
+    @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
+    @ConditionalOnProperty(name = "lantern.authenticationConfig.enable", havingValue = "true")
+    static class AuthenticationMvcConfiguration {
+
+        @Bean
+        public AuthenticationInterceptor loginRequiredInterceptor(AuthenticationManager authenticationManager) {
+            return new AuthenticationInterceptor(authenticationManager);
+        }
+
+        @Bean
+        public LanternAuthenticationUserMethodArgumentResolver lanternAuthenticationUserMethodArgumentResolver() {
+            return new LanternAuthenticationUserMethodArgumentResolver();
+        }
+
+        @Bean
+        public LanternSpringMVCBehavior lanternSpringMvcBehavior() {
+            return new LanternSpringMVCBehavior();
+        }
+
+        @Bean
+        public WebMvcConfigurer lanternAuthenticationConfigurer(LanternProperties properties, AuthenticationInterceptor interceptor,
+                LanternAuthenticationUserMethodArgumentResolver resolver, ApplicationContext context) {
+            List<String> paths = properties.getAuthenticationConfig().getAuthenticationFlowConfig().getIncludePaths();
+            Assert.notEmpty(paths, "Lantern includePaths must explicitly list protected paths");
+            Assert.isTrue(paths.stream().allMatch(path -> path != null && path.startsWith("/")),
+                    "Lantern includePaths must start with /");
+            return new WebMvcConfigurer() {
+                @Override
+                public void addInterceptors(InterceptorRegistry registry) {
+                    InterceptorRegistration registration =
+                            registry.addInterceptor(interceptor).addPathPatterns(paths.toArray(new String[0]))
+                                    .order(Ordered.HIGHEST_PRECEDENCE);
+                    if (context.containsBean("lanternDatabaseLoginController")) {
+                        registration.excludePathPatterns("/account/first/accountLogin", "/account/logout");
+                    }
+                }
+
+                @Override
+                public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+                    resolvers.add(resolver);
+                }
+            };
+        }
     }
 
-    @Bean
-    @ConditionalOnProperty(prefix = "server", name = { "port" })
-    @ConditionalOnClass(name = "org.springframework.boot.autoconfigure.web.ServerProperties")
-    public LanternAuthenticationUserMethodArgumentResolver lanternAuthenticationUserMethodArgumentResolver() {
-        return new LanternAuthenticationUserMethodArgumentResolver();
+    @Configuration
+    @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
+    @ConditionalOnProperty(name = "lantern.loginConfig.enable", havingValue = "true")
+    static class DatabaseLoginConfiguration {
+
+        @Bean("lanternDatabaseLoginController")
+        @ConditionalOnProperty(name = "lantern.loginConfig.sessionStore", havingValue = "database")
+        public LanternDatabaseLoginController databaseLoginController(
+                @Qualifier("lanternDatabaseLogin") HandlerExecute login,
+                @Qualifier("lanternDatabaseLogout") Consumer<String> logout, LanternProperties properties) {
+            return new LanternDatabaseLoginController(login, logout,
+                    properties.getAuthenticationConfig().getAuthenticationFlowConfig());
+        }
     }
 
-    @Bean
-    @ConditionalOnProperty(prefix = "server", name = { "port" })
-    @ConditionalOnClass(name = "org.springframework.boot.autoconfigure.web.ServerProperties")
-    public LanternSpringMVCBehavior lanternSpringMvcBehavior() {
-        return new LanternSpringMVCBehavior();
-    }
-
-    @Bean
+    @Configuration
     @ConditionalOnProperty(name = "lantern.loginConfig.enable",havingValue = "true")
-    public HandlerService createHandlerService() throws Exception {
-        HandlerService handlerService = new HandlerService();
-        handlerService.setEnvironmentContext(new SpringEnvironmentContext(applicationContext));
-        handlerService.createConnection(lanternProperties.getHandlerRedisMap());
-        handlerService.createHandlerExecute(lanternProperties.getLoginConfig(),
-                new SpringEnvironmentContext(applicationContext));
-        return handlerService;
+    static class RedisLoginConfiguration {
+
+        @Bean
+        @ConditionalOnProperty(name = "lantern.loginConfig.sessionStore", havingValue = "redis", matchIfMissing = true)
+        public HandlerService createHandlerService(LanternProperties properties, ApplicationContext context) throws Exception {
+            HandlerService handlerService = new HandlerService();
+            handlerService.setEnvironmentContext(new SpringEnvironmentContext(context));
+            handlerService.createConnection(properties.getHandlerRedisMap());
+            handlerService.createHandlerExecute(properties.getLoginConfig(), new SpringEnvironmentContext(context));
+            return handlerService;
+        }
     }
 
 

@@ -18,7 +18,9 @@ public class LanternServiceCoreProviderApplication {
 
     public static void main(String[] args) {
         try {
-            SpringApplication.run(LanternServiceCoreProviderApplication.class, args);
+            SpringApplication application = new SpringApplication(LanternServiceCoreProviderApplication.class);
+            application.setAdditionalProfiles("lantern-provider");
+            application.run(args);
             log.info("{} 启动成功",LanternServiceCoreProviderApplication.class.getSimpleName());
         } catch (Exception e){
             log.error(e.getMessage(), e);

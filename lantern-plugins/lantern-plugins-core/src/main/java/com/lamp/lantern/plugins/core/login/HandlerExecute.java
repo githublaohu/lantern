@@ -233,18 +233,18 @@ public class HandlerExecute {
                 }
 
                 else {
-                    log.warn(" auth fail message {}", object);
-                    //触发NullPointer异常，进入登录失败逻辑
-                    resultObject = ResultObject.getResultObjectMessgae(3000, object.getErrorMessage());
                     this.error();
+                    return ResultObject.getResultObjectMessgae(3000, "用户或者密码不正确");
                 }
                 this.authAfter();
-                resultObject = ResultObject.getResultObject(200, this.userInfo);
+                if (resultObject == null) {
+                    resultObject = ResultObject.getResultObject(200, this.userInfo);
+                }
             } catch (Exception e) {
-                log.error(e.getMessage(), e);
-                resultObject = ResultObject.getResultObjectMessgae(3000, e.getMessage());
+                log.warn("Lantern login processing failed: {}", e.getClass().getSimpleName());
+                resultObject = ResultObject.getResultObjectMessgae(503, "登录服务暂时不可用");
             } finally {
-                LanternContext.getContext().clear();
+                LanternContext.removeContext();
             }
             return (ResultObject<String>) resultObject;
         }
@@ -253,7 +253,7 @@ public class HandlerExecute {
             for (AuthHandler authHandler : handlerList) {
                 resultObject = authHandler.authBefore(userInfo);
                 if (Objects.nonNull(resultObject)) {
-                    log.warn("authBefore fail resultObject is {} , userInfo is {}", resultObject, userInfo);
+                    log.debug("Lantern login precondition rejected");
                     return;
                 }
             }
@@ -263,7 +263,7 @@ public class HandlerExecute {
             for (AuthHandler authHandler : handlerList) {
                 resultObject = authHandler.authAfter(userInfo);
                 if (Objects.nonNull(resultObject)) {
-                    log.warn("authBefore fail resultObject is {} , userInfo is {}", resultObject, userInfo);
+                    log.debug("Lantern login postcondition rejected");
                     return;
                 }
             }
@@ -273,7 +273,7 @@ public class HandlerExecute {
             for (AuthHandler authHandler : handlerList) {
                 resultObject = authHandler.error(userInfo);
                 if (Objects.nonNull(resultObject)) {
-                    log.warn("authBefore fail resultObject is {} , userInfo is {}", resultObject, userInfo);
+                    log.debug("Lantern login failure handler completed");
                     return;
                 }
             }

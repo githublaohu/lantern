@@ -1,3 +1,4 @@
+# Standalone provider settings; embedded hosts use their own application configuration.
 spring:
   datasource:
     name: vaast

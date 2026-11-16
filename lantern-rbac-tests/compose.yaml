@@ -1,0 +1,16 @@
+name: lantern-rbac-tests
+services:
+  mysql:
+    image: mysql:8.0.36
+    environment:
+      MYSQL_ROOT_PASSWORD: lantern_test_root
+      MYSQL_DATABASE: lantern_rbac
+      MYSQL_USER: lantern
+      MYSQL_PASSWORD: lantern
+    ports:
+      - "127.0.0.1:13317:3306"
+    healthcheck:
+      test: ["CMD", "mysql", "-h", "127.0.0.1", "-ulantern", "-plantern", "-D", "lantern_rbac", "-e", "SELECT 1"]
+      interval: 2s
+      timeout: 3s
+      retries: 45

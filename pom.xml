@@ -1,4 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">e
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>cn.lampup</groupId>
@@ -8,6 +8,7 @@
     <reversion>0.0.1-SNAPSHOT</reversion>
     <maven.compiler.source>8</maven.compiler.source>
     <maven.compiler.target>8</maven.compiler.target>
+    <dubbo.version>3.2.16</dubbo.version>
   </properties>
   <packaging>pom</packaging>
   <modules>
@@ -16,4 +17,25 @@
     <module>lantern-example</module>
     <module>lantern-example/lantern-spring-mvc-example</module>
   </modules>
+  <profiles>
+    <profile>
+      <id>lantern-rbac-tests</id>
+      <modules>
+        <module>lantern-rbac-tests</module>
+      </modules>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.13.0</version>
+            <configuration>
+              <!-- Run the dedicated RBAC tests without compiling unrelated legacy live tests. -->
+              <testIncludes><testInclude>**/rbac/**/*.java</testInclude></testIncludes>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>

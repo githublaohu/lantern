@@ -17,6 +17,9 @@ import lombok.Data;
 @Data
 public class AuthenticationConfig {
 
+    /** Allow the host's Redis auto-configuration in local database mode. */
+    private boolean redisAutoConfigurationEnabled;
+
     private AuthenticationFlowConfig authenticationFlowConfig = new AuthenticationFlowConfig();
 
     private AuthenticationType authenticationType;
