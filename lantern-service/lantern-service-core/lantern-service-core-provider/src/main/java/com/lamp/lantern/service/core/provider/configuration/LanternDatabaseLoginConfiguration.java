@@ -4,6 +4,12 @@ import com.lamp.lantern.plugins.api.config.AuthenticationFlowConfig;
 import com.lamp.lantern.plugins.api.config.LoginType;
 import com.lamp.lantern.plugins.api.mode.UserInfo;
 import com.lamp.lantern.plugins.core.login.HandlerExecute;
+import com.lamp.lantern.plugins.core.login.EnterpriseWechatLogin;
+import com.lamp.lantern.plugins.core.login.EnterpriseWechatStateStore;
+import com.lamp.lantern.plugins.api.service.AuthService;
+import com.lamp.lantern.plugins.auth.platform.EnterpriseWechatConfig;
+import com.lamp.lantern.plugins.auth.platform.EnterpriseWechatClient;
+import com.lamp.lantern.plugins.auth.platform.EnterpriseWechatPlatformAuthService;
 import com.lamp.lantern.plugins.core.login.LanternAuthOperate;
 import com.lamp.lantern.plugins.core.login.LanternContext;
 import com.lamp.lantern.plugins.core.login.config.LoginConfig;
@@ -12,7 +18,11 @@ import com.lamp.lantern.plugins.core.login.token.TokenAndSessionConfig;
 import com.lamp.lantern.plugins.core.servlet.SpringMVCServlet;
 import com.lamp.lantern.service.core.provider.mapper.LoginRecordMapper;
 import com.lamp.lantern.service.core.provider.mapper.UserInfoMapper;
+import com.lamp.lantern.service.core.provider.mapper.PlatformUserInfoMapper;
+import com.lamp.lantern.service.core.provider.mapper.EnterpriseWechatStateMapper;
 import java.util.Collections;
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.List;
 import java.util.function.Consumer;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -23,6 +33,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
@@ -33,7 +46,8 @@ import org.springframework.transaction.support.TransactionTemplate;
 public class LanternDatabaseLoginConfiguration {
 
     @Bean("lanternDatabaseLogin")
-    public HandlerExecute databaseLogin(UserInfoMapper users, LoginRecordMapper sessions, Environment environment) {
+    public HandlerExecute databaseLogin(UserInfoMapper users, LoginRecordMapper sessions, Environment environment,
+            ObjectProvider<EnterpriseWechatPlatformAuthService> enterpriseWechat) {
         Binder binder = Binder.get(environment);
         AuthenticationFlowConfig flow = binder.bind("lantern.authentication-config.authentication-flow-config",
                 AuthenticationFlowConfig.class).get();
@@ -71,9 +85,71 @@ public class LanternDatabaseLoginConfiguration {
         config.setSystemName(flow.getSystemId());
         login.setLoginConfig(config);
         login.setServlet(new SpringMVCServlet());
-        login.setAuthServiceMap(Collections.singletonMap(LoginType.FIRST, Collections.singletonMap("Lantern", account)));
+        Map<LoginType, Map<String, AuthService>> services = new EnumMap<>(LoginType.class);
+        services.put(LoginType.FIRST, Collections.singletonMap("Lantern", account));
+        EnterpriseWechatPlatformAuthService wechat = enterpriseWechat.getIfAvailable();
+        if (wechat != null) {
+            services.put(LoginType.PLATFORM, Collections.singletonMap(EnterpriseWechatConfig.CHANNEL, wechat));
+        }
+        login.setAuthServiceMap(services);
         login.setHandlerList(Collections.singletonList(tokenHandler));
         return login;
+    }
+
+    @Configuration
+    @ConditionalOnProperty(name = "lantern.login-config.enterprise-wechat.enabled", havingValue = "true")
+    public static class EnterpriseWechatConfiguration {
+
+        @Bean
+        public EnterpriseWechatConfig enterpriseWechatConfig(Environment environment) {
+            EnterpriseWechatConfig config = Binder.get(environment)
+                    .bind("lantern.login-config.enterprise-wechat", EnterpriseWechatConfig.class).get();
+            config.validate();
+            return config;
+        }
+
+        @Bean
+        @ConditionalOnMissingBean(EnterpriseWechatClient.class)
+        public EnterpriseWechatClient enterpriseWechatClient(EnterpriseWechatConfig config) {
+            return new EnterpriseWechatClient(config);
+        }
+
+        @Bean
+        public EnterpriseWechatPlatformAuthService enterpriseWechatAuthService(EnterpriseWechatClient client,
+                EnterpriseWechatConfig config, PlatformUserInfoMapper bindings, Environment environment) {
+            Long systemId = systemId(environment);
+            return new EnterpriseWechatPlatformAuthService(client, member -> {
+                List<UserInfo> matches = bindings.findEnterpriseWechatUsers(systemId,
+                        config.getCorpId(), config.getAgentId(), member);
+                return matches.size() == 1 ? matches.get(0) : null;
+            });
+        }
+
+        @Bean
+        public EnterpriseWechatLogin enterpriseWechatLogin(EnterpriseWechatConfig config, EnterpriseWechatClient client,
+                EnterpriseWechatStateMapper states, @Qualifier("lanternDatabaseLogin") HandlerExecute login,
+                Environment environment) {
+            Long systemId = systemId(environment);
+            return new EnterpriseWechatLogin(config, client, new EnterpriseWechatStateStore() {
+                @Override
+                public void save(String stateHash, String browserHash, int ttlSeconds) {
+                    states.removeExpired(systemId);
+                    Assert.state(states.save(systemId, stateHash, browserHash, ttlSeconds) == 1,
+                            "Enterprise WeChat state could not be saved");
+                }
+
+                @Override
+                public boolean consume(String stateHash, String browserHash) {
+                    return states.consume(systemId, stateHash, browserHash) == 1;
+                }
+            }, login);
+        }
+
+        private static Long systemId(Environment environment) {
+            return Long.valueOf(Binder.get(environment)
+                    .bind("lantern.authentication-config.authentication-flow-config", AuthenticationFlowConfig.class)
+                    .get().getSystemId());
+        }
     }
 
     @Bean("lanternDatabaseLogout")

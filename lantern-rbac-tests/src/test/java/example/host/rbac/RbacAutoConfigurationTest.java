@@ -7,6 +7,8 @@ import com.lamp.lantern.plugins.core.authentication.AuthenticationManager;
 import com.lamp.lantern.plugins.core.authentication.service.CacheAuthenticationService;
 import com.lamp.lantern.plugins.core.authentication.service.LocalAuthenticationService;
 import com.lamp.lantern.plugins.core.login.HandlerService;
+import com.lamp.lantern.plugins.auth.platform.EnterpriseWechatClient;
+import com.lamp.lantern.plugins.springmvc.support.LanternEnterpriseWechatController;
 import com.lamp.lantern.plugins.core.login.LanternContext;
 import com.lamp.lantern.plugins.springmvc.autoconfigure.LanternProperties;
 import com.lamp.lantern.plugins.springmvc.support.AuthenticationInterceptor;
@@ -51,6 +53,40 @@ class RbacAutoConfigurationTest {
         return host().withPropertyValues("lantern.authenticationConfig.enable=true",
                 "lantern.authenticationConfig.authenticationFlowConfig.systemId=915",
                 "lantern.authenticationConfig.authenticationFlowConfig.includePaths[0]=" + HostProbeController.CLUSTER_ROUTE);
+    }
+
+    @Test
+    void enterpriseWechatIsOptInAndUsesConfigurationOnly() {
+        local().run(context -> assertThat(context).hasNotFailed()
+                .doesNotHaveBean(EnterpriseWechatClient.class).doesNotHaveBean(LanternEnterpriseWechatController.class));
+        local().withUserConfiguration(EventMeshScan.class)
+                .withPropertyValues("lantern.loginConfig.enterpriseWechat.enabled=true",
+                "lantern.loginConfig.enterpriseWechat.corpId=ww-test-corp",
+                "lantern.loginConfig.enterpriseWechat.agentId=1000002",
+                "lantern.loginConfig.enterpriseWechat.secret=test-secret-only",
+                "lantern.loginConfig.enterpriseWechat.redirectUri=https://dashboard.example/account/enterprise-wechat/callback")
+                .run(context -> assertThat(context).hasNotFailed().hasSingleBean(EnterpriseWechatClient.class)
+                        .hasSingleBean(LanternEnterpriseWechatController.class).doesNotHaveBean(HandlerService.class)
+                        .doesNotHaveBean(RedisConnectionFactory.class));
+    }
+
+    @Test
+    void enterpriseWechatAlsoBindsStandardKebabCaseProperties() {
+        local().withPropertyValues("lantern.login-config.enterprise-wechat.enabled=true",
+                "lantern.login-config.enterprise-wechat.corp-id=ww-test-corp",
+                "lantern.login-config.enterprise-wechat.agent-id=1000002",
+                "lantern.login-config.enterprise-wechat.secret=test-secret-only",
+                "lantern.login-config.enterprise-wechat.redirect-uri=https://dashboard.example/account/enterprise-wechat/callback")
+                .run(context -> assertThat(context).hasNotFailed().hasSingleBean(EnterpriseWechatClient.class)
+                        .hasSingleBean(LanternEnterpriseWechatController.class));
+    }
+
+    @Test
+    void enabledEnterpriseWechatWithMissingCredentialsFailsAtStartup() {
+        local().withPropertyValues("lantern.loginConfig.enterpriseWechat.enabled=true").run(context -> {
+            assertThat(context).hasFailed();
+            assertThat(context.getStartupFailure()).hasStackTraceContaining("corpId is required");
+        });
     }
 
     @Test

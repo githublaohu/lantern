@@ -16,18 +16,40 @@ import com.lamp.lantern.plugins.api.config.LoginType;
 import com.lamp.lantern.plugins.api.mode.AuthResultObject;
 import com.lamp.lantern.plugins.api.mode.UserInfo;
 import com.lamp.lantern.plugins.api.service.AbstractAuthService;
+import java.util.function.Function;
 
-@AuthTypeChannel(loginType = LoginType.PLATFORM,authChannel = "Wechat")
+@AuthTypeChannel(loginType = LoginType.PLATFORM, authChannel = EnterpriseWechatConfig.CHANNEL)
 public class EnterpriseWechatPlatformAuthService extends AbstractAuthService{
 
-	@Override
-	public AuthResultObject auth(UserInfo userInfo) {
-		return null;
-	}
+    private final EnterpriseWechatClient client;
+    private final Function<String, UserInfo> memberLookup;
 
-	@Override
-	public AuthResultObject getUserInfo(UserInfo userInfo) {
-		return null;
-	}
+    public EnterpriseWechatPlatformAuthService(EnterpriseWechatClient client, Function<String, UserInfo> memberLookup) {
+        this.client = java.util.Objects.requireNonNull(client, "Enterprise WeChat client is required");
+        this.memberLookup = java.util.Objects.requireNonNull(memberLookup, "Enterprise WeChat member lookup is required");
+    }
+
+    @Override
+    public AuthResultObject auth(UserInfo input) {
+        AuthResultObject result = new AuthResultObject();
+        // The callback constructs this input; uiToken temporarily carries the single-use OAuth code.
+        String member = input == null ? null : client.memberId(input.getUiToken());
+        UserInfo user = member == null ? null : memberLookup.apply(member);
+        if (user == null || user.getUiId() == null) {
+            result.setErrorMessage("企业微信成员未绑定有效用户");
+            return result;
+        }
+        user.setUiPassword(null);
+        user.setUiSalt(null);
+        user.setUiSaltPassword(null);
+        user.setUiToken(null);
+        result.setUserInfo(user);
+        return result;
+    }
+
+    @Override
+    public AuthResultObject getUserInfo(UserInfo input) {
+        return auth(input);
+    }
 
 }

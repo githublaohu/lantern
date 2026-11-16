@@ -1,4 +1,14 @@
 -- Lantern tables are created in the host data source's current database.
+CREATE TABLE IF NOT EXISTS `lantern_oauth_state`
+(
+    system_id bigint not null,
+    state_hash char(64) CHARACTER SET ascii COLLATE ascii_bin not null,
+    browser_hash char(64) CHARACTER SET ascii COLLATE ascii_bin not null,
+    expires_at datetime not null,
+    primary key (system_id, state_hash),
+    key idx_lantern_oauth_expiry (system_id, expires_at)
+);
+
 CREATE TABLE IF NOT EXISTS `platform_user_info`
 (
     pui_id             bigint auto_increment

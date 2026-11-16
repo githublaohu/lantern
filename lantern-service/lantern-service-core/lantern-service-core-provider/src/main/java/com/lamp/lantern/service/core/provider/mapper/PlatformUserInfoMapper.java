@@ -8,10 +8,24 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Param;
+import java.util.List;
 
 
 @Mapper
 public interface PlatformUserInfoMapper {
+    /** Resolve only explicitly bound members, isolated by system, corporation and application. */
+    @Select("SELECT u.ui_id AS uiId,u.system_id AS systemId,u.ui_name AS uiName,u.ui_nickname AS uiNickname"
+            + " FROM platform_user_info p JOIN user_info u ON u.ui_id=p.user_id AND u.system_id=p.system_id"
+            + " WHERE p.system_id=#{systemId} AND BINARY p.corporation_id=BINARY #{corpId}"
+            + " AND BINARY p.app_id=BINARY #{agentId} AND BINARY p.pui_open_id=BINARY #{memberId}"
+            + " AND p.pui_type='PLATFORM' AND BINARY p.pui_auth_channel=BINARY 'EnterpriseWechat'"
+            + " AND p.pui_status=0 AND p.is_delete=0 AND u.is_delete=0"
+            + " AND u.ui_allow_login='ACTIVE' LIMIT 2")
+    @Options(useCache = false, flushCache = Options.FlushCachePolicy.TRUE)
+    List<UserInfo> findEnterpriseWechatUsers(@Param("systemId") Long systemId, @Param("corpId") String corpId,
+            @Param("agentId") String agentId, @Param("memberId") String memberId);
+
     @Options(useGeneratedKeys = true, keyProperty = "puiId", keyColumn = "pui_id")
     @Insert({
             "<script>",

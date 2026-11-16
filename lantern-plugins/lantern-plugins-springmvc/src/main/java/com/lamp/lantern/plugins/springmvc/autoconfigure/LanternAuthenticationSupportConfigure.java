@@ -4,14 +4,11 @@ import com.lamp.lantern.plugins.api.config.AuthenticationConfig;
 import com.lamp.lantern.plugins.core.authentication.AuthenticationManager;
 import com.lamp.lantern.plugins.core.environment.SpringEnvironmentContext;
 import com.lamp.lantern.plugins.core.login.HandlerService;
-import com.lamp.lantern.plugins.core.login.HandlerExecute;
-import com.lamp.lantern.plugins.springmvc.support.LanternDatabaseLoginController;
+import com.lamp.lantern.plugins.auth.platform.EnterpriseWechatConfig;
 import com.lamp.lantern.plugins.springmvc.support.AuthenticationInterceptor;
 import com.lamp.lantern.plugins.springmvc.support.LanternAuthenticationUserMethodArgumentResolver;
 import com.lamp.lantern.plugins.springmvc.support.LanternSpringMVCBehavior;
 import java.util.List;
-import java.util.function.Consumer;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,6 +85,10 @@ public class LanternAuthenticationSupportConfigure implements ApplicationContext
                     if (context.containsBean("lanternDatabaseLoginController")) {
                         registration.excludePathPatterns("/account/first/accountLogin", "/account/logout");
                     }
+                    if (context.containsBean("lanternEnterpriseWechatController")) {
+                        registration.excludePathPatterns(EnterpriseWechatConfig.AUTHORIZE_PATH,
+                                EnterpriseWechatConfig.CALLBACK_PATH);
+                    }
                 }
 
                 @Override
@@ -95,21 +96,6 @@ public class LanternAuthenticationSupportConfigure implements ApplicationContext
                     resolvers.add(resolver);
                 }
             };
-        }
-    }
-
-    @Configuration
-    @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
-    @ConditionalOnProperty(name = "lantern.loginConfig.enable", havingValue = "true")
-    static class DatabaseLoginConfiguration {
-
-        @Bean("lanternDatabaseLoginController")
-        @ConditionalOnProperty(name = "lantern.loginConfig.sessionStore", havingValue = "database")
-        public LanternDatabaseLoginController databaseLoginController(
-                @Qualifier("lanternDatabaseLogin") HandlerExecute login,
-                @Qualifier("lanternDatabaseLogout") Consumer<String> logout, LanternProperties properties) {
-            return new LanternDatabaseLoginController(login, logout,
-                    properties.getAuthenticationConfig().getAuthenticationFlowConfig());
         }
     }
 

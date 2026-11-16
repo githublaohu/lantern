@@ -7,6 +7,9 @@ import com.lamp.lantern.plugins.core.authentication.AuthenticationManager;
 import com.lamp.lantern.plugins.core.authentication.service.CacheAuthenticationService;
 import com.lamp.lantern.plugins.core.login.HandlerService;
 import com.lamp.lantern.plugins.core.login.LanternContext;
+import com.lamp.lantern.plugins.auth.platform.EnterpriseWechatClient;
+import com.lamp.lantern.plugins.auth.platform.EnterpriseWechatConfig;
+import com.alibaba.fastjson.JSONObject;
 import example.host.HostProbeController;
 import example.host.RbacHost;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,8 +23,12 @@ import java.util.concurrent.Future;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+import javax.servlet.http.Cookie;
 import javax.sql.DataSource;
 import org.apache.dubbo.config.spring.reference.ReferenceBeanManager;
 import org.apache.dubbo.rpc.cluster.ClusterInvoker;
@@ -36,6 +43,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.jdbc.init.DataSourceScriptDatabaseInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -66,10 +75,12 @@ class RbacDatabaseLiveTest {
     private String outsiderToken;
     private final List<Long> extraUsers = new ArrayList<>();
     private final List<Long> extraResources = new ArrayList<>();
+    private final List<String> oauthStates = new ArrayList<>();
+    private WechatClient wechat;
 
     @BeforeAll
     void startHostWithExistingEventMeshYaml() {
-        SpringApplication application = new SpringApplication(RbacHost.class);
+        SpringApplication application = new SpringApplication(RbacHost.class, WechatTestConfiguration.class);
         context = application.run("--spring.config.name=application-eventmesh-contract", "--server.port=0",
                 "--spring.main.banner-mode=off", "--spring.application.name=lantern-mysql-contract-test",
                 "--test.datasource.url=" + System.getProperty("test.mysql.url",
@@ -77,9 +88,16 @@ class RbacDatabaseLiveTest {
                 "--test.datasource.username=" + System.getProperty("test.mysql.username", "lantern"),
                 "--test.datasource.password=" + System.getProperty("test.mysql.password", "lantern"),
                 "--lantern.authenticationConfig.authenticationFlowConfig.includePaths[0]=" + HostProbeController.CLUSTER_ROUTE,
-                "--lantern.authenticationConfig.authenticationFlowConfig.includePaths[1]=/rbac/**");
+                "--lantern.authenticationConfig.authenticationFlowConfig.includePaths[1]=/rbac/**",
+                "--lantern.authenticationConfig.authenticationFlowConfig.includePaths[2]=/account/**",
+                "--lantern.loginConfig.enterpriseWechat.enabled=true",
+                "--lantern.loginConfig.enterpriseWechat.corpId=ww-test-corp",
+                "--lantern.loginConfig.enterpriseWechat.agentId=1000002",
+                "--lantern.loginConfig.enterpriseWechat.secret=test-secret-only",
+                "--lantern.loginConfig.enterpriseWechat.redirectUri=https://dashboard.example/account/enterprise-wechat/callback");
         jdbc = new JdbcTemplate(context.getBean(DataSource.class));
         mvc = MockMvcBuilders.webAppContextSetup((WebApplicationContext) context).build();
+        wechat = context.getBean(WechatClient.class);
     }
 
     @BeforeEach
@@ -100,6 +118,15 @@ class RbacDatabaseLiveTest {
 
     @AfterEach
     void removeOnlyThisTestsRecords() {
+        jdbc.update("DELETE FROM platform_user_info WHERE user_id IN (?,?)", owner, outsider);
+        for (Long id : extraUsers) {
+            jdbc.update("DELETE FROM platform_user_info WHERE user_id=?", id);
+        }
+        for (String state : oauthStates) {
+            jdbc.update("DELETE FROM lantern_oauth_state WHERE state_hash=?", DigestUtils.sha256Hex(state));
+        }
+        oauthStates.clear();
+        wechat.codes.clear();
         jdbc.update("DELETE FROM user_login_record WHERE ui_id IN (?,?)", owner, outsider);
         jdbc.update("DELETE FROM resource_role_relation WHERE role_id=?", role);
         jdbc.update("DELETE FROM user_role_relation WHERE role_id=?", role);
@@ -122,6 +149,259 @@ class RbacDatabaseLiveTest {
     void stopHost() {
         if (context != null) {
             context.close();
+        }
+    }
+
+    @Test
+    void enterpriseWechatLoginUsesExistingTokenSessionRbacAndLogout() throws Exception {
+        bindWechat(915, owner, "ww-test-corp", "1000002", "Member-A");
+        String issued = wechatToken("Member-A", owner);
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM user_login_record WHERE system_id=915 AND ui_id=?"
+                + " AND ul_session_id=? AND ul_login_status='SUCCESS' AND ul_quit_time>NOW()", Integer.class,
+                owner, issued)).isEqualTo(1);
+        assertThat(context.getBeansOfType(RedisConnectionFactory.class)).isEmpty();
+        cluster(issued).andExpect(status().isOk()).andExpect(jsonPath("$.userId").value(owner));
+        jdbc.update("UPDATE resource_role_relation SET is_delete=1 WHERE role_id=?", role);
+        cluster(issued).andExpect(status().isForbidden());
+        jdbc.update("UPDATE resource_role_relation SET is_delete=0 WHERE role_id=?", role);
+        cluster(issued).andExpect(status().isOk());
+        mvc.perform(post("/account/logout").header("Authorization", "Bearer " + issued))
+                .andExpect(status().isNoContent());
+        cluster(issued).andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void enterpriseWechatDoesNotGrantRolesToAnOtherwiseValidMember() throws Exception {
+        bindWechat(915, outsider, "ww-test-corp", "1000002", "Member-B");
+        cluster(wechatToken("Member-B", outsider)).andExpect(status().isForbidden());
+    }
+
+    @Test
+    void oauthStateIsBrowserBoundStoredAsDigestsAndConsumedOnlyOnce() throws Exception {
+        bindWechat(915, owner, "ww-test-corp", "1000002", "Member-A");
+        WechatRequest request = startWechat();
+        Map<String, Object> row = jdbc.queryForMap("SELECT state_hash,browser_hash FROM lantern_oauth_state"
+                + " WHERE state_hash=?", DigestUtils.sha256Hex(request.state));
+        assertThat(row.get("state_hash")).isEqualTo(DigestUtils.sha256Hex(request.state));
+        assertThat(row.get("browser_hash")).isEqualTo(DigestUtils.sha256Hex(request.browser.getValue()));
+        int exchanges = wechat.identityRequests.get();
+        callback(request, code("Member-A"), null).andExpect(status().isUnauthorized());
+        callback(request, code("Member-A"), new Cookie(request.browser.getName(), "00000000000000000000000000000000"))
+                .andExpect(status().isUnauthorized());
+        assertThat(wechat.identityRequests).hasValue(exchanges);
+        callback(request, code("Member-A"), request.browser).andExpect(status().isOk());
+        callback(request, code("Member-A"), request.browser).andExpect(status().isUnauthorized())
+                .andExpect(header().doesNotExist("Authorization"));
+        assertThat(wechat.identityRequests).hasValue(exchanges + 1);
+    }
+
+    @Test
+    void expiredOrCrossSystemStateCannotReachProviderOrCreateSession() throws Exception {
+        WechatRequest expired = startWechat();
+        jdbc.update("UPDATE lantern_oauth_state SET expires_at=DATE_SUB(NOW(),INTERVAL 1 SECOND) WHERE state_hash=?",
+                DigestUtils.sha256Hex(expired.state));
+        callback(expired, code("Member-A"), expired.browser).andExpect(status().isUnauthorized());
+        WechatRequest otherSystem = startWechat();
+        jdbc.update("UPDATE lantern_oauth_state SET system_id=916 WHERE state_hash=?", DigestUtils.sha256Hex(otherSystem.state));
+        callback(otherSystem, code("Member-A"), otherSystem.browser).andExpect(status().isUnauthorized());
+        assertNoWechatSession();
+    }
+
+    @Test
+    void concurrentCallbacksCanConsumeStateOnlyOnce() throws Exception {
+        bindWechat(915, owner, "ww-test-corp", "1000002", "Member-A");
+        WechatRequest request = startWechat();
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+        try {
+            String first = code("Member-A");
+            String second = code("Member-A");
+            Future<Integer> one = executor.submit(() -> callback(request, first, request.browser)
+                    .andReturn().getResponse().getStatus());
+            Future<Integer> two = executor.submit(() -> callback(request, second, request.browser)
+                    .andReturn().getResponse().getStatus());
+            assertThat(Arrays.asList(one.get(), two.get())).containsExactlyInAnyOrder(200, 401);
+            assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM user_login_record WHERE ui_id=?", Integer.class, owner))
+                    .isEqualTo(1);
+        } finally {
+            executor.shutdownNow();
+        }
+    }
+
+    @Test
+    void duplicateCookiesOrParametersAreRejectedBeforeIdentityExchange() throws Exception {
+        WechatRequest request = startWechat();
+        String code = code("Member-A");
+        mvc.perform(get(EnterpriseWechatConfig.CALLBACK_PATH).param("state", request.state).param("code", code)
+                .cookie(request.browser, request.browser)).andExpect(status().isUnauthorized());
+        mvc.perform(get(EnterpriseWechatConfig.CALLBACK_PATH).param("state", request.state, request.state)
+                .param("code", code).cookie(request.browser)).andExpect(status().isUnauthorized());
+        mvc.perform(get(EnterpriseWechatConfig.CALLBACK_PATH).param("state", request.state).param("code", code, code)
+                .cookie(request.browser)).andExpect(status().isUnauthorized());
+        assertNoWechatSession();
+    }
+
+    @Test
+    void memberBindingsAreIsolatedBySystemCorporationApplicationAndExactMemberId() throws Exception {
+        bindWechat(916, owner, "ww-test-corp", "1000002", "Member-A");
+        bindWechat(915, owner, "another-corp", "1000002", "Member-A");
+        bindWechat(915, owner, "ww-test-corp", "1000003", "Member-A");
+        bindWechat(915, owner, "ww-test-corp", "1000002", "member-a");
+        WechatRequest request = startWechat();
+        callback(request, code("Member-A"), request.browser).andExpect(status().isUnauthorized());
+        assertNoWechatSession();
+    }
+
+    @Test
+    void unboundAndDuplicateActiveBindingsCannotCreateSession() throws Exception {
+        WechatRequest unbound = startWechat();
+        callback(unbound, code("Member-A"), unbound.browser).andExpect(status().isUnauthorized());
+        bindWechat(915, owner, "ww-test-corp", "1000002", "Member-A");
+        bindWechat(915, outsider, "ww-test-corp", "1000002", "Member-A");
+        WechatRequest duplicate = startWechat();
+        callback(duplicate, code("Member-A"), duplicate.browser).andExpect(status().isUnauthorized());
+        assertNoWechatSession();
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"pui_status=1", "is_delete=1", "pui_type='THIRD'", "pui_auth_channel='Wechat'"})
+    void disabledDeletedOrWrongTypeBindingsCannotLogin(String change) throws Exception {
+        long binding = bindWechat(915, owner, "ww-test-corp", "1000002", "Member-A");
+        jdbc.update("UPDATE platform_user_info SET " + change + " WHERE pui_id=?", binding);
+        WechatRequest request = startWechat();
+        callback(request, code("Member-A"), request.browser).andExpect(status().isUnauthorized());
+        assertNoWechatSession();
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"is_delete=1", "ui_allow_login='INACTIVE'"})
+    void disabledOrDeletedLocalUserCannotLoginThroughWechat(String change) throws Exception {
+        bindWechat(915, owner, "ww-test-corp", "1000002", "Member-A");
+        jdbc.update("UPDATE user_info SET " + change + " WHERE ui_id=?", owner);
+        WechatRequest request = startWechat();
+        callback(request, code("Member-A"), request.browser).andExpect(status().isUnauthorized());
+        assertNoWechatSession();
+    }
+
+    @Test
+    void providerFailureAndInvalidCodeNeverIssueTokenOrLeakProviderDetails() throws Exception {
+        bindWechat(915, owner, "ww-test-corp", "1000002", "Member-A");
+        WechatRequest invalid = startWechat();
+        callback(invalid, "unknown-code", invalid.browser).andExpect(status().isUnauthorized())
+                .andExpect(header().doesNotExist("Authorization"));
+        WechatRequest failed = startWechat();
+        String failing = UUID.randomUUID().toString();
+        wechat.codes.put(failing, "PROVIDER_ERROR");
+        String body = callback(failed, failing, failed.browser).andExpect(status().isServiceUnavailable())
+                .andExpect(header().doesNotExist("Authorization")).andReturn().getResponse().getContentAsString();
+        assertThat(body).doesNotContain("private-provider-detail", "test-secret-only");
+        assertNoWechatSession();
+    }
+
+    private void assertNoWechatSession() {
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM user_login_record WHERE ui_id IN (?,?)", Integer.class,
+                owner, outsider)).isZero();
+    }
+
+    private long bindWechat(long system, long user, String corp, String app, String member) {
+        return insert("INSERT INTO platform_user_info (system_id,user_id,corporation_id,app_id,pui_open_id,pui_union_id,"
+                + "pui_type,pui_auth_channel,create_user_id,update_user_id) VALUES (?,?,?,?,?,'','PLATFORM','EnterpriseWechat',0,0)",
+                system, user, corp, app, member);
+    }
+
+    private String code(String member) {
+        String code = UUID.randomUUID().toString();
+        wechat.codes.put(code, member);
+        return code;
+    }
+
+    private WechatRequest startWechat() throws Exception {
+        org.springframework.mock.web.MockHttpServletResponse response = mvc.perform(get(EnterpriseWechatConfig.AUTHORIZE_PATH))
+                .andExpect(status().isFound()).andExpect(header().string("Cache-Control", "no-store"))
+                .andExpect(header().string("Referrer-Policy", "no-referrer")).andReturn().getResponse();
+        String location = response.getHeader("Location");
+        assertThat(location).startsWith("https://login.work.weixin.qq.com/wwlogin/sso/login?login_type=CorpApp")
+                .doesNotContain("test-secret-only", "uiToken");
+        String state = org.springframework.web.util.UriComponentsBuilder.fromUriString(location).build()
+                .getQueryParams().getFirst("state");
+        String cookie = response.getHeader("Set-Cookie");
+        assertThat(cookie).contains("HttpOnly", "SameSite=Lax", "Secure", "Max-Age=300",
+                "Path=/account/enterprise-wechat/callback");
+        oauthStates.add(state);
+        return new WechatRequest(state, new Cookie("lantern_wecom_state", cookie.split(";", 2)[0].split("=", 2)[1]));
+    }
+
+    private ResultActions callback(WechatRequest request, String code, Cookie browser) throws Exception {
+        org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder callback =
+                get(EnterpriseWechatConfig.CALLBACK_PATH).param("code", code).param("state", request.state);
+        if (browser != null) {
+            callback.cookie(browser);
+        }
+        return mvc.perform(callback);
+    }
+
+    private String wechatToken(String member, long userId) throws Exception {
+        WechatRequest request = startWechat();
+        org.springframework.mock.web.MockHttpServletResponse response = callback(request, code(member), request.browser)
+                .andExpect(status().isOk()).andExpect(jsonPath("$.code").value(200))
+                .andExpect(jsonPath("$.data.uiId").value(userId)).andExpect(jsonPath("$.data.systemId").value(915))
+                .andExpect(jsonPath("$.data.uiSalt").doesNotExist()).andExpect(jsonPath("$.data.uiPassword").doesNotExist())
+                .andExpect(jsonPath("$.data.uiSaltPassword").doesNotExist()).andReturn().getResponse();
+        String issued = new ObjectMapper().readTree(response.getContentAsString()).path("data").path("uiToken").asText();
+        assertThat(issued).matches("[a-f0-9]{32}");
+        assertThat(response.getHeader("Authorization")).isEqualTo("Bearer " + issued);
+        assertThat(response.getHeader("Set-Cookie")).contains("Max-Age=0");
+        return issued;
+    }
+
+    private static class WechatRequest {
+        final String state;
+        final Cookie browser;
+
+        WechatRequest(String state, Cookie browser) {
+            this.state = state;
+            this.browser = browser;
+        }
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    static class WechatTestConfiguration {
+        @Bean
+        WechatClient mockWechatApi(EnterpriseWechatConfig config) {
+            return new WechatClient(config);
+        }
+    }
+
+    /** Only the external HTTPS responses are simulated; binding, state, token, SQL and Dubbo are real. */
+    static class WechatClient extends EnterpriseWechatClient {
+        final Map<String, String> codes = new ConcurrentHashMap<>();
+        final AtomicInteger identityRequests = new AtomicInteger();
+
+        WechatClient(EnterpriseWechatConfig config) {
+            super(config);
+        }
+
+        @Override
+        protected JSONObject getJson(String address) {
+            JSONObject response = new JSONObject();
+            response.put("errcode", 0);
+            if (address.contains("/gettoken?")) {
+                response.put("access_token", "test-application-token");
+                response.put("expires_in", 7200);
+            } else {
+                identityRequests.incrementAndGet();
+                String code = org.springframework.web.util.UriComponentsBuilder.fromUriString(address).build()
+                        .getQueryParams().getFirst("code");
+                String member = codes.remove(code);
+                if ("PROVIDER_ERROR".equals(member)) {
+                    throw new IllegalStateException("private-provider-detail");
+                }
+                if (member == null) {
+                    response.put("errcode", 40029);
+                } else {
+                    response.put("userid", member);
+                }
+            }
+            return response;
         }
     }
 
